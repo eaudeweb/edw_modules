@@ -1,0 +1,7 @@
+name: 'EDW Demo Data'
+type: module
+core_version_requirement: ^9 || ^10
+package: edw_modules
+description: 'Creates demo data'
+dependencies:
+  - edw_modules:edw_modules
