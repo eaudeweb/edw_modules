@@ -4,12 +4,40 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.project.body
+    - field.field.node.project.field_country
+    - field.field.node.project.field_date_end
+    - field.field.node.project.field_date_start
+    - field.field.node.project.field_gef_agency_fee
+    - field.field.node.project.field_gef_cofinancing
+    - field.field.node.project.field_gef_project_grant
+    - field.field.node.project.field_gef_project_phase
+    - field.field.node.project.field_gef_project_type
+    - field.field.node.project.field_geographical_coverage
+    - field.field.node.project.field_image
     - field.field.node.project.field_informea_project_id
+    - field.field.node.project.field_last_update
+    - field.field.node.project.field_project_activities
+    - field.field.node.project.field_project_approved_date
+    - field.field.node.project.field_project_budget
+    - field.field.node.project.field_project_documents
+    - field.field.node.project.field_project_donor_orgs
+    - field.field.node.project.field_project_expected_outcome
+    - field.field.node.project.field_project_implementing_orgs
+    - field.field.node.project.field_project_keywords
+    - field.field.node.project.field_project_managing_orgs
+    - field.field.node.project.field_project_objectives
+    - field.field.node.project.field_project_short_title
+    - field.field.node.project.field_project_status
+    - field.field.node.project.field_project_url
+    - field.field.node.project.field_related_projects
     - field.field.node.project.field_source_project_id
+    - field.field.node.project.field_treaty
     - node.type.project
   module:
     - text
     - user
+_core:
+  default_config_hash: P6Z3V0hIITrG79HbNpYLuLcP9LL7P7u5y9PuaLrICFQ
 id: node.project.teaser
 targetEntityType: node
 bundle: project
@@ -29,7 +57,33 @@ content:
     weight: 100
     region: content
 hidden:
+  field_country: true
+  field_date_end: true
+  field_date_start: true
+  field_gef_agency_fee: true
+  field_gef_cofinancing: true
+  field_gef_project_grant: true
+  field_gef_project_phase: true
+  field_gef_project_type: true
+  field_geographical_coverage: true
+  field_image: true
   field_informea_project_id: true
+  field_last_update: true
+  field_project_activities: true
+  field_project_approved_date: true
+  field_project_budget: true
+  field_project_documents: true
+  field_project_donor_orgs: true
+  field_project_expected_outcome: true
+  field_project_implementing_orgs: true
+  field_project_keywords: true
+  field_project_managing_orgs: true
+  field_project_objectives: true
+  field_project_short_title: true
+  field_project_status: true
+  field_project_url: true
+  field_related_projects: true
   field_source_project_id: true
+  field_treaty: true
   langcode: true
   search_api_excerpt: true
