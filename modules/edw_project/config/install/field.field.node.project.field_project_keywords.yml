@@ -1,0 +1,63 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_project_keywords
+    - node.type.project
+  module:
+    - powertagging
+id: node.project.field_project_keywords
+field_name: field_project_keywords
+entity_type: node
+bundle: project
+label: Keywords
+description: 'Link to LEO concepts describing the project, mapped to SDG indicators'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  include_in_tag_glossary: 0
+  automatically_tag_new_entities: 0
+  custom_freeterms: 1
+  use_shadow_concepts: 0
+  browse_concepts_charttypes:
+    spider: 0
+    tree: 0
+  fields:
+    title: title
+    body: body
+    field_country|country|title: 0
+    field_country|country|field_country_iso2: 0
+    field_country|country|field_country_iso3: 0
+    field_country|country|field_country_official_name: 0
+    field_informea_project_id: 0
+    field_project_activities: 0
+    field_project_expected_outcome: 0
+    field_project_objectives: 0
+    field_project_short_title: 0
+    field_source_project_id: 0
+    field_treaty|treaty|title: 0
+    field_treaty|treaty|body: 0
+    field_treaty|treaty|field_abstract: 0
+    field_treaty|treaty|field_files: 0
+    field_treaty|treaty|field_ga_key: 0
+    field_treaty|treaty|field_odata_identifier: 0
+    field_treaty|treaty|field_official_name: 0
+    field_treaty|treaty|field_original_id: 0
+    field_treaty|treaty|field_piwik_id: 0
+    field_treaty|treaty|field_piwik_url: 0
+    field_treaty|treaty|field_place_of_adoption: 0
+    field_treaty|treaty|field_title_abbreviation: 0
+  default_tags_field: ''
+  limits:
+    concepts_per_extraction: '20'
+    concepts_threshold: '40'
+    freeterms_per_extraction: ''
+    freeterms_threshold: '100'
+  file_upload:
+    max_file_size: 2097152
+    max_file_count: 5
+  ac_add_matching_label: 0
+  ac_add_context: 0
+field_type: powertagging_tags

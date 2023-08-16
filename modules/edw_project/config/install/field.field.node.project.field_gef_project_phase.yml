@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_gef_project_phase
+    - node.type.project
+id: node.project.field_gef_project_phase
+field_name: field_gef_project_phase
+entity_type: node
+bundle: project
+label: 'GEF project phase'
+description: "Specific for GEF projects: GEF phase as presented \r\n"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

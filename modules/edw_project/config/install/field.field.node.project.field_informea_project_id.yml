@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_informea_project_id
+    - node.type.project
+id: node.project.field_informea_project_id
+field_name: field_informea_project_id
+entity_type: node
+bundle: project
+label: ID
+description: 'Project ID on the InforMEA database. Unique identifier that is auto generated'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

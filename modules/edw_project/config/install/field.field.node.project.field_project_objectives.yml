@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_project_objectives
+    - node.type.project
+  module:
+    - text
+id: node.project.field_project_objectives
+field_name: field_project_objectives
+entity_type: node
+bundle: project
+label: Objectives
+description: 'Objectives of the project'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long
