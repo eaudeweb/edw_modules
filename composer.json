@@ -1,0 +1,13 @@
+{
+    "name": "eaudeweb/edw_modules",
+    "description": "A collection of custom modules",
+    "type": "drupal-module",
+    "authors": [
+        {
+            "name": "dtabirca",
+            "email": "dtabirca@1029792.no-reply.drupal.org"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
