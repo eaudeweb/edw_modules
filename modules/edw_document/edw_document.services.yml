@@ -1,0 +1,13 @@
+services:
+  file.language_manager:
+    class: 'Drupal\edw_document\Services\FileLanguageManager'
+    arguments: ['@language_manager']
+  document.manager:
+    class: 'Drupal\edw_document\Services\DocumentManager'
+    arguments: ['@current_route_match', '@entity_type.manager', '@extension.list.module', '@file_url_generator', '@file_system', '@language_manager', '@database']
+  document.bulk_manager:
+    class: 'Drupal\edw_document\Services\DocumentsBulkManager'
+    arguments: ['@entity_type.manager']
+  document.cron_manager:
+    class: 'Drupal\edw_document\Services\DocumentCronManager'
+    arguments: [ '@document.manager', '@file_system', '@logger.factory' ]

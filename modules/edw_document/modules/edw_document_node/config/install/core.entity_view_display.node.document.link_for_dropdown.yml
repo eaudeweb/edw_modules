@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.link_for_dropdown
+    - field.field.node.document.body
+    - node.type.document
+id: node.document.link_for_dropdown
+targetEntityType: node
+bundle: document
+mode: link_for_dropdown
+content:
+  field_files:
+    type: file_download_formatter
+    label: hidden
+    settings:
+      use_description_as_link_text: true
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  body: true
+  field_document_type: true
+  field_external_links: true
+  langcode: true
+  links: true

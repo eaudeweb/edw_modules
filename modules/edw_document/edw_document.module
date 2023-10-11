@@ -1,0 +1,170 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for edw_document module.
+ */
+
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\OpenModalDialogCommand;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+use Drupal\Core\Url;
+use Drupal\edw_document\Form\DownloadDocumentsForm;
+use Drupal\search_api\IndexInterface;
+use Drupal\search_api\Item\Field;
+
+/**
+ * Implements hook_theme().
+ */
+function edw_document_theme($existing, $type, $theme, $path) {
+  return [
+    'dropdown_file_language' => [
+      'template' => 'dropdown-file-language',
+      'variables' => ['items' => NULL, 'object' => NULL, 'attributes' => []],
+    ],
+    'files_group_by_language' => [
+      'template' => 'files-group-by-language',
+      'variables' => [
+        'rows' => [],
+        'current_language' => [],
+      ],
+    ],
+    'download_modal' => [
+      'template' => 'download-modal',
+      'variables' => ['button' => NULL, 'object' => NULL, 'attributes' => []],
+    ],
+  ];
+}
+
+/**
+ * Do not index langcode when file is not displayed.
+ *
+ * Implements hook_search_api_index_items_alter().
+ */
+function edw_document_search_api_index_items_alter(IndexInterface $index, array &$items) {
+  if (!\Drupal::moduleHandler()->moduleExists('search_api')) {
+    return;
+  }
+  $solrField = 'file_language';
+  /** @var \Drupal\search_api\Item\Item $item */
+  foreach ($items as &$item) {
+    /** @var \Drupal\search_api\Item\Field $languageField */
+    $languageField = $item->getField($solrField);
+    if (!$languageField instanceof Field) {
+      return;
+    }
+    $langcodes = $languageField->getValues();
+    $propertyPath = $item->getField($solrField)->getPropertyPath();
+    $property = explode(':', $propertyPath);
+    $fieldEntity = $property[0];
+    $entity = $item->getOriginalObject()->getValue();
+    if ($entity->hasField($fieldEntity)) {
+      $values = $entity->get($fieldEntity)->getValue();
+      foreach ($values as $value) {
+        if (!$value['display']) {
+          if (($key = array_search($value['language'], $langcodes)) !== FALSE) {
+            unset($langcodes[$key]);
+          }
+        }
+      }
+      $languageField->setValues($langcodes);
+      $item->setField($solrField, $languageField);
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function edw_document_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $bulkFormId = isset($form['views_bulk_operations_bulk_form']) ?
+    'views_bulk_operations_bulk_form' : (isset($form['node_bulk_form']) ? 'node_bulk_form' : NULL);
+  switch ($bulkFormId) {
+    case 'views_bulk_operations_bulk_form':
+      $actionExist = array_search('node_download_documents_action', array_column($form['output'][0]['#view']->field['views_bulk_operations_bulk_form']->options['selected_actions'], 'action_id'));
+      if (!is_int($actionExist)) {
+        return;
+      }
+      $actions = array_keys($form['output'][0]['#view']->field['views_bulk_operations_bulk_form']->options['selected_actions']);
+      $key = $actions[$actionExist];
+      $form['header'][$bulkFormId]['actions'][$key]['#ajax']['callback'] = '_edw_document_node_download_documents_action';
+      $form['actions'][$key]['#ajax']['callback'] = '_edw_document_node_download_documents_action';
+      $form['header'][$bulkFormId]['actions'][$key]['#value'] = new TranslatableMarkup('No documents selected');
+      $form['header'][$bulkFormId]['actions'][$key]['#attributes']['disabled'] = 'disabled';
+      $form['actions'][$key]['#value'] = new TranslatableMarkup('No documents selected');
+      $form['actions'][$key]['#attributes']['disabled'] = 'disabled';
+      break;
+
+    case 'node_bulk_form':
+      $actionExist = array_search('node_download_documents_action', $form['output'][0]['#view']->field['node_bulk_form']->options['selected_actions']);
+      if (!is_int($actionExist)) {
+        return;
+      }
+      $form['header'][$bulkFormId]['actions']['submit']['#ajax']['callback'] = '_edw_document_node_download_documents_action';
+      $form['actions']['submit']['#ajax']['callback'] = '_edw_document_node_download_documents_action';
+      $form['header'][$bulkFormId]['actions']['submit']['#value'] = new TranslatableMarkup('No documents selected');
+      $form['header'][$bulkFormId]['actions']['submit']['#attributes']['disabled'] = 'disabled';
+      $form['actions']['submit']['#value'] = new TranslatableMarkup('No documents selected');
+      $form['actions']['submit']['#attributes']['disabled'] = 'disabled';
+      break;
+
+    default:
+      return;
+  }
+  $form['#attached']['library'][] = 'edw_document/documents_form';
+  // Class used to count how many documents are selected.
+  $form['#attributes']['class'][] = 'documents-bulk-form';
+  // Button to clear the checked items.
+  $form['header']['node_bulk_form']['actions']['clear'] = [
+    '#type' => 'link',
+    '#url' => Url::fromUserInput('#'),
+    '#title' => t('clear'),
+    '#attributes' => [
+      'class' => ['download-documents-clear-button', 'hidden'],
+    ],
+    '#weight' => -100,
+  ];
+}
+
+/**
+ * Ajax callback to open a modal with files from all selected ids.
+ */
+function _edw_document_node_download_documents_action(&$form, FormStateInterface $form_state) {
+  $id = isset($form['views_bulk_operations_bulk_form']) ? 'views_bulk_operations_bulk_form' : 'node_bulk_form';
+  $isSearchApi = isset($form['views_bulk_operations_bulk_form']);
+  $encodedIds = $form_state->getUserInput()[$id];
+  if ($encodedIds) {
+    $ids = [];
+    $entityTypeId = 'node';
+    /** @var \Drupal\edw_document\Services\DocumentsBulkManager $bulkManager */
+    $bulkManager = \Drupal::service('document.bulk_manager');
+    foreach (array_filter($form_state->getUserInput()[$id]) as $hash) {
+      $entity = $bulkManager->loadEntityFromBulkFormKey($hash, $isSearchApi);
+      $ids[] = $entity->id();
+      // @todo Find a better way to do this.
+      $entityTypeId = $entity->getEntityTypeId();
+    }
+
+    $fieldName = 'field_files';
+    \Drupal::moduleHandler()->alter('field_files', $fieldName);
+    $form = \Drupal::formBuilder()->getForm(DownloadDocumentsForm::class, $entityTypeId, $ids, $fieldName);
+    $response = new AjaxResponse();
+    $response->addCommand(new OpenModalDialogCommand(NULL, $form, [
+      'height' => 600,
+      'width' => 900,
+      'dialogClass' => 'no-titlebar no-close',
+    ]));
+
+    return $response;
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function edw_document_clean_document_cron() {
+  /** @var \Drupal\edw_document\Services\DocumentCronManager $cronManager */
+  $cronManager = \Drupal::service('document.cron_manager');
+  $cronManager->cleaupOldDirectories();
+}

@@ -1,0 +1,9 @@
+# Schema for the configuration files of the edw_document module.
+
+action.configuration.node_download_documents_action:
+  type: node_download_documents_action
+  label: 'Download documents'
+
+action.configuration.media_download_documents_action:
+  type: media_download_documents_action
+  label: 'Download documents'

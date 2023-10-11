@@ -1,0 +1,42 @@
+{
+    "name": "eaudeweb/edw_document",
+    "type": "drupal-module",
+    "description": "Provides a Drupal Document to store organisational multilingual structured PDF/Word etc.\n\n",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "homepage": "https://github.com/eaudeweb/edw_modules",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/eaudeweb/edw_modules.git"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/eaudeweb/edw_modules"
+    },
+    "authors": [
+        {
+            "name": "Daniela Eremia",
+            "email": "dani.eremia@yahoo.com"
+        }
+    ],
+    "require": {
+        "drupal/core": "^9.4 || ^10",
+        "drupal/better_exposed_filters": "^6.0",
+        "drupal/entity_browser": "^2.9",
+        "drupal/file_delete": "^2.0",
+        "drupal/file_replace": "^1.3",
+        "drupal/file_to_media": "^1.0",
+        "drupal/search_api_solr":"^4.3",
+        "drupal/select2": "^1.15",
+        "drupal/views_bulk_operations": "^4.2"
+    }
+}
