@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_heading
+label: Heading
+icon_uuid: null
+description: 'Add a section title with an option to include an icon and a sub-title'
+behavior_plugins: {  }

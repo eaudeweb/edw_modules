@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_button
+label: Button
+icon_uuid: null
+description: 'Simple button item with title and different variants.'
+behavior_plugins: {  }

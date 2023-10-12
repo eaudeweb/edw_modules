@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.edw_list_item_block.field_column_layout
+    - paragraphs.paragraphs_type.edw_list_item_block
+  module:
+    - entity_reference_revisions
+    - link
+    - options
+id: paragraph.edw_list_item_block.default
+targetEntityType: paragraph
+bundle: edw_list_item_block
+mode: default
+content:
+  field_column_layout:
+    weight: 4
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  field_paragraphs:
+    weight: 2
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    type: entity_reference_revisions_entity_view
+    region: content
+hidden: {  }

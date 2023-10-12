@@ -1,0 +1,7 @@
+name: EDW Paragraphs (Experimental)
+description: This module provides a collection of useful paragraphs.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - paragraphs:paragraphs

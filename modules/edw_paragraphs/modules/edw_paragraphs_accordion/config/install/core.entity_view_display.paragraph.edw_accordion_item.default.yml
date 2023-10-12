@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.edw_accordion_item
+  module:
+    - options
+    - text
+id: paragraph.edw_accordion_item.default
+targetEntityType: paragraph
+bundle: edw_accordion_item
+mode: default
+content:
+  field_title:
+    weight: 2
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_body:
+    weight: 3
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+hidden: {  }

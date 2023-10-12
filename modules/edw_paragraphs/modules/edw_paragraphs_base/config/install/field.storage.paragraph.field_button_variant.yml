@@ -1,0 +1,44 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+id: paragraph.field_button_variant
+field_name: field_button_variant
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: primary
+      label: Primary
+    -
+      value: secondary
+      label: Secondary
+    -
+      value: success
+      label: Success
+    -
+      value: danger
+      label: Danger
+    -
+      value: warning
+      label: Warning
+    -
+      value: info
+      label: Info
+    -
+      value: light
+      label: Light
+    -
+      value: link
+      label: Text
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_grid_layout
+    - paragraphs.paragraphs_type.edw_text_with_media
+  module:
+    - options
+id: paragraph.edw_text_with_media.field_grid_layout
+field_name: field_grid_layout
+entity_type: paragraph
+bundle: edw_text_with_media
+label: Grid layout
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 6/6
+default_value_callback: ''
+settings: {  }
+field_type: list_string

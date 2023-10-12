@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_card
+label: Card
+icon_uuid: null
+description: 'Single card item with title, link, and body, to show information as a card.'
+behavior_plugins: {  }

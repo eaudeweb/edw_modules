@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @file
+ * EDW Paragraphs Timeline module.
+ */
+
+use Drupal\paragraphs\Entity\Paragraph;
+
+/**
+ * Implements hook_preprocess().
+ *
+ * @todo Clean this when we receive the mock-ups.
+ */
+function edw_paragraphs_timeline_preprocess_paragraph__edw_timeline(&$variables) {
+  $variables['timeline'] = [];
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder('paragraph');
+  $items = $variables['content']['field_timeline_items']['#items']->referencedEntities();
+  $count = 0;
+  /** @var \Drupal\paragraphs\Entity\Paragraph $item */
+  foreach ($items as $item) {
+    $count++;
+    $date = new DateTime($item->field_date->value);
+    $year = date_format($date, 'Y');
+    $featured = $item->field_featured->value;
+    $renderedItem = $view_builder->view($item);
+
+    $extraClass = $count % 2 ? 'odd' : 'even';
+    if ($featured) {
+      $renderedItem['#view_mode'] = 'featured';
+      $extraClass = 'featured';
+      $count--;
+      $renderedItem['#featured'] = TRUE;
+    }
+    $renderedItem['#attributes']['class'][] = $extraClass;
+
+    if (!array_key_exists($year, $variables['timeline'])) {
+      $variables['timeline'][$year] = [$renderedItem];
+      continue;
+    }
+    $variables['timeline'][$year][] = $renderedItem;
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function edw_paragraphs_timeline_paragraph_presave(Paragraph $entity) {
+  if ($entity->bundle() == 'edw_timeline'
+    && $entity->hasField('field_timeline_items')) {
+    $items = $entity->get('field_timeline_items')->referencedEntities();
+    usort($items, function ($a, $b) {
+      return strtotime($b->field_date->value) - strtotime($a->field_date->value);
+    });
+    $entity->set('field_timeline_items', $items);
+  }
+}

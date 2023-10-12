@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_media_position
+    - paragraphs.paragraphs_type.edw_text_with_media
+  module:
+    - options
+id: paragraph.edw_text_with_media.field_media_position
+field_name: field_media_position
+entity_type: paragraph
+bundle: edw_text_with_media
+label: Media position
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: left
+default_value_callback: ''
+settings: {  }
+field_type: list_string

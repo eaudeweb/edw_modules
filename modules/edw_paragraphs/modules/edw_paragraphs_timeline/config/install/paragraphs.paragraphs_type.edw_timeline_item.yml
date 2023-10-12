@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_timeline_item
+label: Timeline item
+icon_uuid: null
+icon_default: null
+description: 'Single timeline item, to be used exclusively in conjunction with the "Timeline" paragraph type.'
+behavior_plugins: {  }

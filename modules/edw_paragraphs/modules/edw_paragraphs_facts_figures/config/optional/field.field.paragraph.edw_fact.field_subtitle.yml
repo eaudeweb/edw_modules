@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_subtitle
+    - paragraphs.paragraphs_type.edw_fact
+id: paragraph.edw_fact.field_subtitle
+field_name: field_subtitle
+entity_type: paragraph
+bundle: edw_fact
+label: Label
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

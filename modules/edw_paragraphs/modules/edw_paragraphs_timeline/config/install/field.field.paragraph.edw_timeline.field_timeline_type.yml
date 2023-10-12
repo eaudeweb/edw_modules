@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_timeline_type
+    - paragraphs.paragraphs_type.edw_timeline
+  module:
+    - options
+id: paragraph.edw_timeline.field_timeline_type
+field_name: field_timeline_type
+entity_type: paragraph
+bundle: edw_timeline
+label: Grid layout
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: default
+default_value_callback: ''
+settings: {  }
+field_type: list_string

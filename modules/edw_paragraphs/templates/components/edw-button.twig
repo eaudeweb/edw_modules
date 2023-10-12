@@ -1,0 +1,55 @@
+{#
+Parameters:
+  - "label" (string) (default: '')
+  - "variant" (string) (default: 'primary'): can be 'primary', 'secondary', 'link', 'success', 'danger', 'warning', 'info', 'light'
+  - "disabled" (bool) (default: false): defined if button should be active or not (HTML disabled attribute)
+  - "extra_classes" (string) (default: '')
+  - "extra_attributes" (array) (default: []): format: [
+      {
+        "name" (string) (default: ''),
+        "value" (optional) (string)
+      ...
+    ],
+#}
+
+{# Internal properties #}
+
+{% set _css_class = 'btn' %}
+{% set _extra_attributes = '' %}
+{% set _label = label|default('') %}
+{% set _link = link %}
+{% set _variant = variant|default('primary') %}
+{% set _disabled = disabled|default(false) %}
+
+{# Internal logic - Process properties #}
+{% set _css_class = _css_class ~ ' btn-' ~ _variant %}
+
+{% if extra_classes is defined and extra_classes is not empty %}
+  {% set _css_class = _css_class ~ ' ' ~ extra_classes %}
+{% endif %}
+
+{% if _link.aria_label is defined and _link.aria_label is not empty %}
+  {% set extra_attributes = extra_attributes|default([])|merge([{ name: 'aria-label', value: _link.aria_label }]) %}
+{% endif %}
+
+{% if extra_attributes is defined and extra_attributes is not empty and extra_attributes is iterable %}
+  {% for attr in extra_attributes %}
+    {% if attr.value is defined %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') ~ '="' ~ attr.value|e('html_attr') ~ '"' %}
+    {% else %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Add disabled option if defined #}
+{% if _disabled %}
+  {% set _css_class = _css_class ~ ' disabled' %}
+{% endif %}
+
+{# Print the result #}
+<a href="{{ _link }}" class="{{ _css_class }}" {{ _extra_attributes|raw }}>
+  {% if _label %}
+    {% block label _label %}
+  {% endif %}
+</a>

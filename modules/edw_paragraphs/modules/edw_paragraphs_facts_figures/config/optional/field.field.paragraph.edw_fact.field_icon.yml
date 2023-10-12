@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_icon
+    - paragraphs.paragraphs_type.edw_fact
+  module:
+    - media
+    - options
+id: paragraph.edw_fact.field_icon
+field_name: field_icon
+entity_type: paragraph
+bundle: edw_fact
+label: Icon
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: entity_reference

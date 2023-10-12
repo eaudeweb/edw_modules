@@ -1,0 +1,43 @@
+{#
+/**
+ * Parameters:
+ * - "items" (array)
+ * - "extra_classes" (string) (default: '')
+ * - "extra_attributes" (array) (default: []): format: [
+ *   {
+ *     "name" (string) (default: ''),
+ *     "value" (optional) (string)
+ *    ...
+ *   ]
+ */
+#}
+{% apply spaceless %}
+
+{# Internal properties #}
+
+{% set _css_class = 'list-group' %}
+{% set _extra_attributes = '' %}
+
+{# Internal logic - Process properties #}
+
+{% if extra_classes is defined and extra_classes is not empty %}
+  {% set _css_class = _css_class ~ ' ' ~ extra_classes %}
+{% endif %}
+
+{% if extra_attributes is defined and extra_attributes is not empty and extra_attributes is iterable %}
+  {% for attr in extra_attributes %}
+    {% if attr.value is defined %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') ~ '="' ~ attr.value|e('html_attr') ~ '"' %}
+    {% else %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Print the result #}
+<ul class="{{ _css_class }}"{{ extra_attributes }}>
+  {% for item in items %}
+    <li class="list-group-item">{{ item }}</li>
+  {% endfor %}
+</ul>
+{% endapply %}

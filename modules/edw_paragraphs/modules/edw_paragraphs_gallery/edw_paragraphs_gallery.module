@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * EDW Paragraphs Gallery module.
+ */
+
+use Drupal\image\Entity\ImageStyle;
+use Drupal\media\Plugin\media\Source\Image;
+
+/**
+ * Implements hook_preprocess_paragraph__edw_gallery().
+ */
+function edw_paragraphs_gallery_preprocess_paragraph__edw_gallery(&$variables) {
+  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
+  $paragraph = $variables['paragraph'];
+
+  if ($paragraph->hasField('field_gallery_display_mode')) {
+    $variables['variant'] = (string) $paragraph->get('field_gallery_display_mode')->value;
+  }
+
+  $style = ImageStyle::load('crop_thumbnail');
+  $items = $dynamicGallery = [];
+  foreach ($paragraph->get('field_gallery_items')->referencedEntities() as $media) {
+    $source = $media->getSource();
+    $field_name = $source->getConfiguration()['source_field'];
+    $caption = $source->getMetadata($media, 'thumbnail_alt_value') ?? $media->label();
+    if ($source instanceof Image && ($file_entity = $media->get($field_name)->entity)) {
+      $url = $file_entity->createFileUrl();
+      $styleUrl = ($style) ? $style->buildUrl($file_entity->getFileUri()) : $url;
+      $items[] = [
+        'src' => $url,
+        'thumb' => $styleUrl,
+        'caption' => $caption,
+      ];
+      // Preset keys https://www.lightgalleryjs.com/demos/dynamic-mode.
+      $dynamicGallery[] = [
+        'src' => $url,
+        'thumb' => $styleUrl,
+        'subHtml' => '<div class="lightGallery-captions"><h4>' . $caption . '</h4></div>',
+      ];
+    }
+  }
+
+  $variables['items'] = $items;
+  $variables['#attached']['library'][] = 'edw_paragraphs_gallery/light_gallery';
+  $variables['#attached']['drupalSettings']['dynamicEl-' . $paragraph->id()] = json_encode($dynamicGallery);
+}

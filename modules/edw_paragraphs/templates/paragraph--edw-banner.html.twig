@@ -1,0 +1,30 @@
+{#
+/**
+ * @file
+ * Theme override to display the 'Banner' paragraph.
+ *
+ * Parameters:
+ * - "title" (string) (default: ''): Title of the card
+ * - "media" (block) (default: ''): A media image
+ * - "description" (string) (default: ''): Card description
+ * - "centered" (bool) (default: true) Define if banner should be centered
+ * - "full_width": (bool) (default: false) Full width banner
+ * - "extra_classes" (string) (default: '')
+ * - "extra_attributes" (array) (default: []): format: [
+ *   {
+ *     "name" (string) (default: ''),
+ *     "value" (optional) (string)
+ *    ...
+ *   ]
+ *
+ * @see ./modules/contrib/paragraphs/templates/paragraph.html.twig
+ */
+#}
+{% include '@edw_paragraphs/components/edw-banner.twig' with {
+  title: content.field_title,
+  description: content.field_description,
+  link: content.field_link,
+  media: content.field_media,
+  full_witdh: full_width,
+  variant: variant,
+}%}

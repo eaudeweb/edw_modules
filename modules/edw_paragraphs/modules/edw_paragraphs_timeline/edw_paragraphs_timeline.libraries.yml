@@ -1,0 +1,10 @@
+timeline-double-sided:
+  css:
+    component:
+      css/paragraph--timeline.css: {}
+
+timeline-scroll-effect:
+  js:
+    js/scroll-timeline.js: { }
+  dependencies:
+    - core/drupal

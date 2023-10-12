@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.edw_banner
+  module:
+    - options
+id: paragraph.edw_banner.field_banner_alignment
+field_name: field_banner_alignment
+entity_type: paragraph
+bundle: edw_banner
+label: 'Banner alignment'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: centered
+default_value_callback: ''
+settings: {  }
+field_type: list_string

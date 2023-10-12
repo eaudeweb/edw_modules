@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.edw_fact
+    - paragraphs.paragraphs_type.edw_facts_figures
+  module:
+    - entity_reference_revisions
+id: paragraph.edw_facts_figures.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: edw_facts_figures
+label: Fact
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    negate: 0
+    target_bundles:
+      edw_fact: edw_fact
+    target_bundles_drag_drop:
+      edw_facts_figures:
+        weight: 14
+        enabled: false
+      edw_fact:
+        enabled: true
+        weight: 19
+field_type: entity_reference_revisions

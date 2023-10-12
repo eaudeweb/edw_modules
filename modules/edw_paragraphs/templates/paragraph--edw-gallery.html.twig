@@ -1,0 +1,30 @@
+{#
+/**
+ * @file
+ * Theme override to display the 'Gallery' paragraph.
+ *
+ * Parameters:
+ * - "identifier" (string): Unique machine readable name.
+ * - "items" (array) (default: []): List with media items.
+ * - "variant" (string) (default: 'inline'): Gallery display mode (inline|thumbnails).
+ * - "extra_classes" (string) (default: '')
+ * - "extra_attributes" (array) (default: []): format: [
+ *   {
+ *     "name" (string) (default: ''),
+ *     "value" (optional) (string)
+ *    ...
+ *   ]
+ *
+ * @see ./modules/contrib/paragraphs/templates/paragraph.html.twig
+ */
+#}
+
+{% include '@edw_paragraphs/components/edw-gallery.twig' with {
+  items: items,
+  identifier: paragraph.id(),
+  variant: variant,
+  extra_attributes: [
+    { name: 'data-mode', value: variant },
+    { name: 'data-paragraph-id', value: paragraph.id() }
+  ]
+}%}

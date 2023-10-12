@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.edw_carousel
+    - paragraphs.paragraphs_type.edw_carousel_item
+  module:
+    - entity_reference_revisions
+third_party_settings: {  }
+id: paragraph.edw_carousel.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: edw_carousel
+label: Items
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      edw_carousel_item: edw_carousel_item
+    negate: 0
+    target_bundles_drag_drop:
+      edw_carousel:
+        weight: 34
+        enabled: false
+      edw_carousel_item:
+        weight: 35
+        enabled: true
+field_type: entity_reference_revisions

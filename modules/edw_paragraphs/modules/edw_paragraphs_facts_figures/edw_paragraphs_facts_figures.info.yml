@@ -1,0 +1,7 @@
+name: EDW Paragraphs Facts and figures (Experimental)
+description: Provides a paragraph type that displays a collection of facts and figures. Paragraph is used to deliver numerical representations of facts that are easier to portray visually through the use of statistics.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - edw_paragraphs:edw_paragraphs

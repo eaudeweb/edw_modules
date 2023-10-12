@@ -1,0 +1,8 @@
+name: EDW Paragraphs Document
+type: module
+description: Provides a paragraph type that references document media entities.
+package: Eau de Web
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - drupal:media_library
+  - edw_paragraphs:edw_paragraphs

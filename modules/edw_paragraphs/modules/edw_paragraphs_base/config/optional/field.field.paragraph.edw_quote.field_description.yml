@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_description
+    - paragraphs.paragraphs_type.edw_quote
+id: paragraph.edw_quote.field_description
+field_name: field_description
+entity_type: paragraph
+bundle: edw_quote
+label: 'Quote text'
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

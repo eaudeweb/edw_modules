@@ -1,0 +1,15 @@
+<div class="timeline-item timeline-featured-item">
+    <div{{ attributes }}>
+      <div class="container">
+        <div class="row">
+        <div class="center">
+          <div class="content">
+            {{ content.field_media }}
+            {{ content.field_caption }}
+            {{ content|without(['field_media', 'field_featured', 'field_caption']) }}
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+</div>

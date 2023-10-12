@@ -1,0 +1,82 @@
+{% apply spaceless %}
+
+{#
+/**
+ * Parameters:
+ * - "title" (string) (default: ''): Title of the card
+ * - "link" (array) (default: []): Link of the card, applied to title
+ * - "media" (block) (default: ''): A media image
+ * - "description" (string) (default: ''): Card description
+ * - "extra_classes" (string) (default: '')
+ * - "extra_attributes" (array) (default: []): format: [
+ *   {
+ *     "name" (string) (default: ''),
+ *     "value" (optional) (string)
+ *    ...
+ *   ]
+ */
+#}
+
+{# Internal properties #}
+
+{% set _media = media|default({}) %}
+{% set _title = title %}
+{% set _link = link %}
+{% set _description = description %}
+{% set _primary_meta = primary_meta %}
+
+{% set _css_class = 'card' %}
+{% set _extra_attributes = '' %}
+
+{# Internal logic - Process properties #}
+
+{% if extra_classes is defined and extra_classes is not empty %}
+  {% set _css_class = _css_class ~ ' ' ~ extra_classes %}
+{% endif %}
+
+{% if extra_attributes is defined and extra_attributes is not empty and extra_attributes is iterable %}
+  {% for attr in extra_attributes %}
+    {% if attr.value is defined %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') ~ '="' ~ attr.value|e('html_attr') ~ '"' %}
+    {% else %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{# Print the result #}
+
+<div class="{{ _css_class }}"{{ _extra_attributes|raw }}>
+  {% block media _media %}
+
+  {% block primary_meta %}
+    {% if _primary_meta %}
+      <ul class="list-group list-group-horizontal list-group-flush">
+        {% for _meta in _primary_meta %}
+          <li class="list-group-item">{{ _meta }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endblock %}
+
+  {% block content %}
+    <div class="card-body">
+      {% if _title is not empty %}
+        <div class="card-title h5">
+          {%- if _link is not empty -%}
+{#            @ todo Add a component for link#}
+            <a href="{{ _link.uri }}">{{- _title -}}</a>
+          {%- else -%}
+            {{- _title -}}
+          {%- endif -%}
+        </div>
+      {% endif %}
+      {{ _description }}
+    </div>
+  {% endblock %}
+
+  {% block footer %}
+  {% endblock %}
+</div>
+
+{% endapply %}

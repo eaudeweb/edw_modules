@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * EDW Paragraphs Carousel module.
+ */
+
+use Drupal\Core\Entity\EntityTypeInterface;
+
+/**
+ * Implements hook_preprocess_paragraph__edw_carousel().
+ */
+function edw_paragraphs_carousel_preprocess_paragraph__edw_carousel(&$variables) {
+  $variables['identifier'] = 'paragraph--carousel-' . $variables['paragraph']->id();
+  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
+  $paragraph = $variables['paragraph'];
+  if ($paragraph->hasField('field_full_width')
+    && !$paragraph->get('field_full_width')->isEmpty()) {
+    $variables['full_width'] = (bool) $paragraph->get('field_full_width')->value;
+  }
+  if (!$paragraph->hasField('field_paragraphs')) {
+    return;
+  }
+  $variables['items'] = [];
+  foreach ($variables['paragraph']->get('field_paragraphs') as $delta => $item) {
+    $variables['items'][] = $variables['content']['field_paragraphs'][$delta];
+  }
+}
+
+/**
+ * Implements hook_entity_bundle_field_info_alter().
+ */
+function edw_paragraphs_carousel_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {
+  // Add constraint to the 'items' field of the Carousel paragraph.
+  if ($entity_type->id() === 'paragraph' && $bundle === 'edw_carousel') {
+    if (isset($fields['field_paragraphs'])) {
+      $fields['field_paragraphs']->addConstraint('CarouselItemsCardinality', []);
+    }
+  }
+}

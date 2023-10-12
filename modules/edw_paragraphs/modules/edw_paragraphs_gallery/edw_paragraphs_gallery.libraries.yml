@@ -1,0 +1,21 @@
+light_gallery:
+  version: VERSION
+  css:
+    theme:
+      css/lightgallery.css: {}
+      /libraries/lightgallery/dist/css/lightgallery-bundle.min.css: {}
+      //cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css: { type: external, minified: true }
+  js:
+    /libraries/lightgallery/dist/lightgallery.min.js: { minified: true }
+    //cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js: { type: external, minified: true }
+    /libraries/lightgallery/dist/plugins/autoplay/lg-autoplay.min.js: { minified: true }
+    /libraries/lightgallery/dist/plugins/fullscreen/lg-fullscreen.min.js: { minified: true }
+    /libraries/lightgallery/dist/plugins/thumbnail/lg-thumbnail.min.js: { minified: true }
+    /libraries/lightgallery/dist/plugins/video/lg-video.min.js: { minified: true }
+    /libraries/lightgallery/dist/plugins/zoom/lg-zoom.min.js: { minified: true }
+    /libraries/lightgallery/dist/plugins/hash/lg-hash.min.js: { minified: true }
+    js/lightgallery-load.js: {}
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupalSettings

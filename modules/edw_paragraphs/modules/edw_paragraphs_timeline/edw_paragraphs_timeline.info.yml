@@ -1,0 +1,7 @@
+name: EDW Paragraphs Timeline (Experimental)
+description: Provides timeline paragraph.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - edw_paragraphs:edw_paragraphs

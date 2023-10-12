@@ -1,0 +1,55 @@
+{#
+Parameters:
+ * - "media" (block) (default: ''): A media image
+ * - "description" (string) (default: ''): Card description
+ * - "variant" (string) (default: 'left'): Image position
+ * - "layout" (string) (default: '6/6'): Layout of the component (Bootstrap column classes where 6/6 equal with 50%/50%)
+ * - "extra_classes" (string) (default: '')
+ * - "extra_attributes" (array) (default: []): format: [
+ *   {
+ *     "name" (string) (default: ''),
+ *     "value" (optional) (string)
+ *    ...
+ *   ]
+#}
+
+
+{# Internal properties #}
+{% set _css_class = 'row' %}
+{% set _extra_attributes = '' %}
+{% set _variant = variant|default('left') %}
+
+{# Internal logic - Process properties #}
+{% if extra_classes is defined and extra_classes is not empty %}
+  {% set _css_class = _css_class ~ ' ' ~ extra_classes %}
+{% endif %}
+
+{% if extra_attributes is defined and extra_attributes is not empty and extra_attributes is iterable %}
+  {% for attr in extra_attributes %}
+    {% if attr.value is defined %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') ~ '="' ~ attr.value|e('html_attr') ~ '"' %}
+    {% else %}
+      {% set _extra_attributes = _extra_attributes ~ ' ' ~ attr.name|e('html_attr') %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if _variant == 'right' %}
+  {% set _css_class = _css_class ~ ' flex-row-reverse' %}
+{% endif %}
+
+{% set _layout = layout|default('6/6')|split('/') %}
+
+{# Print the result #}
+<div class="{{ _css_class }}"{{ _extra_attributes|raw }}>
+  {% block media %}
+    <div class="col-12 {{ 'col-md-' ~ _layout.0 }}">
+      {{ media }}
+    </div>
+  {% endblock %}
+  {% block description %}
+    <div class="col-12 {{ 'col-md-' ~ _layout.1 }}">
+      {{ description }}
+    </div>
+  {% endblock %}
+</div>
