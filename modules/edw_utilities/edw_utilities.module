@@ -10,7 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 /**
  * Implements hook_field_widget_form_alter().
  */
-function edw_utilities_field_widget_form_alter(&$element, FormStateInterface &$form_state, $context) {
+function edw_utilities_field_widget_single_element_form_alter(&$element, FormStateInterface &$form_state, $context) {
   if (!empty($element['entity_browser'])) {
     $default_value = $element['entity_browser']['#default_value'];
     $ids = [];

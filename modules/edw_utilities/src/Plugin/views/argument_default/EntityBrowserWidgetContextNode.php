@@ -66,7 +66,7 @@ class EntityBrowserWidgetContextNode extends ArgumentDefaultPluginBase {
   public function getArgument() {
     $currentRequest = $this->view->getRequest();
     $path = ($currentRequest->query->has('original_path')) ? $currentRequest->query->get('original_path') : NULL;
-    if (preg_match('/node\/(\d+)/', $path, $matches)) {
+    if (preg_match('/node\/(\d+)/', (string) $path, $matches)) {
       $node = $this->nodeStorage->load($matches[1]);
       if ($node instanceof NodeInterface) {
         return $node->id();
