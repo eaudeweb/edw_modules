@@ -8,7 +8,6 @@ dependencies:
   - drupal:datetime_range
   - drupal:edw_document
   - drupal:entity_reference_revisions
-  - drupal:select2
   - file_replace:file_replace
   - file_delete:file_delete
   - file_to_media:file_to_media

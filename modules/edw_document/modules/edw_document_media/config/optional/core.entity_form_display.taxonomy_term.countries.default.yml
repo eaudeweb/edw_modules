@@ -8,7 +8,6 @@ dependencies:
     - taxonomy.vocabulary.countries
   module:
     - path
-    - select2
     - text
 id: taxonomy_term.countries.default
 targetEntityType: taxonomy_term

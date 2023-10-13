@@ -14,7 +14,6 @@ dependencies:
     - file
     - media_library
     - path
-    - select2
     - text
 id: media.document.default
 targetEntityType: media

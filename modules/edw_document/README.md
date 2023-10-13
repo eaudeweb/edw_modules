@@ -5,19 +5,49 @@ structured PDF/Word etc. documents
 
 # Installation
 
+Before enabling this module, make sure that the following modules are present in your codebase by adding them to your composer.json and by running composer update:
 In `composer.json`:
 
-1. In `"repositories":[]` add:
+```php
+"require": {
+  "drupal/core": "^9.4 || ^10",
+  "drupal/better_exposed_filters": "^6.0",
+  "drupal/entity_browser": "^2.9",
+  "drupal/file_delete": "^2.0",
+  "drupal/file_replace": "^1.3",
+  "drupal/file_to_media": "^1.0",
+  "drupal/search_api_solr":"^4.3",
+  "drupal/views_bulk_operations": "^4.2"
+}
 ```
-{
-    "type": "git",
-    "url": "https://github.com/eaudeweb/edw_modules.git"
+The `entity_reference_revisions` module requires the following patch to be applied:
+
+```php
+"patches": {
+    "drupal/entity_reference_revisions": {
+      "#2799479 - Views doesn't recognize relationship to host": "https://www.drupal.org/files/issues/2022-06-01/entity_reference_revisions-relationship_host_id-2799479-176.patch"
+    }
 }
 ```
 
-2. A SSH Key is required.
+and for core:^10:
 
-3. Run: ```composer require drupal/edw_document```
+```php
+"patches": {
+    "drupal/core": {
+      "#2429699 - Add Views EntityReference filter to be available for all entity reference fields":"https://git.drupalcode.org/project/drupal/-/merge_requests/3086.patch"
+    }
+}
+```
+for core:^9.4
+```php
+"patches": {
+    "drupal/core": {
+      "#2457999 - Cannot use relationship for rendered entity on Views": "https://www.drupal.org/files/issues/2023-01-04/2457999-9.5.x-309.patch",
+      "#2429699 - Add Views EntityReference filter to be available for all entity reference fields":"https://git.drupalcode.org/project/drupal/-/merge_requests/3086.patch"
+    }
+}
+```
 
 ## Basic Configuration
 

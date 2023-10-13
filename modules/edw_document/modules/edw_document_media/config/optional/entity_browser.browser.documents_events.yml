@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - views.view.events
+    - views.view.documents_events
   module:
     - views
 name: documents_events
@@ -26,5 +26,5 @@ widgets:
     settings:
       submit_text: 'Select events(s)'
       auto_select: false
-      view: events
+      view: documents_events
       view_display: entity_browser_events

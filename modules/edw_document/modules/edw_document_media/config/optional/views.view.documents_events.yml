@@ -13,8 +13,8 @@ dependencies:
     - node
     - options
     - user
-id: events
-label: Events
+id: documents_events
+label: Events related to documents
 module: views
 description: ''
 tag: ''
@@ -234,7 +234,7 @@ display:
       tags: {  }
   entity_browser_events:
     id: entity_browser_events
-    display_title: 'Entity browser'
+    display_title: 'Entity browser: Events'
     display_plugin: entity_browser
     position: 6
     display_options:
