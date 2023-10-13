@@ -5,10 +5,7 @@ dependencies:
     - field.storage.paragraph.field_media
     - media.type.image
     - paragraphs.paragraphs_type.edw_card
-third_party_settings:
-  composite_reference:
-    composite: false
-    composite_revisions: false
+third_party_settings: {  }
 id: paragraph.edw_card.field_media
 field_name: field_media
 entity_type: paragraph
