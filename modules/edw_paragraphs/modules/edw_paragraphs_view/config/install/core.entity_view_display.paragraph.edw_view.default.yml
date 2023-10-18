@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.edw_view.field_view
+    - paragraphs.paragraphs_type.edw_view
+  module:
+    - viewsreference
+id: paragraph.edw_view.default
+targetEntityType: paragraph
+bundle: edw_view
+mode: default
+content:
+  field_view:
+    type: viewsreference_formatter
+    label: hidden
+    settings:
+      plugin_types:
+        block: block
+        default: 0
+        embed: 0
+        autocompletion_callback: 0
+        page: 0
+        entity_reference: 0
+        entity_browser: 0
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden: {  }

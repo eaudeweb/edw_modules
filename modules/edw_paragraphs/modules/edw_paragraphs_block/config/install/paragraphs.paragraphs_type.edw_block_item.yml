@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_block_item
+label: 'Block item'
+icon_uuid: null
+icon_default: null
+description: 'Simple block to add an existing block to a component.'
+behavior_plugins: {  }

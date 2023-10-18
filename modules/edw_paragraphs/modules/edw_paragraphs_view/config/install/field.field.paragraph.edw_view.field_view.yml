@@ -1,0 +1,38 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_view
+    - paragraphs.paragraphs_type.edw_view
+  module:
+    - viewsreference
+id: paragraph.edw_view.field_view
+field_name: field_view
+entity_type: paragraph
+bundle: edw_view
+label: View
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:view'
+  handler_settings:
+    target_bundles: null
+    auto_create: 0
+  plugin_types:
+    block: block
+    embed: embed
+    default: 0
+    page: 0
+    entity_reference: 0
+    entity_browser: 0
+  preselect_views: {  }
+  enabled_settings:
+    title: title
+    argument: argument
+    pager: 0
+    limit: 0
+    offset: 0
+field_type: viewsreference

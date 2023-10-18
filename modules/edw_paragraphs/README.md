@@ -12,6 +12,7 @@ The module provides the following paragraph types:
     ├── edw_paragraphs_accordion
     ├── edw_paragraphs_banner
     ├── edw_paragraphs_base
+    ├── edw_paragraphs_block
     ├── edw_paragraphs_carousel
     ├── edw_paragraphs_document
     ├── edw_paragraphs_facts_figures
@@ -19,6 +20,7 @@ The module provides the following paragraph types:
     ├── edw_paragraphs_heading
     ├── edw_paragraphs_media
     └── edw_paragraphs_timeline
+    └── edw_paragraphs_view
 ```
 
 ## Installation
@@ -53,6 +55,10 @@ type enable the EDW Paragraphs Accordion submodule.
 Provides Banner paragraph that display a prominent message and related action.
 To get this paragraph type enable the EDW Paragraphs Banner submodule.
 
+### Block
+Provides a Block item paragraph with a field Block (plugin) that allows a
+content entity to reference and configure custom block instances.
+
 ### Carousel
 Provides Carousel paragraph that display items similar to a Banner with
 multiple slides. To get this paragraph type enable the EDW Paragraphs Carousel
@@ -82,3 +88,7 @@ paragraph type enable the EDW Paragraphs Media submodule.
 ### Timeline
 Provides Timeline paragraph that displays items visually on a time axis. To get
 this paragraph type enable the EDW Paragraphs Gallery submodule.
+
+### View
+Provides a View paragraph using Views Reference Field module that embed a view
+block. To get this paragraph type enable the EDW Paragraphs View submodule.

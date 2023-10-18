@@ -1,0 +1,25 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.edw_block_item.field_block
+    - paragraphs.paragraphs_type.edw_block_item
+  module:
+    - block_field
+id: paragraph.edw_block_item.default
+targetEntityType: paragraph
+bundle: edw_block_item
+mode: default
+content:
+  field_block:
+    type: block_field_default
+    weight: 0
+    region: content
+    settings:
+      plugin_id: ''
+      settings: {  }
+      configuration_form: full
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
