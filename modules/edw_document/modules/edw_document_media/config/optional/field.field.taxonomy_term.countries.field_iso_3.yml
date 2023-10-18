@@ -10,7 +10,7 @@ entity_type: taxonomy_term
 bundle: countries
 label: 'ISO 3'
 description: 'ISO 3166-3 country code'
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
