@@ -28,7 +28,7 @@ headers/footer.
 | Image        | field_media | -           | Media entity reference | Single      | Yes      | No           | Media library |
 | Primary meta | field_meta  | -           | Text                   | Single      | No       | Yes          | Text field    |
 
-#### HTML
+#### Rich text
 The Rich text paragraph adds an optional title field with body.
 
 | Field label  | Field name  | Description | Field type             | Cardinality | Required | Translatable | Widget        |
@@ -44,14 +44,25 @@ The Links block paragraph displays a list of links.
 | Title       | field_title | -           | Text       | Single      | No       | Yes          | Text field |
 | Links       | field_links | -           | Link       | Multiple    | Yes      | No           | Link       |
 
-#### Listing item block
-The Listing item block paragraph allows editors to group multiple components 
-(e.g.: HTML, Card) in one, two or more columns.
+#### Columns
+The Columns paragraph allows editors to group multiple components(e.g.: Rich text,
+Card) in one, two or more columns.
 
-| Field label | Field name          | Description          | Field type                 | Cardinality | Required | Translatable | Widget         |
-|-------------|---------------------|----------------------|----------------------------|-------------|----------|--------------|----------------|
-| Layout      | field_column_layout | -                    | List (text)                | Single      | Yes      | No           | Chosen/Similar |
-| Items       | field_paragraphs    | List with components | Entity reference revisions | Multiple    | Yes      | No           | Paragraph      |
+| Field label       | Field name              | Description          | Field type                 | Cardinality | Required | Translatable | Widget         |
+|-------------------|-------------------------|----------------------|----------------------------|-------------|----------|--------------|----------------|
+| Layout            | field_columns_layout    | -                    | List (text)                | Single      | Yes      | No           | Chosen/Similar |
+| Number of columns | field_number_of_columns | -                    | List (text)                | Single      | Yes      | No           | Chosen/Similar |
+| Items             | field_paragraphs        | List with components | Entity reference revisions | Multiple    | Yes      | No           | Paragraph      |
+
+#### Content reference
+The Content reference paragraph allows editors to group multiple and display
+content reference in one, two or more columns.
+
+| Field label       | Field name              | Description | Field type                 | Cardinality | Required | Translatable | Widget         |
+|-------------------|-------------------------|-------------|----------------------------|-------------|----------|--------------|----------------|
+| Title             | field_title             | -           | Text                       | Single      | No       | Yes          | Text field     |
+| Number of columns | field_number_of_columns | -           | List (text)                | Single      | Yes      | No           | Chosen/Similar |
+| Related content   | field_entity            | -           | Entity reference revisions | Multiple    | Yes      | No           | Paragraph      |
 
 #### Quote
 The Quote paragraph allows editors to add a quotation.
@@ -65,4 +76,3 @@ The Quote paragraph allows editors to add a quotation.
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_base`
-3. (TODO: this part should be in edwt) Check for components `edw_paragraphs/templates/components` and template examples: `edw_paragraphs/templates`

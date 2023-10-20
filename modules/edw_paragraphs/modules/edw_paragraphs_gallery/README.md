@@ -15,7 +15,8 @@ This module provides a paragraph type that displays a gallery of media entities.
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_gallery`
-3. (TODO: this part should be in edwt) Check gallery component: `edw_paragraphs/templates/components/edw-gallery.twig` and the template example: `edw_paragraphs/templates/paragraph--edw-gallery.html.twig`
+3. Check gallery component: `edw_paragraphs_gallery/templates/components/edw-gallery.twig`
+and the template example: `edw_paragraphs_gallery/templates/paragraph--edw-gallery.html.twig`
 
 ### Dependencies
 * [lightgallery library](https://www.lightgalleryjs.com/) (>=2.7.x)

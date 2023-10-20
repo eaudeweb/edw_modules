@@ -17,4 +17,3 @@ Provides Banner paragraph that display a prominent message and related action.
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_banner`
-3. (TODO: this part should be in edwt) Check banner component: `edw_paragraphs/templates/components/edw-banner.twig` and the template example: `edw_paragraphs/templates/paragraph--edw-banner.html.twig`

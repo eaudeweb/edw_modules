@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.edw_accordion_item
+  module:
+    - entity_reference_revisions
+id: paragraph.edw_accordion_item.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: edw_accordion_item
+label: Content
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      edw_rich_text: edw_rich_text
+    negate: 0
+    target_bundles_drag_drop:
+      edw_rich_text:
+        weight: 16
+        enabled: true
+field_type: entity_reference_revisions

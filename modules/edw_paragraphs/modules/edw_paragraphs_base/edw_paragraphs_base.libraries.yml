@@ -1,0 +1,7 @@
+paragraph_columns:
+  js:
+    js/paragraph-columns.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once

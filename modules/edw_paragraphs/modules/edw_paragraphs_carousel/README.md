@@ -23,4 +23,3 @@ multiple slides.
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_carousel`
-3. (TODO: this part should be in edwt) Check carousel component: `edw_paragraphs/templates/components/edw-carousel.twig` and the template example: `edw_paragraphs/templates/paragraph--edw-carousel.html.twig`

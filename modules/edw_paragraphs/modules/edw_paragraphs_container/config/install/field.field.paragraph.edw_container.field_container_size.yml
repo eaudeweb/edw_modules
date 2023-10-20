@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_container_size
+    - paragraphs.paragraphs_type.edw_container
+  module:
+    - options
+id: paragraph.edw_container.field_container_size
+field_name: field_container_size
+entity_type: paragraph
+bundle: edw_container
+label: 'Container size'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

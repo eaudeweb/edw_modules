@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\entity_reference_revisions\Plugin\Field\FieldType\EntityReferenceRevisionsItem;
 
 /**
- * Adds the country label to address field value.
+ * Adds the entity reference revision label to embedded entities.
  */
 class EntityReferenceRevisionsItemNormalizer extends EntityReferenceFieldItemNormalizer {
 

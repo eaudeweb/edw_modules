@@ -20,8 +20,3 @@ left/right.
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_media`
-3. (TODO: this part should be in edwt) Check Text wit image components: 
-   * `edw_paragraphs/templates/components/edw-featured-item.twig` 
-   * `edw_paragraphs/templates/components/edw-featured-item-vertical.twig` 
-
-   and the template example: `edw_paragraphs/templates/paragraph--edw-text-with-media.html.twig`

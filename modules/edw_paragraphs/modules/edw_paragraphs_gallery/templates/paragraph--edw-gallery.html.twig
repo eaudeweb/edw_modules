@@ -1,0 +1,9 @@
+{% include '@edw_paragraphs_gallery/components/edw-gallery.twig' with {
+  items: items,
+  identifier: paragraph.id(),
+  variant: variant,
+  extra_attributes: [
+    { name: 'data-mode', value: variant },
+    { name: 'data-paragraph-id', value: paragraph.id() }
+  ]
+}%}

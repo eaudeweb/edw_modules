@@ -16,4 +16,3 @@ TODO
 
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs_heading`
-3. (TODO: this part should be in edwt) Check heading component: `edw_paragraphs/templates/components/edw-heading.twig` and the template example: `edw_paragraphs/templates/paragraph--edw-heading.html.twig`

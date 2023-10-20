@@ -1,0 +1,49 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.edw_container.field_background_color
+    - field.field.paragraph.edw_container.field_background_media
+    - field.field.paragraph.edw_container.field_container_size
+    - paragraphs.paragraphs_type.edw_container
+  module:
+    - entity_reference_revisions
+    - options
+id: paragraph.edw_container.default
+targetEntityType: paragraph
+bundle: edw_container
+mode: default
+content:
+  field_background_color:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_background_media:
+    type: entity_reference_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_container_size:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_paragraphs:
+    type: entity_reference_revisions_entity_view
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden: {  }

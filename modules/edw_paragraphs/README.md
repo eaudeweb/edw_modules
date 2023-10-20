@@ -43,8 +43,8 @@ its content. It includes optional fields like title, image, HTML text, metadata
 for headers/footer.
 - **HTML**: The Rich text paragraph adds an optional title field with body.
 - **Links block**: The Links block paragraph displays a list of links.
-- **Listing item blocks**: The Listing item block paragraph allows editors to group
-multiple components (e.g.: HTML, Card, Document) in one, two or more columns.
+- **Columns**: The Columns paragraph allows editors to group multiple
+components (e.g.: HTML, Card, Document) in one, two or more columns.
 - **Quote**: The Quote paragraph allows editors to add a quotation.
 
 ### Accordion

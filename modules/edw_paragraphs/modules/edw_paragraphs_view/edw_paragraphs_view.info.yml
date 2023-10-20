@@ -1,4 +1,4 @@
-name: EDW Paragraphs Block
+name: EDW Paragraphs View
 description: Provides a paragraph type that displays an embedded view.
 package: Eau de Web
 type: module

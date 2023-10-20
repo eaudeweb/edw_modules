@@ -1,0 +1,8 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_columns
+label: Columns
+icon_uuid: null
+description: 'Display multiple paragraphs organized in columns.'
+behavior_plugins: {  }

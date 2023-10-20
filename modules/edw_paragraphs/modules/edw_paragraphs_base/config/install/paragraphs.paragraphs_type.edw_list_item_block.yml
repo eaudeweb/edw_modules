@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: edw_list_item_block
-label: 'Listing item block'
-icon_uuid: null
-description: 'Display multiple list items organized in columns.'
-behavior_plugins: {  }

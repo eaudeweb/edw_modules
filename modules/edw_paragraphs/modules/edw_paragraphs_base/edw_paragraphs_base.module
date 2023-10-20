@@ -6,67 +6,10 @@
  */
 
 /**
- * Implements hook_preprocess_paragraph__edw_button().
+ * Implements hook_field_widget_single_element_WIDGET_TYPE_form_alter().
  */
-function edw_paragraphs_base_preprocess_paragraph__edw_button(&$variables) {
-  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
-  $paragraph = $variables['paragraph'];
-
-  if ($paragraph->hasField('field_button_variant')
-    && !$paragraph->get('field_button_variant')->isEmpty()) {
-    $variables['type'] = $paragraph->get('field_button_variant')->value;
+function edw_paragraphs_base_field_widget_single_element_paragraphs_form_alter(&$element, &$form_state, $context) {
+  if (!empty($element['#paragraph_type']) && $element['#paragraph_type'] == 'edw_columns') {
+    $element['#attached']['library'][] = 'edw_paragraphs_base/paragraph_columns';
   }
-  if (!$paragraph->get('field_link')->isEmpty()) {
-    /** @var \Drupal\link\Plugin\Field\FieldType\LinkItem $linkItem */
-    $linkItem = $paragraph->get('field_link')->first();
-    $variables['link'] = $linkItem->getUrl()->toString();
-    $variables['label'] = $linkItem->get('title')->getValue();
-  }
-}
-
-/**
- * Implements hook_preprocess_paragraph__edw_card().
- */
-function edw_paragraphs_base_preprocess_paragraph__edw_card(&$variables) {
-  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
-  $paragraph = $variables['paragraph'];
-
-  if ($paragraph->hasField('field_link')
-    && !$paragraph->get('field_link')->isEmpty()) {
-    /** @var \Drupal\link\Plugin\Field\FieldType\LinkItem $linkItem */
-    $linkItem = $paragraph->get('field_link')->first();
-    $variables['content']['field_edw_link'] = [
-      'uri' => $linkItem->getUrl()->toString(),
-      'external' => $linkItem->isExternal(),
-    ];
-    if (isset($paragraph->get('field_link')->title)
-      && !empty($paragraph->get('field_link')->title)) {
-      $variables['content']['field_edw_link']['title'] = $paragraph->get('field_link')->title;
-    }
-  }
-
-  // Build Meta tags section.
-  if ($paragraph->hasField('field_meta')
-    && !$paragraph->get('field_meta')->isEmpty()) {
-    $variables['content']['field_edw_meta'] = array_column($paragraph->get('field_meta')->getValue(), 'value');
-  }
-}
-
-/**
- * Implements hook_preprocess_paragraph__edw_list_item_block().
- */
-function edw_paragraphs_base_preprocess_paragraph__edw_list_item_block(&$variables) {
-  /** @var \Drupal\paragraphs\Entity\Paragraph $paragraph */
-  $paragraph = $variables['paragraph'];
-
-  $variables['items'] = [];
-  foreach ($variables['paragraph']->get('field_paragraphs') as $delta => $item) {
-    $variables['items'][] = $variables['content']['field_paragraphs'][$delta];
-  }
-
-  if (!$paragraph->hasField('field_column_layout')) {
-    return;
-  }
-
-  $variables['layout'] = (string) $paragraph->get('field_column_layout')->value;
 }

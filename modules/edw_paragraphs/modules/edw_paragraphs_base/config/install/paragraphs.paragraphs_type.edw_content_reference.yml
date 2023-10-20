@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_content_reference
+label: 'Content reference'
+icon_uuid: null
+icon_default: null
+description: 'Display content reference, organized in columns.'
+behavior_plugins: {  }

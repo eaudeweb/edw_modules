@@ -2,8 +2,8 @@ langcode: en
 status: true
 dependencies: {  }
 id: edw_block_item
-label: 'Block item'
+label: 'Custom content'
 icon_uuid: null
 icon_default: null
-description: 'Simple block to add an existing block to a component.'
+description: 'Simple block used to add custom content.'
 behavior_plugins: {  }

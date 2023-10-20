@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.edw_columns.field_columns_layout
+    - paragraphs.paragraphs_type.edw_columns
+  module:
+    - entity_reference_revisions
+    - link
+    - options
+id: paragraph.edw_columns.default
+targetEntityType: paragraph
+bundle: edw_columns
+mode: default
+content:
+  field_paragraphs:
+    weight: 2
+    label: above
+    settings:
+      view_mode: default
+      link: ''
+    third_party_settings: {  }
+    type: entity_reference_revisions_entity_view
+    region: content
+hidden:
+  field_columns_layout: true
+  field_number_of_columns: true
