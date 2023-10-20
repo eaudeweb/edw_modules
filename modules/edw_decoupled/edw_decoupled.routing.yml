@@ -1,0 +1,19 @@
+api.user.info:
+  path: '/api/v1/userinfo'
+  defaults:
+    _controller: \Drupal\edw_decoupled\Controller\UserApiController::userInfo
+  methods: [GET]
+  requirements:
+    _user_is_logged_in: 'TRUE'
+    _format: 'json'
+
+api.entity_access:
+  path: '/api/v1/entity_access/{entityType}/{entityId}'
+  defaults:
+    _controller: \Drupal\edw_decoupled\Controller\EntityApiController::getEntityAccess
+  methods: [GET]
+  requirements:
+    # This endpoint returns the current user access rights for the
+    # provided entity so it needs to be available to all users.
+    _access: 'TRUE'
+    _format: 'json'

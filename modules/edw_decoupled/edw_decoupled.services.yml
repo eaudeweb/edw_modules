@@ -1,0 +1,29 @@
+services:
+  edw_decoupled.route_subscriber:
+    class: Drupal\edw_decoupled\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+
+  edw_decoupled.serializer.normalizer.entity_reference_field_item:
+    class: Drupal\edw_decoupled\Normalizer\EntityReferenceFieldItemNormalizer
+    tags:
+      - { name: normalizer, priority: 9 }
+    arguments: [ '@entity.repository' ]
+
+  edw_decoupled.serializer.normalizer.entity_reference_revisions_field_item:
+    class: Drupal\edw_decoupled\Normalizer\EntityReferenceRevisionsItemNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+    arguments: [ '@entity.repository', '@entity_type.manager' ]
+
+  edw_decoupled.serializer.normalizer.address_field_item:
+    class: Drupal\edw_decoupled\Normalizer\AddressFieldItemNormalizer
+    tags:
+      - { name: normalizer, priority: 9 }
+    arguments: [ '@address.country_repository' ]
+
+  edw_decoupled.serializer.normalizer.file_item:
+    class: Drupal\edw_decoupled\Normalizer\FileItemNormalizer
+    tags:
+      - { name: normalizer, priority: 10 }
+    arguments: [ '@entity.repository' ]
