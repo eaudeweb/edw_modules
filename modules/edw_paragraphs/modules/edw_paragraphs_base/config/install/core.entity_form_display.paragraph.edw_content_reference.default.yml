@@ -8,7 +8,7 @@ targetEntityType: paragraph
 bundle: edw_content_reference
 mode: default
 content:
-  field_entity:
+  field_entities:
     type: entity_reference_autocomplete
     weight: 2
     region: content

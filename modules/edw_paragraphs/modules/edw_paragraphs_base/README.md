@@ -62,7 +62,7 @@ content reference in one, two or more columns.
 |-------------------|-------------------------|-------------|----------------------------|-------------|----------|--------------|----------------|
 | Title             | field_title             | -           | Text                       | Single      | No       | Yes          | Text field     |
 | Number of columns | field_number_of_columns | -           | List (text)                | Single      | Yes      | No           | Chosen/Similar |
-| Related content   | field_entity            | -           | Entity reference revisions | Multiple    | Yes      | No           | Paragraph      |
+| Related content   | field_entities          | -           | Entity reference revisions | Multiple    | Yes      | No           | Paragraph      |
 
 #### Quote
 The Quote paragraph allows editors to add a quotation.

@@ -2,10 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_entity
+    - field.storage.paragraph.field_entities
     - paragraphs.paragraphs_type.edw_content_reference
-id: paragraph.edw_content_reference.field_entity
-field_name: field_entity
+id: paragraph.edw_content_reference.field_entities
+field_name: field_entities
 entity_type: paragraph
 bundle: edw_content_reference
 label: 'Related content'

@@ -4,8 +4,8 @@ dependencies:
   module:
     - node
     - paragraphs
-id: paragraph.field_entity
-field_name: field_entity
+id: paragraph.field_entities
+field_name: field_entities
 entity_type: paragraph
 type: entity_reference
 settings:
