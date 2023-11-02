@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.edw_banner.field_banner_alignment
+    - field.field.paragraph.edw_banner.field_variations
     - paragraphs.paragraphs_type.edw_banner
   module:
     - link
@@ -12,16 +12,6 @@ targetEntityType: paragraph
 bundle: edw_banner
 mode: default
 content:
-  field_full_width:
-    weight: 5
-    label: hidden
-    settings:
-      format: default
-      format_custom_false: ''
-      format_custom_true: ''
-    third_party_settings: {  }
-    type: boolean
-    region: content
   field_link:
     weight: 2
     label: hidden
@@ -59,5 +49,11 @@ content:
     third_party_settings: {  }
     type: string
     region: content
-hidden:
-  field_banner_alignment: true
+  field_variations:
+    type: list_default
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+hidden: {  }

@@ -4,18 +4,15 @@ dependencies:
   module:
     - options
     - paragraphs
-id: paragraph.field_banner_alignment
-field_name: field_banner_alignment
+id: paragraph.field_variations
+field_name: field_variations
 entity_type: paragraph
 type: list_string
 settings:
   allowed_values:
     -
-      value: left
-      label: Left
-    -
-      value: centered
-      label: Centered
+      value: variation1
+      label: 'Variation 1'
   allowed_values_function: ''
 module: options
 locked: false
