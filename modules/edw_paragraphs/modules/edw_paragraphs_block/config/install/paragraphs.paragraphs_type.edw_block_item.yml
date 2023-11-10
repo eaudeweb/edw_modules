@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies: {  }
 id: edw_block_item
-label: 'Custom content'
+label: 'Block reference'
 icon_uuid: null
 icon_default: null
 description: 'Simple block used to add custom content.'
