@@ -25,8 +25,6 @@ The module provides the following paragraph types:
 
 ## Installation
 
-Go to Manage form display and change widget for field `field_content` to **Paragraphs with widgets** (extends FieldWidget _Paragraphs (stable)_).
-
 1. Install the `edw_modules` suite using composer as instructed in the main module documentation
 2. Enable the module using drush: `drush en edw_paragraphs`
 
