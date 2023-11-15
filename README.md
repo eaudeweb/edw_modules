@@ -8,7 +8,7 @@ Add
 ```
 {
     "type": "git",
-    "url": "git@github.com:eaudeweb/edw_modules.git"
+    "url": "https://github.com/eaudeweb/edw_modules.git"
 }
 ```
 
