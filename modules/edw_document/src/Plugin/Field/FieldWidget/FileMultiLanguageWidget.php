@@ -28,6 +28,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class FileMultiLanguageWidget extends FileWidget {
 
   /**
+   * True if single field value is required, false otherwise.
+   *
+   * @var bool
+   */
+  protected $singleFieldIsRequired;
+
+  /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
@@ -115,6 +122,8 @@ class FileMultiLanguageWidget extends FileWidget {
         '#tree' => TRUE,
         '#id' => Html::cleanCssIdentifier("edit_{$fieldName}_{$language->getId()}"),
       ];
+
+      $this->singleFieldIsRequired = $this->fieldDefinition->isRequired() && $language->isDefault();
 
       if ($entity->hasTranslation($language->getId())) {
         $translatedField = $entity->getTranslation($language->getId())->get($fieldName);
@@ -281,6 +290,17 @@ class FileMultiLanguageWidget extends FileWidget {
       $items->removeItem(0);
     }
     return $items;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function formSingleElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $element = parent::formSingleElement($items, $delta, $element, $form, $form_state);
+
+    $element['#required'] = $delta == 0 && $this->singleFieldIsRequired;
+
+    return $element;
   }
 
 }
