@@ -1,0 +1,213 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.event.body
+    - field.field.node.event.field_event_abbr
+    - field.field.node.event.field_event_city
+    - field.field.node.event.field_event_presence
+    - field.field.node.event.field_event_venue
+    - node.type.event
+  module:
+    - datetime_range
+    - field_group
+    - path
+    - text
+third_party_settings:
+  field_group:
+    group_tabs:
+      children:
+        - group_metadata
+        - group_venue
+      label: Tabs
+      region: content
+      parent_name: ''
+      weight: 1
+      format_type: tabs
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        direction: horizontal
+        width_breakpoint: 640
+    group_metadata:
+      children:
+        - field_number
+        - field_event_abbr
+        - field_event_presence
+        - field_date_range
+        - field_hide_date
+        - field_date_notes
+      label: Metadata
+      region: content
+      parent_name: group_tabs
+      weight: 20
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: open
+        description: ''
+        required_fields: true
+    group_publishing_options:
+      children:
+        - status
+        - promote
+        - sticky
+      label: 'Publishing options'
+      region: content
+      parent_name: ''
+      weight: 6
+      format_type: details_sidebar
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        open: true
+        description: ''
+        required_fields: true
+        weight: -50
+    group_venue:
+      children:
+        - field_event_venue
+        - field_event_city
+        - field_countries
+      label: Venue
+      region: content
+      parent_name: group_tabs
+      weight: 21
+      format_type: tab
+      format_settings:
+        classes: ''
+        show_empty_fields: false
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+id: node.event.default
+targetEntityType: node
+bundle: event
+mode: default
+content:
+  field_countries:
+    type: select2_entity_reference
+    weight: 10
+    region: content
+    settings:
+      width: 50%
+      autocomplete: false
+      match_operator: CONTAINS
+      match_limit: 10
+    third_party_settings: { }
+  field_date_notes:
+    type: string_textfield
+    weight: 6
+    region: content
+    settings:
+      size: 125
+      placeholder: ''
+    third_party_settings: {  }
+  field_date_range:
+    type: daterange_default
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_event_abbr:
+    type: string_textfield
+    weight: 2
+    region: content
+    settings:
+      size: 20
+      placeholder: ''
+    third_party_settings: {  }
+  field_event_city:
+    type: string_textfield
+    weight: 9
+    region: content
+    settings:
+      size: 128
+      placeholder: ''
+    third_party_settings: {  }
+  field_event_presence:
+    type: options_select
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_event_venue:
+    type: text_textarea
+    weight: 8
+    region: content
+    settings:
+      rows: 1
+      placeholder: ''
+    third_party_settings:
+      allowed_formats:
+        hide_help: '1'
+        hide_guidelines: '1'
+  field_hide_date:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_number:
+    type: number
+    weight: 1
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 6
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 7
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  translation:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  url_redirects:
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  body: true
+  created: true
+  langcode: true
+  uid: true

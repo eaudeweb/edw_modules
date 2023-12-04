@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.event_section
+id: node.event_section
+targetEntityType: node
+bundle: event_section
+action: page_redirect
+no_bypass: false
+bypass_message: false
+configuration:
+  redirect: '/node/[node:field_event:target_id]'
+  redirect_code: 301
+  redirect_fallback_action: access_denied
