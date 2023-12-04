@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: meeting
+label: Meeting
+type: 'canonical_entities:node'
+pattern: '/meetings/[node:title]'
+selection_criteria:
+  e538c1a6-d1dc-4cf9-8cdc-93c28e6c8106:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: e538c1a6-d1dc-4cf9-8cdc-93c28e6c8106
+    context_mapping:
+      node: node
+    bundles:
+      event: event
+selection_logic: and
+weight: -6
+relationships: {  }

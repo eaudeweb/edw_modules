@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: meeting_section
+label: 'Meeting section'
+type: 'canonical_entities:node'
+pattern: '/meetings/[node:field_event:entity:title]/[node:title]'
+selection_criteria:
+  7bf95490-70ec-41ea-91d9-38bf212a3e9e:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: 7bf95490-70ec-41ea-91d9-38bf212a3e9e
+    context_mapping:
+      node: node
+    bundles:
+      event_section: event_section
+selection_logic: and
+weight: -5
+relationships: {  }
