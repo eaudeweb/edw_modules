@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_number
+    - node.type.event
+id: node.event.field_number
+field_name: field_number
+entity_type: node
+bundle: event
+label: Number
+description: 'ExCom meeting number (91, 92, 93 etc.)'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer
