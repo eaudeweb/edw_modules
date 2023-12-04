@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_daily_schedule
+label: 'Daily schedule day'
+icon_uuid: null
+icon_default: null
+description: 'A daily schedule can be used to break down multi-day events into activities taking place daily at a certain time. Content managers can assign room numbers where activities take place.'
+behavior_plugins: {  }

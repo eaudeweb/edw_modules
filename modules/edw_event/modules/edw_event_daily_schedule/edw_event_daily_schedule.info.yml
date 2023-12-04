@@ -1,0 +1,8 @@
+name: EDW Event Daily schedule
+description: Daily schedule can be used to break down multi-day events in activities taking place daily on a certain time.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.2 || ^10
+dependencies:
+  - drupal:time_field
+  - edw_event:edw_event

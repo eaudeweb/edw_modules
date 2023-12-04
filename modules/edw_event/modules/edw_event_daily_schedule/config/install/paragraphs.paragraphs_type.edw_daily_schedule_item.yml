@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies: {  }
+id: edw_daily_schedule_item
+label: 'Daily schedule item'
+icon_uuid: null
+icon_default: null
+description: 'Single schedule item, to be used exclusively in conjunction with the "Daily schedule" paragraph type.'
+behavior_plugins: {  }

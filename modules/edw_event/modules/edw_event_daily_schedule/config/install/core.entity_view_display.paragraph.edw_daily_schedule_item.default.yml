@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.edw_daily_schedule_item
+  module:
+    - time_field
+id: paragraph.edw_daily_schedule_item.default
+targetEntityType: paragraph
+bundle: edw_daily_schedule_item
+mode: default
+content:
+  field_room:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_time:
+    type: time_range_formatter
+    label: hidden
+    settings:
+      time_format: 'H:i'
+      timerange_format: 'start - end'
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  search_api_excerpt: true

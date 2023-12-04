@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_time
+    - paragraphs.paragraphs_type.edw_daily_schedule_item
+  module:
+    - time_field
+id: paragraph.edw_daily_schedule_item.field_time
+field_name: field_time
+entity_type: paragraph
+bundle: edw_daily_schedule_item
+label: Time
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: time_range
