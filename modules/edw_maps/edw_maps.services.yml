@@ -1,0 +1,4 @@
+services:
+  edw_maps.utils:
+    class: Drupal\edw_maps\Services\EdwMapsDataService
+    arguments: [ '@entity_type.manager', '@renderer', '@module_handler' ]

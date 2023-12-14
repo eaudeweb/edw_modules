@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * @file
+ * EDW Maps module hooks.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function edw_maps_theme($existing, $type, $theme, $path) {
+  return [
+    'views_view_mapbox_map' => [],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_hook().
+ */
+function edw_maps_preprocess_views_view_mapbox_map(&$variables) {
+  if (!isset($variables['view'])) {
+    return;
+  }
+  /** @var Drupal\views\ViewExecutable $view */
+  $view = $variables['view'];
+  $options = $view->style_plugin->options;
+
+  /** @var Drupal\edw_maps\Services\EdwMapsDataService $edwDataService */
+  $edwDataService = \Drupal::service('edw_maps.utils');
+
+  $id = 'map-container-' . $view->id() . '-' . $view->current_display;
+  $config = \Drupal::config('edw_maps.settings');
+  $renderPins = (boolean) $options['rendering_options']['render_items']['pin'];
+  $renderCountries = (boolean) $options['rendering_options']['render_items']['country'];
+  $renderAreas = (boolean) $options['rendering_options']['render_items']['area'];
+  $pinsSourceField = $options['rendering_options']['pins_source'];
+  $countrySourceField = $options['rendering_options']['country_source'];
+  $areaSourceField = $options['rendering_options']['area_source'];
+  $popupPinSourceField = $options['popup_options']['pin_popup_source'];
+  $popupCountrySourceField = $options['popup_options']['country_popup_source'];
+  $popupAreaSourceField = $options['popup_options']['area_popup_source'];
+
+  $pinData = [];
+  $countryData = [];
+  $areaData = [];
+
+  if ($renderPins) {
+    $pinData = $edwDataService->getPinData($view, $pinsSourceField, $popupPinSourceField);
+  }
+  if ($renderCountries) {
+    $countryData = $edwDataService->getCountryData($view, $countrySourceField, $popupCountrySourceField);
+  }
+  if ($renderAreas) {
+    $areaData = $edwDataService->getAreaData($view, $areaSourceField, $popupAreaSourceField);
+  }
+
+  $variables['mapContainerId'] = $id;
+  $variables['#attached']['library'] = 'edw_maps/edw_map';
+  $variables['#attached']['drupalSettings']['edw_map'] = [
+    'containerId' => $id,
+    'mapboxToken' => $config->get('token'),
+    'mapType' => $options['tile_options']['map_type'],
+    'mapboxStyleUrl' => empty($options['tile_options']['style_url']) ? $config->get('default_style_url') : $options['tile_options']['style_url'],
+    'projection' => $options['display_options']['projection'],
+    'center' => [
+      (float) $options['display_options']['center']['long'],
+      (float) $options['display_options']['center']['lat'],
+    ],
+    'pitch' => (float) $options['display_options']['pitch'],
+    'zoom' => (float) $options['display_options']['zoom'],
+    'disableScrollZoom' => (boolean) $options['display_options']['disable_scroll_zoom'],
+    'worldCopies' => (boolean) $options['display_options']['world_copies'],
+    'renderClusters' => (boolean) $options['display_options']['clusters'],
+    'renderPins' => $renderPins,
+    'renderCountries' => $renderCountries,
+    'renderAreas' => $renderAreas,
+    'countryColor' => $options['rendering_options']['country_color'],
+    'areaColor' => $options['rendering_options']['area_color'],
+    'pinData' => $pinData,
+    'countryData' => $countryData,
+    'areaData' => $areaData,
+    'clearMapSource' => $edwDataService->getClearMapSource(),
+  ];
+
+}
+
+/**
+ * Implements hook_edw_maps_pin_tooltip_data_alter().
+ */
+function edw_maps_edw_maps_pin_tooltip_data_alter(array &$variables) {
+}
+
+/**
+ * Implements hook_edw_maps_country_tooltip_data_alter().
+ */
+function edw_maps_edw_maps_country_tooltip_data_alter(array &$variables) {
+}
+
+/**
+ * Implements hook__edw_maps_area_tooltip_data_alter().
+ */
+function edw_maps_edw_maps_area_tooltip_data_alter(array &$variables) {
+}

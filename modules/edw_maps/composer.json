@@ -1,0 +1,18 @@
+{
+    "name": "drupal/edw_maps",
+    "description": "This module provides Mapbox integration with views for custom and UN tiles",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Paula Iuga",
+            "email": "paula.iuga@eaudeweb.ro"
+        }
+    ],
+    "require": {
+        "php": "^8",
+        "drupal/core": "^9 || ^10",
+        "ext-zip": "*",
+        "itamair/geophp": "^1.5"
+    }
+}
