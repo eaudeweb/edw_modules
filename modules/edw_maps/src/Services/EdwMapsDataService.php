@@ -142,7 +142,10 @@ class EdwMapsDataService {
    */
   public function getAreaData(ViewExecutable $view, string $dataSource, string $popupSource) {
     $rows = $view->result;
-    $data = [];
+    $data = [
+      'type' => 'FeatureCollection',
+      'features' => [],
+    ];
     foreach ($rows as $row) {
       $entity = $this->getEntity($row, $dataSource);
       $popupInfo = NULL;
@@ -172,7 +175,6 @@ class EdwMapsDataService {
           ],
         ];
 
-        $data['type'] = 'FeatureCollection';
         $data['features'][] = $geoJsonFeature;
       } catch (\exception $e) {
         continue;

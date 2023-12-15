@@ -6,6 +6,7 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\edw_maps\EdwMapsElementsTrait;
+use Drupal\views\Annotation\ViewsStyle;
 use Drupal\views\Plugin\views\style\StylePluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,7 +19,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "mapbox_map",
  *   title = @Translation("EDW Mapbox Map"),
  *   help = @Translation("Renders view results on mapbox map as pins or
- *   polygons"), theme = "views_view_mapbox_map", display_types = { "normal" }
+ *   polygons"),
+ *   theme = "views_view_mapbox_map",
+ *   display_types = { "normal" }
  * )
  */
 class MapboxMapStyle extends StylePluginBase {
@@ -77,6 +80,14 @@ class MapboxMapStyle extends StylePluginBase {
       $container->get('config.factory'),
       $container->get('entity_field.manager')
     );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function evenEmpty() {
+    // Render map even if there is no data.
+    return TRUE;
   }
 
   /**
