@@ -14,7 +14,7 @@ edw_map:
     theme:
       css/edw_mapbox.css: { }
   js:
-    js/edw_mapbox.js: { }
+    js/edw_mapbox.js: { preprocess: false }
   dependencies:
     - core/jquery
     - core/drupal

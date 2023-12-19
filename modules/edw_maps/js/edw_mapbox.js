@@ -31,11 +31,12 @@
                             sourceLayer = 'bnda';
                         }
 
-
                         // Render map only once.
                         if (!$(`#${containerId}:empty`).length) {
                             return;
                         }
+
+                        exposedForm();
 
                         // Set access token.
                         mapboxgl.accessToken = drupalSettings.edw_map['mapboxToken'];
@@ -76,6 +77,30 @@
 
                             map.getCanvas().style.cursor = 'default';
                         });
+
+                        // Adds close button on exposed form.
+                        function exposedForm() {
+                            const form = $('.exposed-mapbox-filters');
+                            const filtersBtn = $('#toggleFiltersForm');
+                            if (form.length === 0) {
+                                return;
+                            }
+                            const closeButton = $('<button>', {
+                                class: 'close-button',
+                                text: 'X',
+                                click: function (ev) {
+                                    ev.preventDefault();
+                                    filtersBtn.toggleClass('button-visible');
+                                    form.toggleClass('form-visible');
+                                }
+                            });
+                            form.prepend(closeButton);
+
+                            filtersBtn.on('click', function () {
+                                $(this).toggleClass('button-visible');
+                                form.toggleClass('form-visible');
+                            });
+                        }
 
                         // Adds source layers for country boundaries/areas.
                         function addBoundariesSources() {
@@ -291,6 +316,10 @@
 
                         // Draws clusters.
                         function drawClusters() {
+                            if (pinData.length === 0) {
+                                return;
+                            }
+
                             const supercluster = new Supercluster({
                                 maxZoom: mapType === 'clear_map' ? 4 : 16,
                             });

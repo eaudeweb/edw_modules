@@ -78,14 +78,9 @@ class EdwMapsDataService {
       }
       // Mapbox uses lng - lat format.
       $pinCoordinates = [$coordinates['lon'], $coordinates['lat']];
-      $popupInfo = NULL;
-      if (!empty($popupSource)) {
-        $popupInfo = $view->field[$popupSource]->AdvancedRender($row)
-          ->__toString();
-      }
       $data[] = [
         'coordinates' => $pinCoordinates,
-        'popup' => $popupInfo,
+        'popup' => $this->getPopupContent($view, $row, $popupSource, 'pin'),
       ];
     }
 
@@ -111,14 +106,9 @@ class EdwMapsDataService {
     $data = [];
     foreach ($rows as $row) {
       $entity = $this->getEntity($row, $dataSource);
-      $popupInfo = NULL;
-      if (!empty($popupSource)) {
-        $popupInfo = $view->field[$popupSource]->AdvancedRender($row)
-          ->__toString();
-      }
       $data[] = [
         'iso3' => $entity->get($dataSource)->value,
-        'popup' => $popupInfo,
+        'popup' => $this->getPopupContent($view, $row, $popupSource, 'country'),
       ];
     }
 
@@ -148,12 +138,6 @@ class EdwMapsDataService {
     ];
     foreach ($rows as $row) {
       $entity = $this->getEntity($row, $dataSource);
-      $popupInfo = NULL;
-      if (!empty($popupSource)) {
-        $popupInfo = $view->field[$popupSource]->AdvancedRender($row)
-          ->__toString();
-      }
-
       $coordinates = $entity->get($dataSource)->getValue();
       $coordinates = reset($coordinates);
       if (empty($coordinates) || $coordinates['geo_type'] !== 'Polygon') {
@@ -171,12 +155,12 @@ class EdwMapsDataService {
           'geometry' => $geoJsonGeometry,
           'properties' => [
             'id' => $entity->id(),
-            'popup' => $popupInfo,
+            'popup' => $this->getPopupContent($view, $row, $popupSource, 'area'),
           ],
         ];
 
         $data['features'][] = $geoJsonFeature;
-      } catch (\exception $e) {
+      } catch (\exception) {
         continue;
       }
     }
@@ -205,6 +189,34 @@ class EdwMapsDataService {
     }
     return Url::fromUserInput("/$path/country_polygon.geojson", ['absolute' => TRUE])
       ->toString();
+  }
+
+  /**
+   * Renders popup content after calling altering hooks.
+   *
+   * @param \Drupal\views\ViewExecutable $view
+   *     The view.
+   * @param \Drupal\views\ResultRow $row
+   *     The current row.
+   * @param string $popupSource
+   *     The field id of the popup source.
+   * @param string $renderItem
+   *     The name of the render item. One of pin, area or country,
+   *
+   * @return callable|\Drupal\Component\Render\MarkupInterface|mixed|void|null
+   *     The rendered item or null.
+   */
+  private function getPopupContent(ViewExecutable $view, ResultRow $row, string $popupSource, string $renderItem) {
+    if (empty($popupSource)) {
+      return NULL;
+    }
+    $renderValue = $view->field[$popupSource]->render($row);
+    if (!is_array($renderValue)) {
+      return $view->field[$popupSource]->advancedRender($row);
+    }
+
+    $this->moduleHandler->invokeAll('edw_maps_' . $renderItem . '_tooltip_data_alter', [&$renderValue]);
+    return $this->renderer->renderPlain($renderValue);
   }
 
   /**

@@ -1,25 +1,8 @@
-<div {{ attributes }}>
-  {{ title_prefix }}
-  {{ title }}
-  {{ title_suffix }}
+{% if exposedFilters %}
+    <!-- Button to toggle the form -->
+    <button id="toggleFiltersForm" class="button-visible" title="Toggle filters"><img
+                src="/modules/contrib/edw_modules/modules/edw_maps/assets/icons/filter-solid.svg" alt="Toggle filters"></button>
+{% endif %}
 
-  {% if header %}
-    <header>
-      {{ header }}
-    </header>
-  {% endif %}
-
-  {{ exposed }}
-  {{ attachment_before }}
-
-  <!---- Map container ---->
-  <div id="{{ mapContainerId }}" class="map-container"></div>
-
-  {% if footer %}
-    <footer>
-      {{ footer }}
-    </footer>
-  {% endif %}
-
-  {{ feed_icons }}
-</div>
+<!---- Map container ---->
+<div id="{{ mapContainerId }}" class="map-container"></div>

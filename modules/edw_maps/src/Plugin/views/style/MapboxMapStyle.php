@@ -4,10 +4,14 @@ namespace Drupal\edw_maps\Plugin\views\style;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
+use Drupal\Core\Form\FormBuilder;
+use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\edw_maps\EdwMapsElementsTrait;
+use Drupal\edw_maps\Services\EdwMapsDataService;
 use Drupal\views\Annotation\ViewsStyle;
 use Drupal\views\Plugin\views\style\StylePluginBase;
+use Drupal\views\ViewExecutable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -55,6 +59,21 @@ class MapboxMapStyle extends StylePluginBase {
   private EntityFieldManagerInterface $fieldTypeManager;
 
   /**
+   * The form builder service.
+   *
+   * @var \Drupal\Core\Form\FormBuilder
+   */
+  private FormBuilder $formBuilder;
+
+  /**
+   * The EDW Maps data service.
+   *
+   * @var \Drupal\edw_maps\Services\EdwMapsDataService
+   */
+  private EdwMapsDataService $edwMapsDataService;
+
+
+  /**
    * Plugin constructor.
    */
   public function __construct(
@@ -62,11 +81,15 @@ class MapboxMapStyle extends StylePluginBase {
                                 $plugin_id,
                                 $plugin_definition,
     ConfigFactory               $configFactory,
-    EntityFieldManagerInterface $fieldTypeManager
+    EntityFieldManagerInterface $fieldTypeManager,
+    FormBuilder                 $formBuilder,
+    EdwMapsDataService          $edwMapsDataService
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $configFactory;
     $this->fieldTypeManager = $fieldTypeManager;
+    $this->formBuilder = $formBuilder;
+    $this->edwMapsDataService = $edwMapsDataService;
   }
 
   /**
@@ -78,7 +101,9 @@ class MapboxMapStyle extends StylePluginBase {
       $plugin_id,
       $plugin_definition,
       $container->get('config.factory'),
-      $container->get('entity_field.manager')
+      $container->get('entity_field.manager'),
+      $container->get('form_builder'),
+      $container->get('edw_maps.utils'),
     );
   }
 
@@ -139,6 +164,87 @@ class MapboxMapStyle extends StylePluginBase {
     $this->setRenderingOptions($form, $geofieldSources, $iso3FieldSources);
     $this->setPopupOptions($form, $allFields);
     $this->setDisplayOptions($form);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function render() {
+    $variables = parent::render();
+    if (!isset($variables[0]['#view'])) {
+      return [];
+    }
+    /** @var \Drupal\views\ViewExecutable $view */
+    $view = $variables[0]['#view'];
+    $options = $view->style_plugin->options;
+    $containerId = 'map-container-' . $view->id() . '-' . $view->current_display;
+    $config = $this->configFactory->get('edw_maps.settings');
+    $renderPins = (boolean) $options['rendering_options']['render_items']['pin'];
+    $renderCountries = (boolean) $options['rendering_options']['render_items']['country'];
+    $renderAreas = (boolean) $options['rendering_options']['render_items']['area'];
+    $pinsSourceField = $options['rendering_options']['pins_source'];
+    $countrySourceField = $options['rendering_options']['country_source'];
+    $areaSourceField = $options['rendering_options']['area_source'];
+    $popupPinSource = $options['popup_options']['pin_popup_source'];
+    $popupCountrySource = $options['popup_options']['country_popup_source'];
+    $popupAreaSourceField = $options['popup_options']['area_popup_source'];
+
+    $pinData = [];
+    $countryData = [];
+    $areaData = [];
+
+    if ($renderPins) {
+      $pinData = $this->edwMapsDataService->getPinData($view, $pinsSourceField, $popupPinSource);
+    }
+    if ($renderCountries) {
+      $countryData = $this->edwMapsDataService->getCountryData($view, $countrySourceField, $popupCountrySource);
+    }
+    if ($renderAreas) {
+      $areaData = $this->edwMapsDataService->getAreaData($view, $areaSourceField, $popupAreaSourceField);
+    }
+    $count = count($pinData);
+    \Drupal::logger('edw_maps')->info("pins count: $count");
+
+    $settings = [
+      'containerId' => $containerId,
+      'mapboxToken' => $config->get('token'),
+      'mapType' => $options['tile_options']['map_type'],
+      'mapboxStyleUrl' => empty($options['tile_options']['style_url']) ? $config->get('default_style_url') : $options['tile_options']['style_url'],
+      'projection' => $options['display_options']['projection'],
+      'center' => [
+        (float) $options['display_options']['center']['long'],
+        (float) $options['display_options']['center']['lat'],
+      ],
+      'pitch' => (float) $options['display_options']['pitch'],
+      'zoom' => (float) $options['display_options']['zoom'],
+      'disableScrollZoom' => (boolean) $options['display_options']['disable_scroll_zoom'],
+      'worldCopies' => (boolean) $options['display_options']['world_copies'],
+      'renderClusters' => (boolean) $options['display_options']['clusters'],
+      'renderPins' => $renderPins,
+      'renderCountries' => $renderCountries,
+      'renderAreas' => $renderAreas,
+      'countryColor' => $options['rendering_options']['country_color'],
+      'areaColor' => $options['rendering_options']['area_color'],
+      'pinData' => $pinData,
+      'countryData' => $countryData,
+      'areaData' => $areaData,
+      'clearMapSource' => $this->edwMapsDataService->getClearMapSource(),
+    ];
+
+    return [
+      '#theme' => 'views_view_mapbox_map',
+      '#mapContainerId' => $containerId,
+      '#exposedFilters' => !empty($view->exposed_data),
+      '#attached' => [
+        'library' => ['edw_maps/edw_map'],
+        'drupalSettings' => [
+          'edw_map' => $settings,
+        ],
+      ],
+      '#cache' => [
+        'tags' => ['config:edw_maps.settings'],
+      ],
+    ];
   }
 
 

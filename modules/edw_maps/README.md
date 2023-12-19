@@ -25,18 +25,19 @@ This module provides a range of features to enhance your website with interactiv
 1. To style markers use ``.edw-marker`` class in your css. You can choose a different icon or oen from the ``assets/icons`` folder:
 ```css
 .edw-marker {
-  background-image: url('mapbox-icon.png');
-  background-size: cover;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
+    background-image: url('mapbox-icon.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
 }
 ```
 2. To style clusters use ``.edw-cluster-marker`` class in your css.
 
 ## Altering tooltip data
-You can display a rendered entity in a tooltip or any other field. You can alter the contents of those fields with  ``hook_preprocess_HOOK()`` or using ``edw_maps`` hooks:
+You can display a rendered entity in a tooltip or any other field.
+You can alter the contents of the _rendered entity_ using ``edw_maps`` hooks:
 * to alter pin popup data: ``hook_edw_maps_pin_tooltip_data_alter()``
 * to alter country popup data: ``hook_edw_maps_country_tooltip_data_alter()``
 * to alter area popup data: ``hook_edw_maps_area_tooltip_data_alter()``
@@ -63,19 +64,19 @@ For areas - polygon:
   {
   "type": "Feature",
   "geometry": {
-  "type": "Polygon",
-  "coordinates": [
-  [
-  [73.4, 42.1],
-  [79.0, 42.1],
-  [79.0, 35.8],
-  [73.4, 35.8],
-  [73.4, 42.1]
-  ]
-  ]
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [73.4, 42.1],
+        [79.0, 42.1],
+        [79.0, 35.8],
+        [73.4, 35.8],
+        [73.4, 42.1]
+      ]
+    ]
   },
   "properties": {}
-  }
+}
 ```
 
 
