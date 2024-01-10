@@ -87,7 +87,7 @@
                             }
                             const closeButton = $('<button>', {
                                 class: 'close-button',
-                                text: 'X',
+                                html: '&times;',
                                 click: function (ev) {
                                     ev.preventDefault();
                                     filtersBtn.toggleClass('button-visible');

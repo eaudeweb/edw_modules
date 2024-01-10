@@ -134,7 +134,7 @@ class MapboxMapStyle extends StylePluginBase {
 
     if ($mapType == 'carto_tile' && ($values['rendering_options']['render_items']['pin']
         || $values['rendering_options']['render_items']['area'])) {
-      $formState->setErrorByName('style_options][render_items', $this->t('Carto tile supports only country highlight.'));
+      $formState->setErrorByName('style_options][rendering_options][render_items', $this->t('Carto tile supports only country highlight.'));
     }
   }
 

@@ -30,8 +30,8 @@ class EdwMapsSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $formState = NULL) {
     $form = parent::buildForm($form, $formState);
 
-    $config = $this->config('edw_maps.settings');
-    $form['origin'] = [
+    $config = $this->configFactory->getEditable('edw_maps.settings');
+    $form['token'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Mapbox Token'),
       '#default_value' => $config->get('token'),
@@ -70,7 +70,7 @@ class EdwMapsSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $formState) {
-    $config = $this->config('edw_maps.settings');
+    $config = $this->configFactory->getEditable('edw_maps.settings');
     $values = $formState->getValues();
     $config->set('token', $values['token']);
     $config->set('default_style_url', $values['default_style_url']);
