@@ -1,0 +1,3 @@
+vendor
+# GeoJson file is too big for GitHub.
+/assets/country_boundaries/country_polygon.geojson

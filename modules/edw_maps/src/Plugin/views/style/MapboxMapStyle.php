@@ -5,13 +5,10 @@ namespace Drupal\edw_maps\Plugin\views\style;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Form\FormBuilder;
-use Drupal\Core\Form\FormState;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\edw_maps\EdwMapsElementsTrait;
 use Drupal\edw_maps\Services\EdwMapsDataService;
-use Drupal\views\Annotation\ViewsStyle;
 use Drupal\views\Plugin\views\style\StylePluginBase;
-use Drupal\views\ViewExecutable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -72,18 +69,17 @@ class MapboxMapStyle extends StylePluginBase {
    */
   private EdwMapsDataService $edwMapsDataService;
 
-
   /**
    * Plugin constructor.
    */
   public function __construct(
-    array                       $configuration,
-                                $plugin_id,
-                                $plugin_definition,
-    ConfigFactory               $configFactory,
+    array $configuration,
+          $plugin_id,
+          $plugin_definition,
+    ConfigFactory $configFactory,
     EntityFieldManagerInterface $fieldTypeManager,
-    FormBuilder                 $formBuilder,
-    EdwMapsDataService          $edwMapsDataService
+    FormBuilder $formBuilder,
+    EdwMapsDataService $edwMapsDataService
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $configFactory;
@@ -246,7 +242,6 @@ class MapboxMapStyle extends StylePluginBase {
       ],
     ];
   }
-
 
   /**
    * Get a list of fields and a sublist of geo data fields in this view.

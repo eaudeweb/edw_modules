@@ -15,7 +15,7 @@ trait EdwMapsElementsTrait {
    * Sets fieldsets for options form.
    *
    * @param array $form
-   *     The form.
+   *   The form.
    */
   protected function setFieldsets(array &$form) {
     $form['tile_options'] = [
@@ -51,9 +51,9 @@ trait EdwMapsElementsTrait {
    * Sets tile options for the form.
    *
    * @param array $form
-   *    The form.
+   *   The form.
    * @param string $defaultMap
-   *    Default map style URL from config.
+   *   Default map style URL from config.
    */
   protected function setTileOptions(array &$form, string $defaultMap) {
     $form['tile_options']['map_type'] = [
@@ -86,11 +86,11 @@ trait EdwMapsElementsTrait {
    * Sets tile options for the form.
    *
    * @param array $form
-   *    The form.
+   *   The form.
    * @param array $geoFieldSources
-   *    The view's geofields.
+   *   The view's geofields.
    * @param array $iso3FieldSources
-   *    The view's string fields.
+   *   The view's string fields.
    */
   protected function setRenderingOptionsCheckbox(array &$form, array $geoFieldSources, array $iso3FieldSources) {
     $form['rendering_options']['render_items'] = [
@@ -132,11 +132,11 @@ trait EdwMapsElementsTrait {
    * Sets tile options for the form.
    *
    * @param array $form
-   *    The form.
+   *   The form.
    * @param array $geoFieldSources
-   *    The view's geofields.
+   *   The view's geofields.
    * @param array $iso3FieldSources
-   *    The view's string fields.
+   *   The view's string fields.
    */
   protected function setRenderingOptions(array &$form, array $geoFieldSources, array $iso3FieldSources) {
     $form['rendering_options']['pins_source'] = [
@@ -222,9 +222,9 @@ trait EdwMapsElementsTrait {
    * Sets tile options for the form.
    *
    * @param array $form
-   *    The form.
+   *   The form.
    * @param array $allFields
-   *    View's fields.
+   *   View's fields.
    */
   protected function setPopupOptions(array &$form, array $allFields) {
     $form['popup_options']['pin_popup_source'] = [
@@ -271,7 +271,7 @@ trait EdwMapsElementsTrait {
    * Sets tile options for the form.
    *
    * @param array $form
-   *    The form.
+   *   The form.
    */
   protected function setDisplayOptions(&$form) {
     $form['display_options']['projection'] = [

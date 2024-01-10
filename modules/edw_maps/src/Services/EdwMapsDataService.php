@@ -55,7 +55,7 @@ class EdwMapsDataService {
   /**
    * Get data objects for rendering markers on mapbox.
    *
-   * @param ViewExecutable $view
+   * @param \Drupal\views\ViewExecutable $view
    *   The view.
    * @param string $dataSource
    *   The data source field id.
@@ -64,7 +64,6 @@ class EdwMapsDataService {
    *
    * @return array
    *   The formatted pin data.
-   *
    */
   public function getPinData(ViewExecutable $view, string $dataSource, string $popupSource) {
     $rows = $view->result;
@@ -90,7 +89,7 @@ class EdwMapsDataService {
   /**
    * Get data objects for highlighting country polygons on mapbox.
    *
-   * @param ViewExecutable $view
+   * @param \Drupal\views\ViewExecutable $view
    *   The view.
    * @param string $dataSource
    *   The data source field id.
@@ -99,7 +98,6 @@ class EdwMapsDataService {
    *
    * @return array
    *   The formatted country data.
-   *
    */
   public function getCountryData(ViewExecutable $view, string $dataSource, string $popupSource) {
     $rows = $view->result;
@@ -118,7 +116,7 @@ class EdwMapsDataService {
   /**
    * Get data objects for rendering area polygons on mapbox.
    *
-   * @param ViewExecutable $view
+   * @param \Drupal\views\ViewExecutable $view
    *   The view.
    * @param string $dataSource
    *   The data source field id.
@@ -160,7 +158,8 @@ class EdwMapsDataService {
         ];
 
         $data['features'][] = $geoJsonFeature;
-      } catch (\exception) {
+      }
+      catch (\exception) {
         continue;
       }
     }
@@ -175,7 +174,16 @@ class EdwMapsDataService {
    *   The absolute url for the geojson.
    */
   public function getClearMapSource() {
-    // GeoJson file is too big for GitHub.
+    $path = $this->moduleHandler->getModule('edw_maps')
+        ->getPath() . '/assets/country_boundaries/country_polygon.geojson';
+    return Url::fromUserInput("/$path", ['absolute' => TRUE])
+      ->toString();
+  }
+
+  /**
+   * Unzips geoJson file with country borders for clear map.
+   */
+  public function unzipGeoJson() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries';
     if (!file_exists("/$path/country_polygon.geojso")) {
@@ -187,24 +195,22 @@ class EdwMapsDataService {
       $zip->extractTo($path);
       $zip->close();
     }
-    return Url::fromUserInput("/$path/country_polygon.geojson", ['absolute' => TRUE])
-      ->toString();
   }
 
   /**
    * Renders popup content after calling altering hooks.
    *
    * @param \Drupal\views\ViewExecutable $view
-   *     The view.
+   *   The view.
    * @param \Drupal\views\ResultRow $row
-   *     The current row.
+   *   The current row.
    * @param string $popupSource
-   *     The field id of the popup source.
+   *   The field id of the popup source.
    * @param string $renderItem
-   *     The name of the render item. One of pin, area or country,
+   *   The name of the render item. One of pin, area or country,.
    *
    * @return callable|\Drupal\Component\Render\MarkupInterface|mixed|void|null
-   *     The rendered item or null.
+   *   The rendered item or null.
    */
   private function getPopupContent(ViewExecutable $view, ResultRow $row, string $popupSource, string $renderItem) {
     if (empty($popupSource)) {
