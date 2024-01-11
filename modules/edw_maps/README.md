@@ -9,6 +9,18 @@ This module provides a range of features to enhance your website with interactiv
 ## Prerequisites
 * Geofields on your contents of type latitue/logitude or Geofield WKT
 
+## Installation
+Before enabling this module, make sure that the following modules are present in your codebase by adding them to your composer.json and running `composer update`:
+
+```php
+"require": {
+  "drupal/core": "^9.4 || ^10",
+  "drupal/geofield": "^1.41",
+  "ext-zip": "*",
+  "itamair/geophp": "^1.5"
+}
+```
+
 ## How to use
 
 1. Enable the module.

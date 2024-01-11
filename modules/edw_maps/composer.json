@@ -9,9 +9,21 @@
             "email": "paula.iuga@eaudeweb.ro"
         }
     ],
+    "minimum-stability": "dev",
+    "homepage": "https://github.com/eaudeweb/edw_modules",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "require": {
         "php": "^8",
-        "drupal/core": "^9 || ^10",
+        "drupal/core": "^9.4 || ^10",
         "drupal/geofield": "^1.41",
         "ext-zip": "*",
         "itamair/geophp": "^1.5"
