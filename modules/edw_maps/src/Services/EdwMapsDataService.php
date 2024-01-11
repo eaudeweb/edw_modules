@@ -203,7 +203,7 @@ class EdwMapsDataService {
   public function unzipGeoJson() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries';
-    if (!file_exists("/$path/country_polygon.geojso")) {
+    if (!file_exists("/$path/country_polygon.geojson")) {
       $zip = new \ZipArchive();
       $res = $zip->open("$path/country_polygon.zip");
       if ($res !== TRUE) {
@@ -230,12 +230,17 @@ class EdwMapsDataService {
    *   The rendered item or null.
    */
   private function getPopupContent(ViewExecutable $view, ResultRow $row, string $popupSource, string $renderItem) {
-    if (empty($popupSource)) {
+    if (empty($popupSource) || $popupSource == '_none') {
       return NULL;
     }
     $renderValue = $view->field[$popupSource]->render($row);
     if (!is_array($renderValue)) {
-      return $view->field[$popupSource]->advancedRender($row);
+      try {
+        return $view->field[$popupSource]->advancedRender($row);
+      } catch (\LogicException) {
+        return $view->field[$popupSource]->render($row)
+          ->__toString();
+      }
     }
 
     $this->moduleHandler->invokeAll('edw_maps_' . $renderItem . '_tooltip_data_alter', [&$renderValue]);

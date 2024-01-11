@@ -233,6 +233,8 @@ trait EdwMapsElementsTrait {
       '#description' => $this->t('Which field you want to be rendered in popup at pin click ?'),
       '#options' => $allFields,
       '#default_value' => $this->options['popup_options']['pin_popup_source'] ?? NULL,
+      '#empty_option' => t('- None -'),
+      '#empty_value' => '_none',
       '#states' => [
         'visible' => [
           ':input[name="style_options[rendering_options][render_items][pin]"]' => ['checked' => TRUE],
@@ -246,6 +248,8 @@ trait EdwMapsElementsTrait {
       '#description' => $this->t('Which field you want to be rendered in popup at area click ?'),
       '#options' => $allFields,
       '#default_value' => $this->options['popup_options']['area_popup_source'] ?? NULL,
+      '#empty_option' => t('- None -'),
+      '#empty_value' => '_none',
       '#states' => [
         'visible' => [
           ':input[name="style_options[rendering_options][render_items][area]"]' => ['checked' => TRUE],
@@ -259,6 +263,8 @@ trait EdwMapsElementsTrait {
       '#description' => $this->t('Which field you want to be rendered in popup when clicking on a country ?'),
       '#options' => $allFields,
       '#default_value' => $this->options['popup_options']['country_popup_source'] ?? NULL,
+      '#empty_option' => t('- None -'),
+      '#empty_value' => '_none',
       '#states' => [
         'visible' => [
           ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
