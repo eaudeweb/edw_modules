@@ -12,6 +12,7 @@
     "require": {
         "php": "^8",
         "drupal/core": "^9 || ^10",
+        "drupal/geofield": "^1.41",
         "ext-zip": "*",
         "itamair/geophp": "^1.5"
     }
