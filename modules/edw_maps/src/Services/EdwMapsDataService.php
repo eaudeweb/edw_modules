@@ -4,6 +4,7 @@ namespace Drupal\edw_maps\Services;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Url;
 use Drupal\views\ResultRow;
@@ -37,6 +38,13 @@ class EdwMapsDataService {
   private ModuleHandler $moduleHandler;
 
   /**
+   * The path validator service.
+   *
+   * @var \Drupal\Core\Path\PathValidator
+   */
+  private PathValidator $pathValidator;
+
+  /**
    * The EdwMapsDataService constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -46,10 +54,11 @@ class EdwMapsDataService {
    * @param \Drupal\Core\Extension\ModuleHandler $moduleHandler
    *   The module handler.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Renderer $renderer, ModuleHandler $moduleHandler) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Renderer $renderer, ModuleHandler $moduleHandler, PathValidator $pathValidator) {
     $this->entityTypeManager = $entityTypeManager;
     $this->renderer = $renderer;
     $this->moduleHandler = $moduleHandler;
+    $this->pathValidator = $pathValidator;
   }
 
   /**
@@ -104,6 +113,10 @@ class EdwMapsDataService {
     $data = [];
     foreach ($rows as $row) {
       $entity = $this->getEntity($row, $dataSource);
+      $iso3 = $entity->get($dataSource)->value;
+      if (empty($iso3)) {
+        continue;
+      }
       $data[] = [
         'iso3' => $entity->get($dataSource)->value,
         'popup' => $this->getPopupContent($view, $row, $popupSource, 'country'),
@@ -168,14 +181,18 @@ class EdwMapsDataService {
   }
 
   /**
-   * Gets url for geojson boundaries for clear map.
+   * Gets url for GeoJson boundaries for clear map.
    *
    * @return \Drupal\Core\GeneratedUrl|string
-   *   The absolute url for the geojson.
+   *   The absolute url for the GeoJson.
    */
   public function getClearMapSource() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries/country_polygon.geojson';
+
+    if (!$this->pathValidator->isValid($path)) {
+      $this->unzipGeoJson();
+    }
     return Url::fromUserInput("/$path", ['absolute' => TRUE])
       ->toString();
   }
