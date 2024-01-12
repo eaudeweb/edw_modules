@@ -38,13 +38,6 @@ class EdwMapsDataService {
   private ModuleHandler $moduleHandler;
 
   /**
-   * The path validator service.
-   *
-   * @var \Drupal\Core\Path\PathValidator
-   */
-  private PathValidator $pathValidator;
-
-  /**
    * The EdwMapsDataService constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -54,11 +47,10 @@ class EdwMapsDataService {
    * @param \Drupal\Core\Extension\ModuleHandler $moduleHandler
    *   The module handler.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Renderer $renderer, ModuleHandler $moduleHandler, PathValidator $pathValidator) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Renderer $renderer, ModuleHandler $moduleHandler) {
     $this->entityTypeManager = $entityTypeManager;
     $this->renderer = $renderer;
     $this->moduleHandler = $moduleHandler;
-    $this->pathValidator = $pathValidator;
   }
 
   /**
@@ -171,8 +163,7 @@ class EdwMapsDataService {
         ];
 
         $data['features'][] = $geoJsonFeature;
-      }
-      catch (\exception) {
+      } catch (\exception) {
         continue;
       }
     }
@@ -189,8 +180,7 @@ class EdwMapsDataService {
   public function getClearMapSource() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries/country_polygon.geojson';
-
-    if (!$this->pathValidator->isValid($path)) {
+    if (!file_exists($path)) {
       $this->unzipGeoJson();
     }
     return Url::fromUserInput("/$path", ['absolute' => TRUE])
@@ -203,12 +193,9 @@ class EdwMapsDataService {
   public function unzipGeoJson() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries';
-    if (!file_exists("/$path/country_polygon.geojson")) {
-      $zip = new \ZipArchive();
-      $res = $zip->open("$path/country_polygon.zip");
-      if ($res !== TRUE) {
-        return NULL;
-      }
+    $zip = new \ZipArchive();
+    $res = $zip->open("$path/country_polygon.zip");
+    if ($res === TRUE) {
       $zip->extractTo($path);
       $zip->close();
     }

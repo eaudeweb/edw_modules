@@ -1,21 +1,20 @@
-(function ($, Drupal, debounce, drupalSettings) {
-
+(function ($, Drupal) {
         Drupal.behaviors.edw_map = {
             attach: function (context, settings) {
                 $(function () {
-                        const mapboxStyleUrl = drupalSettings.edw_map['mapboxStyleUrl'];
-                        const mapType = drupalSettings.edw_map['mapType'];
-                        const containerId = drupalSettings.edw_map['containerId'];
-                        const renderPins = drupalSettings.edw_map['renderPins'];
-                        const renderClusters = drupalSettings.edw_map['renderClusters'];
-                        const renderCountries = drupalSettings.edw_map['renderCountries'];
-                        const renderAreas = drupalSettings.edw_map['renderAreas'];
-                        const pinData = drupalSettings.edw_map['pinData'];
-                        const countryData = drupalSettings.edw_map['countryData'];
-                        const areaData = drupalSettings.edw_map['areaData'];
-                        const countryColor = drupalSettings.edw_map['countryColor'];
-                        const areaColor = drupalSettings.edw_map['areaColor'];
-                        const clearMapSource = drupalSettings.edw_map['clearMapSource'];
+                        const mapboxStyleUrl = settings.edw_map.mapboxStyleUrl;
+                        const mapType = settings.edw_map.mapType;
+                        const containerId = settings.edw_map.containerId;
+                        const renderPins = settings.edw_map.renderPins;
+                        const renderClusters = settings.edw_map.renderClusters;
+                        const renderCountries = settings.edw_map.renderCountries;
+                        const renderAreas = settings.edw_map.renderAreas;
+                        const pinData = settings.edw_map.pinData;
+                        const countryData = settings.edw_map.countryData;
+                        const areaData = settings.edw_map.areaData;
+                        const countryColor = settings.edw_map.countryColor;
+                        const areaColor = settings.edw_map.areaColor;
+                        const clearMapSource = settings.edw_map.clearMapSource;
                         const baseCountryCarto = ['rgb', 237, 237, 237];
                         const lineCarto = ['rgb', 165, 165, 165];
 
@@ -39,22 +38,22 @@
                         exposedForm();
 
                         // Set access token.
-                        mapboxgl.accessToken = drupalSettings.edw_map['mapboxToken'];
+                        mapboxgl.accessToken = settings.edw_map.mapboxToken;
 
                         // Create map.
                         const map = new mapboxgl.Map({
                             container: containerId, // container ID
                             style: getMapStyle(), // map style url
-                            center: drupalSettings.edw_map['center'], // starting position
-                            zoom: drupalSettings.edw_map['zoom'], // starting zoom
+                            center: settings.edw_map.center, // starting position
+                            zoom: settings.edw_map.zoom, // starting zoom
                             maxZoom: mapType === 'clear_map' ? 5 : undefined,
-                            pitch: drupalSettings.edw_map['pitch'], // angle towards the horizon,
+                            pitch: settings.edw_map.pitch, // angle towards the horizon,
                             cooperativeGestures: true,
-                            renderWorldCopies: drupalSettings.edw_map['worldCopies'],
-                            projection: drupalSettings.edw_map['projection']
+                            renderWorldCopies: settings.edw_map.worldCopies,
+                            projection: settings.edw_map.projection
                         });
 
-                        if (drupalSettings.edw_map['disableScrollZoom']) {
+                        if (settings.edw_map.disableScrollZoom) {
                             map.scrollZoom.disable();
                         }
 
@@ -633,4 +632,4 @@
         }
     }
 )
-(jQuery, Drupal, Drupal.debounce, drupalSettings);
+(jQuery, Drupal);

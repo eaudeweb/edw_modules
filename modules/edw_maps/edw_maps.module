@@ -38,6 +38,21 @@ function edw_maps_preprocess_views_view(&$variables) {
 }
 
 /**
+ * Implements hook_ajax_render_alter().
+ */
+function edw_maps_ajax_render_alter(array &$data) {
+  foreach ($data as &$command) {
+    if ($command['command'] === 'settings'
+      && isset($command['settings']['edw_map'])
+      && isset($command['settings']['views'])) {
+      $command['merge'] = FALSE;
+      return;
+    }
+  }
+}
+
+
+/**
  * Implements hook_edw_maps_pin_tooltip_data_alter().
  */
 function edw_maps_edw_maps_pin_tooltip_data_alter(array &$variables) {

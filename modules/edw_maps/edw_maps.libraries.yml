@@ -18,7 +18,5 @@ edw_map:
   dependencies:
     - core/jquery
     - core/drupal
-    - core/drupal.debounce
-    - core/drupalSettings
     - edw_maps/mapbox
     - edw_maps/supercluster
