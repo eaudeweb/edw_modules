@@ -4,7 +4,6 @@ namespace Drupal\edw_maps\Services;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandler;
-use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Url;
 use Drupal\views\ResultRow;
@@ -163,7 +162,8 @@ class EdwMapsDataService {
         ];
 
         $data['features'][] = $geoJsonFeature;
-      } catch (\exception) {
+      }
+      catch (\exception) {
         continue;
       }
     }
@@ -224,7 +224,8 @@ class EdwMapsDataService {
     if (!is_array($renderValue)) {
       try {
         return $view->field[$popupSource]->advancedRender($row);
-      } catch (\LogicException) {
+      }
+      catch (\LogicException) {
         return $view->field[$popupSource]->render($row)
           ->__toString();
       }

@@ -51,7 +51,6 @@ function edw_maps_ajax_render_alter(array &$data) {
   }
 }
 
-
 /**
  * Implements hook_edw_maps_pin_tooltip_data_alter().
  */
