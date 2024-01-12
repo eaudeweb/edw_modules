@@ -198,8 +198,6 @@ class MapboxMapStyle extends StylePluginBase {
     if ($renderAreas) {
       $areaData = $this->edwMapsDataService->getAreaData($view, $areaSourceField, $popupAreaSourceField);
     }
-    $count = count($pinData);
-    \Drupal::logger('edw_maps')->info("pins count: $count");
 
     $settings = [
       'containerId' => $containerId,
