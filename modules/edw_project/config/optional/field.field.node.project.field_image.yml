@@ -2,24 +2,23 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_country
-    - node.type.country
+    - field.storage.node.field_image
     - node.type.project
-id: node.project.field_country
-field_name: field_country
+id: node.project.field_image
+field_name: field_image
 entity_type: node
 bundle: project
-label: 'Beneficiary Countries'
-description: 'Countries where the project is implemented'
-required: true
-translatable: true
+label: Image
+description: ''
+required: false
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings:
-  handler: 'default:node'
+  handler: 'default:media'
   handler_settings:
     target_bundles:
-      country: country
+      image: image
     sort:
       field: _none
       direction: ASC

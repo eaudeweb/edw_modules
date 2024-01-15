@@ -1,17 +1,15 @@
 langcode: en
 status: true
 dependencies:
-  enforced:
-    module:
-    - edw_project
   module:
     - node
-id: node.field_project_implementing_orgs
-field_name: field_project_implementing_orgs
+    - taxonomy
+id: node.field_countries
+field_name: field_countries
 entity_type: node
 type: entity_reference
 settings:
-  target_type: node
+  target_type: taxonomy_term
 module: core
 locked: false
 cardinality: -1
