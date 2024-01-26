@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_timeline_item_variations
+    - paragraphs.paragraphs_type.edw_timeline_item
+  module:
+    - options
+id: paragraph.edw_timeline_item.field_timeline_item_variations
+field_name: field_timeline_item_variations
+entity_type: paragraph
+bundle: edw_timeline_item
+label: Variations
+description: ''
+required: true
+translatable: true
+default_value:
+  -
+    value: default
+default_value_callback: ''
+settings: {  }
+field_type: list_string

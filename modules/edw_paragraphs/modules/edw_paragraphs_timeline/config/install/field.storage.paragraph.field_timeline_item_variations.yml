@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - paragraphs
+id: paragraph.field_timeline_item_variations
+field_name: field_timeline_item_variations
+entity_type: paragraph
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: variation1
+      label: Default
+    -
+      value: variation2
+      label: Highlighted
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

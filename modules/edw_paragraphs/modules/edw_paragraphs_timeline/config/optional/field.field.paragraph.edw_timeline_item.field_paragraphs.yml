@@ -1,0 +1,81 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+    - paragraphs.paragraphs_type.edw_rich_text
+    - paragraphs.paragraphs_type.edw_timeline_item
+  module:
+    - entity_reference_revisions
+id: paragraph.edw_timeline_item.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: edw_timeline_item
+label: Content
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      edw_rich_text: edw_rich_text
+    negate: 0
+    target_bundles_drag_drop:
+      edw_accordion:
+        weight: -19
+        enabled: false
+      edw_accordion_item:
+        weight: -18
+        enabled: false
+      edw_banner:
+        weight: -20
+        enabled: false
+      edw_block_item:
+        weight: -16
+        enabled: false
+      edw_button:
+        weight: -24
+        enabled: false
+      edw_card:
+        weight: -23
+        enabled: false
+      edw_columns:
+        weight: -26
+        enabled: false
+      edw_container:
+        weight: -27
+        enabled: false
+      edw_content_reference:
+        weight: -17
+        enabled: false
+      edw_fact:
+        weight: 28
+        enabled: false
+      edw_facts_figures:
+        weight: 29
+        enabled: false
+      edw_links_block:
+        weight: -21
+        enabled: false
+      edw_quote:
+        weight: -22
+        enabled: false
+      edw_rich_text:
+        weight: -25
+        enabled: true
+      edw_timeline:
+        weight: 33
+        enabled: false
+      edw_timeline_item:
+        weight: 34
+        enabled: false
+      edw_view:
+        weight: -15
+        enabled: false
+      search_index:
+        weight: 36
+        enabled: false
+field_type: entity_reference_revisions
