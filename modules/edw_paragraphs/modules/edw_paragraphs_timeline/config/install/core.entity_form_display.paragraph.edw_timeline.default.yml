@@ -2,46 +2,31 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.edw_timeline.field_timeline_items
-    - field.field.paragraph.edw_timeline.field_timeline_type
     - paragraphs.paragraphs_type.edw_timeline
+  module:
+    - paragraphs
 id: paragraph.edw_timeline.default
 targetEntityType: paragraph
 bundle: edw_timeline
 mode: default
 content:
-  field_timeline_type:
-    weight: 1
-    label: above
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
-  field_timeline_items:
+  field_paragraphs:
     type: paragraphs
     weight: 2
+    region: content
     settings:
       title: Paragraph
       title_plural: Paragraphs
       edit_mode: closed
-      add_mode: dropdown
-      form_display_mode: default
-      default_paragraph_type: edw_timeline_item
       closed_mode: summary
       autocollapse: none
       closed_mode_threshold: 0
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: edw_timeline_item
       features:
-        duplicate: duplicate
         collapse_edit_all: collapse_edit_all
-    third_party_settings: {  }
-    region: content
-  field_title:
-    type: string_textfield
-    weight: 0
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
+        duplicate: duplicate
     third_party_settings: {  }
 hidden:
   created: true

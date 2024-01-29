@@ -4,8 +4,8 @@ dependencies:
   module:
     - entity_reference_revisions
     - paragraphs
-id: paragraph.field_timeline_items
-field_name: field_timeline_items
+id: paragraph.field_paragraphs
+field_name: field_paragraphs
 entity_type: paragraph
 type: entity_reference_revisions
 settings:
