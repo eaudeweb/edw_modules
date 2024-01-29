@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - paragraphs.paragraphs_type.tabs
+    - paragraphs.paragraphs_type.edw_tabs
   module:
     - entity_reference_revisions
-id: paragraph.tabs.default
+id: paragraph.edw_tabs.default
 targetEntityType: paragraph
-bundle: tabs
+bundle: edw_tabs
 mode: default
 content:
   field_paragraphs:
@@ -19,5 +19,4 @@ content:
     third_party_settings: {  }
     weight: 0
     region: content
-hidden:
-  search_api_excerpt: true
+hidden: {  }

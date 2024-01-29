@@ -2,12 +2,12 @@ langcode: en
 status: true
 dependencies:
   config:
-    - paragraphs.paragraphs_type.tabs
+    - paragraphs.paragraphs_type.edw_tabs
   module:
     - paragraphs
-id: paragraph.tabs.default
+id: paragraph.edw_tabs.default
 targetEntityType: paragraph
-bundle: tabs
+bundle: edw_tabs
 mode: default
 content:
   field_paragraphs:

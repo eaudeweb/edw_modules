@@ -3,11 +3,11 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_id
-    - paragraphs.paragraphs_type.tab
-id: paragraph.tab.field_id
+    - paragraphs.paragraphs_type.edw_tab
+id: paragraph.edw_tab.field_id
 field_name: field_id
 entity_type: paragraph
-bundle: tab
+bundle: edw_tab
 label: ID
 description: 'If exits, when user click the tab, ID is added to the URL like an anchor.'
 required: false

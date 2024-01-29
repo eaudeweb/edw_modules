@@ -1,5 +1,5 @@
 name: EDW Paragraphs Tabs
-description: Provides a paragraph type that displays Tabs.
+description: Tabs display easy to scan labels of the relevant information, indicative of the additional content that is available through extra interaction.
 package: Eau de Web
 type: module
 core_version_requirement: ^9.4 || ^10

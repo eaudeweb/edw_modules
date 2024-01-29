@@ -1,7 +1,7 @@
 langcode: en
 status: true
 dependencies: {  }
-id: tab
+id: edw_tab
 label: Tab
 icon_uuid: null
 icon_default: null

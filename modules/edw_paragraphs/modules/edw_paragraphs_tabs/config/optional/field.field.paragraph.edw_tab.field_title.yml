@@ -3,11 +3,11 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_title
-    - paragraphs.paragraphs_type.tab
-id: paragraph.tab.field_title
+    - paragraphs.paragraphs_type.edw_tab
+id: paragraph.edw_tab.field_title
 field_name: field_title
 entity_type: paragraph
-bundle: tab
+bundle: edw_tab
 label: Title
 description: ''
 required: true
