@@ -10,8 +10,8 @@ id: paragraph.edw_tabs.field_paragraphs
 field_name: field_paragraphs
 entity_type: paragraph
 bundle: edw_tabs
-label: paragraphs
-description: 'Supported content: Tab paragraph type'
+label: Tabs
+description: ''
 required: true
 translatable: false
 default_value: {  }

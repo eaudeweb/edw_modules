@@ -10,7 +10,7 @@ field_name: field_paragraphs
 entity_type: paragraph
 bundle: edw_tab
 label: Content
-description: 'Supported content: Rich text paragraph type'
+description: ''
 required: true
 translatable: true
 default_value: {  }
