@@ -1,0 +1,7 @@
+name: EDW Paragraphs Tabs
+description: Tabs display easy to scan labels of the relevant information, indicative of the additional content that is available through extra interaction.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - edw_paragraphs:edw_paragraphs

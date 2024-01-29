@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_paragraphs
+  module:
+    - entity_reference_revisions
+id: paragraph.edw_tab.field_paragraphs
+field_name: field_paragraphs
+entity_type: paragraph
+bundle: edw_tab
+label: Content
+description: 'Supported content: Rich text paragraph type'
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      edw_rich_text: edw_rich_text
+    negate: 0
+    target_bundles_drag_drop:
+      edw_tab:
+        weight: 49
+        enabled: false
+      edw_tabs:
+        weight: 50
+        enabled: false
+field_type: entity_reference_revisions
