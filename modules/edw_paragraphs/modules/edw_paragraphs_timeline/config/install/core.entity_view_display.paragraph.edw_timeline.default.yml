@@ -2,7 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.edw_timeline.field_timeline_items
+    - field.field.paragraph.edw_timeline.field_paragraphs
     - paragraphs.paragraphs_type.edw_timeline
   module:
     - entity_reference_revisions
@@ -11,7 +11,7 @@ targetEntityType: paragraph
 bundle: edw_timeline
 mode: default
 content:
-  field_timeline_items:
+  field_paragraphs:
     type: entity_reference_revisions_entity_view
     label: hidden
     settings:
