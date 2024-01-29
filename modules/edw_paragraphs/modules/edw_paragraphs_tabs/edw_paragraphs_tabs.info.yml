@@ -1,5 +1,5 @@
-name: EDW Paragraphs View
-description: Provides a paragraph type that displays an embedded view.
+name: EDW Paragraphs Tabs
+description: Provides a paragraph type that displays Tabs.
 package: Eau de Web
 type: module
 core_version_requirement: ^9.4 || ^10
