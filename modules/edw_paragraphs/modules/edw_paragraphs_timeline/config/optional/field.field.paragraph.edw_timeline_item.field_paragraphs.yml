@@ -28,54 +28,10 @@ settings:
         weight: -19
         enabled: false
       edw_accordion_item:
-        weight: -18
-        enabled: false
-      edw_banner:
-        weight: -20
-        enabled: false
-      edw_block_item:
-        weight: -16
-        enabled: false
-      edw_button:
-        weight: -24
-        enabled: false
-      edw_card:
-        weight: -23
-        enabled: false
-      edw_columns:
-        weight: -26
-        enabled: false
-      edw_container:
-        weight: -27
-        enabled: false
-      edw_content_reference:
-        weight: -17
-        enabled: false
-      edw_fact:
-        weight: 28
-        enabled: false
-      edw_facts_figures:
-        weight: 29
-        enabled: false
-      edw_links_block:
-        weight: -21
-        enabled: false
-      edw_quote:
-        weight: -22
-        enabled: false
-      edw_rich_text:
-        weight: -25
-        enabled: true
       edw_timeline:
         weight: 33
         enabled: false
       edw_timeline_item:
         weight: 34
-        enabled: false
-      edw_view:
-        weight: -15
-        enabled: false
-      search_index:
-        weight: 36
         enabled: false
 field_type: entity_reference_revisions
