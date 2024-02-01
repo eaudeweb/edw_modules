@@ -14,11 +14,14 @@ The module provides the following paragraph types:
     ├── edw_paragraphs_base
     ├── edw_paragraphs_block
     ├── edw_paragraphs_carousel
+    ├── edw_paragraphs_container
     ├── edw_paragraphs_document
     ├── edw_paragraphs_facts_figures
     ├── edw_paragraphs_gallery
     ├── edw_paragraphs_heading
+    ├── edw_paragraphs_image
     ├── edw_paragraphs_media
+    └── edw_paragraphs_tabs
     └── edw_paragraphs_timeline
     └── edw_paragraphs_view
 ```
@@ -62,6 +65,11 @@ Provides Carousel paragraph that display items similar to a Banner with
 multiple slides. To get this paragraph type enable the EDW Paragraphs Carousel
 submodule.
 
+### Container
+This module provides a paragraph Container useful when you want to store other 
+components. To get this paragraph type enable the EDW Paragraphs Carousel
+submodule.
+
 ### Document
 The Document paragraph allows editors to render documents. To get this paragraph
 type enable the EDW Paragraphs Carousel submodule.
@@ -79,9 +87,19 @@ To get this paragraph type enable the EDW Paragraphs Gallery submodule.
 This module provides a paragraph type that displays headings (h2-h6). To get
 this paragraph type enable the EDW Paragraphs Heading submodule.
 
+### Image
+This module provides a paragraph type, used to add an image. To get this 
+paragraph type enable the EDW Paragraphs Heading submodule.
+
 ### Text with Featured media
 This module provides the Text with Featured media paragraph. To get this
 paragraph type enable the EDW Paragraphs Media submodule.
+
+### Tabs
+Provides Tabs paragraph that displays items easy to scan labels of the relevant
+information, indicative of the additional content that is available through
+extra interaction. To get this paragraph type enable the EDW Paragraphs Gallery 
+submodule.
 
 ### Timeline
 Provides Timeline paragraph that displays items visually on a time axis. To get
