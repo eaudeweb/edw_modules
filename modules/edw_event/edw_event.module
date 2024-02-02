@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW Event module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\node\Entity\Node $node */
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface || $node->bundle() != 'event') {
+    return;
+  }
+
+  $form['meeting_sections'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Clone meeting sections.'),
+    '#description' => t('If the cloned entity should be saved with all tabs related.'),
+    '#default_value' => TRUE,
+  ];
+
+  $form['meeting_sections_status'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Select what sections you want to clone as published.'),
+    '#states' => [
+      'visible' => [
+        ':input[name="meeting_sections"]' => ['checked' => TRUE],
+      ],
+    ],
+  ];
+
+  /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_event.meeting.service');
+  $sections = $meetingService->getAllMeetingSections($node);
+  foreach ($sections as $section) {
+    $form['meeting_sections_status'][$section->id()] = [
+      '#type' => 'checkbox',
+      '#title' => $section->label(),
+      '#default_value' => FALSE,
+    ];
+  }
+}
