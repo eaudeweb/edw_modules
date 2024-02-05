@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.event
+    - user.role.authenticated
+id: event-authenticated_user
+label: Authenticated user
+weight: 4
+admin: false
+scope: insider
+global_role: authenticated
+group_type: event
+permissions: {  }

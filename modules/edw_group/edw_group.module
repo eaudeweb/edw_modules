@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW Group module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function edw_group_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $currentUser = \Drupal::currentUser();
+  if (!$currentUser->hasPermission('edit access groups')
+    && isset($form['field_groups'])) {
+    unset($form['field_groups']);
+  }
+  if (!$currentUser->hasPermission('edit moderator groups')
+    && isset($form['field_moderator_groups'])) {
+    unset($form['field_moderator_groups']);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ *
+ * Create the default meeting group.
+ */
+function edw_group_node_insert(NodeInterface $node) {
+  if ($node->bundle() != 'event') {
+    return;
+  }
+
+  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_group.meeting');
+  if (!$meetingService->isAllowed()) {
+    return;
+  }
+  $meetingService->createGroupForMeeting($node);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ *
+ * Update meeting group name.
+ */
+function edw_group_node_update(NodeInterface $node) {
+  if ($node->bundle() != 'event') {
+    return;
+  }
+  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_group.meeting');
+  if (!$meetingService->isAllowed()) {
+    return;
+  }
+  $groups = $meetingService->getGroupsCreatedForMeeting($node);
+  foreach ($groups as $group) {
+    $group->set('label', $node->label());
+    $group->save();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ *
+ * Delete the meeting group.
+ */
+function edw_group_node_delete(NodeInterface $node) {
+  if ($node->bundle() != 'event') {
+    return;
+  }
+  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_group.meeting');
+  if (!$meetingService->isAllowed()) {
+    return;
+  }
+  $groups = $meetingService->getGroupsCreatedForMeeting($node);
+  foreach ($groups as $group) {
+    $group->delete();
+  }
+}

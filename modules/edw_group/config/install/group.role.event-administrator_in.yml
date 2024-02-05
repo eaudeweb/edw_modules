@@ -1,0 +1,14 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.event
+    - user.role.administrator
+id: event-administrator_in
+label: Administrator
+weight: 3
+admin: true
+scope: insider
+global_role: administrator
+group_type: event
+permissions: {  }
