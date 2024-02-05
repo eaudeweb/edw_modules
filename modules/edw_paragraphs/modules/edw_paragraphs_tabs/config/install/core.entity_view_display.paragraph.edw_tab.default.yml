@@ -10,21 +10,13 @@ targetEntityType: paragraph
 bundle: edw_tab
 mode: default
 content:
-  field_id:
-    type: string
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    weight: 2
-    region: content
   field_paragraphs:
     type: entity_reference_revisions_entity_view
     label: above
     settings:
       view_mode: default
-      link: ''
-    third_party_settings: {  }
+      link: ""
+    third_party_settings: {}
     weight: 1
     region: content
   field_title:
@@ -32,7 +24,7 @@ content:
     label: above
     settings:
       link_to_entity: false
-    third_party_settings: {  }
+    third_party_settings: {}
     weight: 0
     region: content
-hidden: {  }
+hidden: {}

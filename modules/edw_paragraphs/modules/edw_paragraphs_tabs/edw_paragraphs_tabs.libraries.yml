@@ -1,0 +1,8 @@
+# Libraries for the configuration the current module.
+
+edw_paragraphs_tabs:
+  js:
+    js/script.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
