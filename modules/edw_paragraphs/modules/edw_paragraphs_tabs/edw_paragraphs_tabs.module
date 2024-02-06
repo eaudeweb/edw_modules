@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * EDW paragraphs tabs module file.
+ */
+
+
+use Drupal\Component\Utility\Html;
+
+/**
+ * Implements hook_preprocess_field().
+ */
+
+function edw_paragraphs_tabs_preprocess_field(&$variables) {
+  $element = $variables['element'];
+  $field_name = $element['#field_name'] ?? NULL;
+  $field_bundle = $element['#bundle'] ?? NULL;
+
+  if ($field_name == "field_paragraphs" && $field_bundle == "edw_tabs") {
+    if(!empty(\Drupal::request()->query->get('activeTab'))) {
+      $activeTab = \Drupal::request()->query->get('activeTab');
+    }
+
+    foreach ($variables['items'] as $delta => $item) {
+      $paragraph = $item['content']['#paragraph'];
+      $pTitle = Html::getUniqueId($paragraph->get('field_title')->value);
+
+      $variables['items'][$delta]['tabId']= $pTitle;
+
+      if (isset($activeTab)) {
+        $variables['items'][$delta]['isActive'] = $pTitle == $activeTab;
+      } elseif ($delta == 0) {
+        $variables['items'][$delta]['isActive'] = true;
+      }
+    }
+
+  }
+}
