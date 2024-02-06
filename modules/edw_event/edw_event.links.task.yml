@@ -1,0 +1,8 @@
+edw_event.documents.settings:
+  title: 'Documents'
+  route_name: edw_event.documents.settings
+  base_route: entity.node.canonical
+  weight: 50
+
+edw_event.tasks:
+  deriver: 'Drupal\edw_event\Plugin\Derivative\MeetingDocumentsLocalTasks'

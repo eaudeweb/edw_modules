@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - media
+    - options
+id: media.field_document_phase
+field_name: field_document_phase
+entity_type: media
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: pre_session
+      label: Pre-session
+    -
+      value: in_session
+      label: In-session
+    -
+      value: post_session
+      label: Post-session
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

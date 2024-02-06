@@ -8,3 +8,6 @@ services:
     arguments: [ '@edw_event.meeting.service' ]
     tags:
       - { name: event_subscriber }
+
+  edw_event.manage_documents.controller:
+    class: Drupal\edw_event\Controller\ManageDocumentsController
