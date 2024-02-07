@@ -1,4 +1,0 @@
-edw_event.documents.settings:
-  title: 'Manage Documents'
-  parent: entity.node.canonical
-  route_name: edw_event.documents.settings
