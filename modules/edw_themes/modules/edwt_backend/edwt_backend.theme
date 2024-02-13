@@ -1,0 +1,33 @@
+<?php
+
+use Drupal\views\ViewExecutable;
+
+/**
+ * @file
+ * edwt_backend.theme
+ */
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function edwt_backend_theme_suggestions_views_view_table_alter(array &$suggestions, array $variables): void {
+  $view = $variables['view'];
+
+  // Add an extra check because the view could have been deleted.
+  if (!$view instanceof ViewExecutable) {
+    return;
+  }
+  $suggestions[] = 'views_view_table__' . $view->id();
+  $suggestions[] = 'views_view_table__' . $view->id() . '__' . $view->current_display;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function edwt_backend_theme_suggestions_form_alter(array &$suggestions, array $variables): void {
+  $routeMatch = \Drupal::routeMatch();
+  if (!empty($routeMatch->getParameter('view_id'))) {
+    $parameters = $routeMatch->getParameters()->all();
+    array_unshift($suggestions, 'form__views_form_' . $parameters['view_id'] . '_' . $parameters['display_id']);
+  }
+}
