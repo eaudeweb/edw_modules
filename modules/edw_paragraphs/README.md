@@ -10,6 +10,7 @@ The module provides the following paragraph types:
 ```php
 ├── edw_paragraphs
     ├── edw_paragraphs_accordion
+    ├── edw_paragraphs_announcement
     ├── edw_paragraphs_banner
     ├── edw_paragraphs_base
     ├── edw_paragraphs_block
@@ -51,6 +52,10 @@ components (e.g.: HTML, Card, Document) in one, two or more columns.
 ### Accordion
 The paragraph shows a collection of collapsible items. To get this paragraph
 type enable the EDW Paragraphs Accordion submodule.
+
+### Announcement
+Provides an Announcement block. To get this paragraph type enable the EDW 
+Paragraphs Announcement submodule.
 
 ### Banner
 Provides Banner paragraph that display a prominent message and related action.
