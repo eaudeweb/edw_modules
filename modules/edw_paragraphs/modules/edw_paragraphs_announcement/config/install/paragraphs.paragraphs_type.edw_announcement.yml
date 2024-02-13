@@ -5,5 +5,5 @@ id: edw_announcement
 label: Announcement
 icon_uuid: null
 icon_default: null
-description: ''
+description: 'Simple component used to create an announcement'
 behavior_plugins: {  }

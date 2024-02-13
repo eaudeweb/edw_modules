@@ -1,9 +1,9 @@
 EDW Paragraphs Announcement
 =============================================
 
-desc
+Provides a paragraph type that displays an announcement.
 
-#### Block Item
+#### Announcement
 | Field label | Field name  | Description | Field type                 | Cardinality | Required | Translatable | Widget        |
 |-------------|-------------|-------------|----------------------------|-------------|----------|--------------|---------------|
 | Title       | field_title | -           | Text                       | Single      | No       | Yes          | Text field    |
