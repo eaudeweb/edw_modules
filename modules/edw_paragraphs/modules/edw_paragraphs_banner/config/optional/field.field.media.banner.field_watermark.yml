@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_watermark
+    - media.type.banner
+id: media.banner.field_watermark
+field_name: field_watermark
+entity_type: media
+bundle: banner
+label: Photo
+description: ""
+required: false
+translatable: false
+default_value: {}
+default_value_callback: ""
+settings: {}
+field_type: string

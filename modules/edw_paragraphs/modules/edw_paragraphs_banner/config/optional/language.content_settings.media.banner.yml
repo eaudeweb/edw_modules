@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.banner
+id: media.banner
+target_entity_type_id: media
+target_bundle: banner
+default_langcode: site_default
+language_alterable: false

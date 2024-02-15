@@ -3,25 +3,26 @@ status: true
 dependencies:
   config:
     - field.storage.paragraph.field_media
-    - media.type.image
+    - media.type.banner
     - paragraphs.paragraphs_type.edw_banner
 id: paragraph.edw_banner.field_media
 field_name: field_media
 entity_type: paragraph
 bundle: edw_banner
-label: 'Image'
-description: ''
+label: Image
+description: ""
 required: true
 translatable: false
-default_value: {  }
-default_value_callback: ''
+default_value: {}
+default_value_callback: ""
 settings:
-  handler: 'default:media'
+  handler: "default:media"
   handler_settings:
     target_bundles:
-      image: image
+      banner: banner
     sort:
       field: _none
+      direction: ASC
     auto_create: false
     auto_create_bundle: image
 field_type: entity_reference
