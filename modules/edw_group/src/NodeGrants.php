@@ -29,6 +29,11 @@ class NodeGrants implements NodeAccessGrantsInterface {
   const EDW_DELETE_REALM = 'edw:group:delete';
 
   /**
+   * The global realm.
+   */
+  const GLOBAL_REALM = 'all';
+
+  /**
    * The meeting service.
    *
    * @var \Drupal\edw_group\Services\MeetingService
@@ -105,7 +110,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if (empty($groups)) {
       // If no groups are set, public access view should be permitted.
       $grants[] = [
-        'realm' => 'all',
+        'realm' => static::GLOBAL_REALM,
         'gid' => 0,
         'grant_view' => (int) $node->isPublished(),
         'grant_update' => 0,
