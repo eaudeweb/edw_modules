@@ -102,6 +102,17 @@ class NodeGrants implements NodeAccessGrantsInterface {
     }
     $grants = [];
     $groups = $this->meetingService->getNodeGroups($node, 'view');
+    if (empty($groups)) {
+      // If no groups are set, public access view should be permitted.
+      $grants[] = [
+        'realm' => 'all',
+        'gid' => 0,
+        'grant_view' => (int) $node->isPublished(),
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ];
+    }
+
     foreach ($groups as $group) {
       $grants[] = [
         'realm' => static::EDW_VIEW_REALM,
