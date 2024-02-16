@@ -3,6 +3,10 @@ services:
     class: Drupal\edw_event\Services\MeetingService
     arguments: [ '@entity_type.manager' ]
 
+  edw_event.meeting.documents.service:
+    class: Drupal\edw_event\Services\MeetingDocumentsService
+    arguments: [ '@entity_field.manager' ]
+
   edw_event.meeting.clone_subscriber:
     class: Drupal\edw_event\EventSubscriber\MeetingCloneSubscriber
     arguments: [ '@edw_event.meeting.service' ]

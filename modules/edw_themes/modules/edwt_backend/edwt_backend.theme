@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Url;
 use Drupal\views\ViewExecutable;
 
 /**
@@ -29,5 +31,32 @@ function edwt_backend_theme_suggestions_form_alter(array &$suggestions, array $v
   if (!empty($routeMatch->getParameter('view_id'))) {
     $parameters = $routeMatch->getParameters()->all();
     array_unshift($suggestions, 'form__views_form_' . $parameters['view_id'] . '_' . $parameters['display_id']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views table templates.
+ */
+function edwt_backend_preprocess_views_view_table(&$variables) {
+  // Functionality specific only for events
+  if (\Drupal::moduleHandler()->moduleExists('edw_event')) {
+    /** @var \Drupal\views\ViewExecutable $view */
+    $view = $variables['view'];
+    /** @var \Drupal\edw_event\Services\MeetingDocumentsService $meetingDocumentsService */
+    $meetingDocumentsService = \Drupal::service('edw_event.meeting.documents.service');
+    if ($view->id() == 'event_agendas'
+      && $view->current_display == 'pre_session_order'
+      && isset($variables['result'])) {
+      $firstResult = reset($variables['result']);
+      $phase = str_replace('_order', '', $view->current_display);
+      $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_entity, $phase);
+    }
+    if ($view->id() == 'documents'
+      && in_array($view->current_display, ['in_session_order', 'post_session_order'])
+      && isset($variables['result'])) {
+      $firstResult = reset($variables['result']);
+      $phase = str_replace('_order', '', $view->current_display);
+      $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_relationship_entities['field_agenda'], $phase);
+    }
   }
 }
