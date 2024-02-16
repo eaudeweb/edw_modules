@@ -1,0 +1,5 @@
+edw_event_agenda.meeting_agenda.settings:
+  title: 'Meeting agenda'
+  route_name: edw_event_agenda.meeting_agenda.settings
+  base_route: entity.node.canonical
+  weight: 50

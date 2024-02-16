@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\edw_event\Form;
+namespace Drupal\edw_event_agenda\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -70,7 +70,7 @@ class MeetingAgendaForm implements ContainerInjectionInterface {
    */
   public function formRedirect(array &$form, FormStateInterface $form_state) {
     $meetingId = $this->currentRequest->get('nid');
-    $form_state->setRedirect('edw_event.meeting_agenda.settings', ['node' => $meetingId]);
+    $form_state->setRedirect('edw_event_agenda.meeting_agenda.settings', ['node' => $meetingId]);
   }
 
 }

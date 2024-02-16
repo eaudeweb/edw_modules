@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\edw_event\Form;
+namespace Drupal\edw_event_agenda\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
