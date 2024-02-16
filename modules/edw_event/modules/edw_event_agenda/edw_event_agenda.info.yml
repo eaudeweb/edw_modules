@@ -1,0 +1,7 @@
+name: EDW Event Agenda
+description: Event agenda can be used to structure a general list of topics to be discussed during an event.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - edw_event:edw_event
