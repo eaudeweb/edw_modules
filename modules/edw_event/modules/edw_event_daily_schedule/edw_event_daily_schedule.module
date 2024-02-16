@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW Daily Schedule module.
+ */
+
+use Drupal\paragraphs\Entity\Paragraph;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave()
+ */
+function edw_event_daily_schedule_paragraph_presave(Paragraph $entity) {
+  $paragraphStorage = \Drupal::entityTypeManager()->getStorage('paragraph');
+  if ($entity->bundle() == 'edw_daily_schedule') {
+    $publishedChildren = $paragraphStorage->loadByProperties([
+      'parent_id' => $entity->id(),
+      'type' => 'edw_daily_schedule_item',
+      'status' => 1,
+    ]);
+    if (!empty($publishedChildren)) {
+      $entity->setPublished();
+      return;
+    }
+    $entity->setUnpublished();
+  }
+}
