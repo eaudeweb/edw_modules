@@ -14,6 +14,22 @@ edw_event.meeting_sections.settings:
           - event
     _admin_route: TRUE
 
+edw_event.meeting_agenda.settings:
+  path: '/node/{node}/agenda'
+  defaults:
+    _title: 'MMeeting agenda'
+    _entity_view: 'event_agendas.meeting_agenda'
+  requirements:
+    _entity_access: 'node.update'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE
+
 edw_event.documents.settings:
   path: '/node/{node}/documents'
   defaults:

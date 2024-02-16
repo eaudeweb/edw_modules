@@ -4,6 +4,12 @@ edw_event.meeting_sections.settings:
   base_route: entity.node.canonical
   weight: 50
 
+edw_event.meeting_agenda.settings:
+  title: 'Meeting agenda'
+  route_name: edw_event.meeting_agenda.settings
+  base_route: entity.node.canonical
+  weight: 50
+
 edw_event.documents.settings:
   title: 'Documents'
   route_name: edw_event.documents.settings
