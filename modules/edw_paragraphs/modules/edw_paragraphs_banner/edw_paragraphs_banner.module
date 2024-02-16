@@ -21,6 +21,7 @@ function edw_paragraphs_banner_preprocess_page(&$variables) {
     $paragraph = Paragraph::load($value['target_id']);
     if ($paragraph->getType() == 'edw_banner') {
       unset($variables['page']['hero']);
+      return;
     }
   }
 }
