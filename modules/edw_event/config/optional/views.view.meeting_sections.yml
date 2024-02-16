@@ -351,7 +351,18 @@ display:
           replica: false
           query_tags: {  }
       relationships: {  }
-      header: {  }
+      header:
+        area_text_custom:
+          id: area_text_custom
+          table: views
+          field: area_text_custom
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text_custom
+          empty: true
+          content: "<a class=\"button button--action button--primary\" \r\n    href=\"{{ url('node.add', { 'node_type': 'event_section', 'nid': arguments.field_event_target_id}) }}\">\r\n    {{ 'Add new meeting section'|t }}\r\n</a>"
+          tokenize: true
       footer: {  }
       display_extenders:
         jsonapi_views:

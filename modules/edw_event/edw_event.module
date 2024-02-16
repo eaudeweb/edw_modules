@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\edw_event\Form\MeetingAgendaForm;
 use Drupal\edw_event\Form\MeetingDocumentForm;
+use Drupal\edw_event\Form\MeetingSectionForm;
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -61,6 +62,11 @@ function edw_event_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 
   if ($form_id == 'taxonomy_term_event_agendas_form') {
     $classResolver->getInstanceFromDefinition(MeetingAgendaForm::class)
+      ->alter($form, $form_state);
+  }
+
+  if ($form_id == 'node_event_section_form') {
+    $classResolver->getInstanceFromDefinition(MeetingSectionForm::class)
       ->alter($form, $form_state);
   }
 }
