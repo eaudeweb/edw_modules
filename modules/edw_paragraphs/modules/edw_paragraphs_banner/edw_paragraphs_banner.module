@@ -11,11 +11,15 @@ use Drupal\paragraphs\Entity\Paragraph;
  * Implements hook_preprocess_page().
  */
 function edw_paragraphs_banner_preprocess_page(&$variables) {
-  if (!$variables['node']->hasField('field_paragraphs')) {
+  if (!empty($variables['node']) && $variables['node']->hasField('field_paragraphs')) {
     return;
   }
 
   $node = $variables['node'];
+
+  if ($node->field_paragraphs != null) {
+    return;
+  }
 
   foreach ($node->field_paragraphs->getValue() as $value) {
     $paragraph = Paragraph::load($value['target_id']);
