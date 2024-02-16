@@ -8,7 +8,7 @@ id: media.banner.field_watermark
 field_name: field_watermark
 entity_type: media
 bundle: banner
-label: Photo
+label: "Photo by"
 description: ""
 required: false
 translatable: false
