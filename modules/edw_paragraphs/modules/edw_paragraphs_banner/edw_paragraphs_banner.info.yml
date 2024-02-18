@@ -4,5 +4,5 @@ package: Eau de Web
 type: module
 core_version_requirement: ^9.4 || ^10
 dependencies:
-  - drupal:media_library
+  - edw_media:edw_media
   - edw_paragraphs:edw_paragraphs

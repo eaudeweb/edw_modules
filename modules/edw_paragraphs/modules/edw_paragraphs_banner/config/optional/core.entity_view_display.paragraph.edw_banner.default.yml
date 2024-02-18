@@ -2,24 +2,33 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.edw_banner.field_description
+    - field.field.paragraph.edw_banner.field_image
     - field.field.paragraph.edw_banner.field_link
-    - field.field.paragraph.edw_banner.field_media
     - field.field.paragraph.edw_banner.field_title
     - field.field.paragraph.edw_banner.field_variations
     - paragraphs.paragraphs_type.edw_banner
   module:
     - link
-    - text
+    - options
 id: paragraph.edw_banner.default
 targetEntityType: paragraph
 bundle: edw_banner
 mode: default
 content:
   field_description:
-    type: text_default
+    type: string
     label: hidden
-    settings: {}
+    settings:
+      link_to_entity: false
+    third_party_settings: {}
+    weight: 1
+    region: content
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: default
+      link: false
     third_party_settings: {}
     weight: 1
     region: content
@@ -52,5 +61,11 @@ content:
     third_party_settings: {}
     weight: 0
     region: content
-hidden:
-  field_variations: true
+  field_variations:
+    type: list_key
+    label: hidden
+    settings: {}
+    third_party_settings: {}
+    weight: 3
+    region: content
+hidden: {}
