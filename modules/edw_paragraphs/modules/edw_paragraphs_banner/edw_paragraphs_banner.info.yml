@@ -5,4 +5,5 @@ type: module
 core_version_requirement: ^9.4 || ^10
 dependencies:
   - edw_media:edw_media
+  - edw_media:edw_media_image
   - edw_paragraphs:edw_paragraphs
