@@ -1,0 +1,7 @@
+name: EDW Media (Experimental)
+description: This module provides a collection of useful media.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - drupal:media_library
