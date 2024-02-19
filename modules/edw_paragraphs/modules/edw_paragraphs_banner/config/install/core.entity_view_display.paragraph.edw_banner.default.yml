@@ -5,7 +5,7 @@ dependencies:
     - field.field.paragraph.edw_banner.field_image
     - field.field.paragraph.edw_banner.field_link
     - field.field.paragraph.edw_banner.field_title
-    - field.field.paragraph.edw_banner.field_variations
+    - field.field.paragraph.edw_banner.field_banner_variations
     - paragraphs.paragraphs_type.edw_banner
   module:
     - link
@@ -61,7 +61,7 @@ content:
     third_party_settings: {}
     weight: 0
     region: content
-  field_variations:
+  field_banner_variations:
     type: list_key
     label: hidden
     settings: {}

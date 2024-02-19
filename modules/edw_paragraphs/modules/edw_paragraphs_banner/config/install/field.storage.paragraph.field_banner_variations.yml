@@ -4,20 +4,19 @@ dependencies:
   module:
     - options
     - paragraphs
-id: paragraph.field_variations
-field_name: field_variations
+id: paragraph.field_banner_variations
+field_name: field_banner_variations
 entity_type: paragraph
 type: list_string
 settings:
   allowed_values:
-    -
-      value: variation1
-      label: 'Variation 1'
-  allowed_values_function: ''
+    - value: variation1
+      label: "Variation 1"
+  allowed_values_function: ""
 module: options
 locked: false
 cardinality: 1
 translatable: false
-indexes: {  }
+indexes: {}
 persist_with_no_fields: false
 custom_storage: false
