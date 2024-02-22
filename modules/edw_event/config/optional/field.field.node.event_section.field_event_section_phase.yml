@@ -1,4 +1,3 @@
-uuid: 45993c97-f5d6-4650-92ad-a331be8cedda
 langcode: en
 status: true
 dependencies:
@@ -14,7 +13,7 @@ bundle: event_section
 label: 'Meeting section type'
 description: ''
 required: false
-translatable: true
+translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
