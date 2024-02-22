@@ -1,7 +1,7 @@
 services:
   edw_event.meeting.service:
     class: Drupal\edw_event\Services\MeetingService
-    arguments: [ '@entity_type.manager' ]
+    arguments: [ '@entity_type.manager', '@database' ]
 
   edw_event.meeting.documents.service:
     class: Drupal\edw_event\Services\MeetingDocumentsService

@@ -40,7 +40,7 @@ function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form
 
   /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
   $meetingService = \Drupal::service('edw_event.meeting.service');
-  $sections = $meetingService->getAllMeetingSections($node);
+  $sections = $meetingService->getAllMeetingSections($node, FALSE);
   foreach ($sections as $section) {
     $form['meeting_sections_status'][$section->id()] = [
       '#type' => 'checkbox',

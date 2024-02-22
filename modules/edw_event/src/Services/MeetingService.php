@@ -2,7 +2,7 @@
 
 namespace Drupal\edw_event\Services;
 
-use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
 
@@ -23,17 +23,19 @@ class MeetingService {
    *
    * @var \Drupal\Core\Database\Connection
    */
-  protected $database;
+  protected $connection;
 
   /**
    * The MeetingService constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   A database connection.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection) {
     $this->nodeStorage = $entityTypeManager->getStorage('node');
-    $this->database = \Drupal::database();
+    $this->connection = $connection;
   }
 
   /**
@@ -41,57 +43,81 @@ class MeetingService {
    *
    * @param \Drupal\node\NodeInterface $meeting
    *   The meeting.
+   * @param bool $checkStatus
+   *   (optional) Indicates that access check and status are required.
    *
    * @return \Drupal\Core\Entity\EntityInterface[]
    *   The meeting sections.
    */
-  public function getAllMeetingSections(NodeInterface $meeting) {
-    return $this->nodeStorage->loadByProperties([
-      'type' => 'event_section',
-      'field_event' => $meeting->id(),
-    ]);
+  public function getAllMeetingSections(NodeInterface $meeting, bool $checkStatus) {
+    $ids = $this->getAllMeetingSectionsIds($meeting, $checkStatus);
+    return $this->nodeStorage->loadMultiple($ids);
   }
 
   /**
-   * Get the weight of a given meeting section.
+   * Get all event sections IDs for a meeting.
    *
-   * @param \Drupal\Core\Entity\EntityInterface $meetingSection
-   *   The meeting section node.
+   * @param \Drupal\node\NodeInterface $meeting
+   *   The meeting.
+   * @param bool $checkStatus
+   *   (optional) Indicates that access check and status are required.
    *
-   * @return int|mixed
-   *   Returns the weight of the meeting section from the database.
+   * @return array
+   *   The meeting sections ids as array.
    */
-  function getMeetingSectionWeight(EntityInterface $meetingSection) {
-    $query = \Drupal::database()->select('draggableviews_structure', 'd')
-      ->fields('d', ['weight'])
-      ->condition('view_name', 'meeting_sections')
-      ->condition('view_display', 'order_meeting_sections')
-      ->condition('entity_id', $meetingSection->id())
-      ->execute()
-      ->fetchCol();
-    return $query[0] ?? 0;
-  }
-
-  /**
-   * Build the URL to the first meeting section of a given meeting.
-   *
-   * @param \Drupal\node\NodeInterface $entity
-   *   The meeting entity.
-   *
-   * @return string
-   *   The URL of the first meeting section or empty string.
-   */
-  public function getMeetingUrl(NodeInterface $entity) {
-    $meetingSections = $this->getAllMeetingSections($entity);
-    $sortedSections = [];
-    foreach ($meetingSections as $meetingSection) {
-      $weight = $this->getMeetingSectionWeight($meetingSection);
-      $sortedSections[$meetingSection->toUrl()->toString()] = intval($weight);
+  public function getAllMeetingSectionsIds(NodeInterface $meeting, bool $checkStatus) {
+    $ids = $this->nodeStorage->getQuery()
+      ->accessCheck($checkStatus)
+      ->condition('type', 'event_section')
+      ->condition('field_event', $meeting->id());
+    if ($checkStatus) {
+      $ids->condition('status', 1);
     }
-
-    asort($sortedSections);
-    return key($sortedSections);
+    return $ids->execute();
   }
 
+  /**
+   * Loads one or more sections.
+   *
+   * @param array $ids
+   *   An array of entity IDs.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   An array of entity objects indexed by their IDs. Returns an empty array
+   *   if no matching entities are found.
+   */
+  public function loadMultipleSections(array $ids) {
+    return $this->nodeStorage->loadMultiple($ids);
+  }
+
+  /**
+   * Get sections for a meeting, ordered.
+   *
+   * @param int|string $meetingId
+   *   The meeting id.
+   * @param string $view_name
+   *   The view name to check against.
+   * @param string $view_display
+   *   The ID of the active view's display.
+   * @param array $ids
+   *   Array with entity ids.
+   *
+   * @return array
+   *   Array with agenda items ids ordered by weight.
+   */
+  public function orderMeetingAgendaIds(int|string $meetingId, string $view_name, string $view_display, array $ids = []): array {
+    $args = json_encode([$meetingId]);
+    $query = $this->connection->select('draggableviews_structure', 'd')
+      ->fields('d', ['entity_id'])
+      ->condition('view_name', $view_name)
+      ->condition('view_display', $view_display)
+      ->condition('d.args', $args);
+    if ($ids) {
+      $query->condition('d.entity_id', $ids, 'IN');
+    }
+    $query->orderBy('d.weight');
+    // Draggableviews doesn't store the new items unless the form is saved.
+    return array_unique(array_merge_recursive($query->execute()->fetchCol(), $ids));
+  }
 
 }

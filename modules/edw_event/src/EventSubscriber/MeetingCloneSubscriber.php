@@ -43,7 +43,7 @@ class MeetingCloneSubscriber implements EventSubscriberInterface {
     }
     $original = $event->getEntity();
     // Get all sections from the original meeting.
-    $originalSections = $this->meetingService->getAllMeetingSections($original);
+    $originalSections = $this->meetingService->getAllMeetingSections($original, FALSE);
     // Get the cloned meeting.
     $newEntity = $event->getClonedEntity();
     /** @var \Drupal\node\Entity\Node $section */
