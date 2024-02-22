@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Meeting agendas'
+vid: event_agendas
+description: ''
+weight: 0

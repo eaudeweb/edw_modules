@@ -1,14 +1,14 @@
 <?php
 
-namespace Drupal\edw_event\Services;
+namespace Drupal\edw_event_agenda\Services;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * The Meeting service class.
  */
-class MeetingService {
+class MeetingAgendaService {
 
   /**
    * The node storage.
@@ -18,6 +18,13 @@ class MeetingService {
   protected $nodeStorage;
 
   /**
+   * The term storage.
+   *
+   * @var \Drupal\taxonomy\TermStorageInterface
+   */
+  protected $termStorage;
+
+  /**
    * The MeetingService constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -25,20 +32,21 @@ class MeetingService {
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->nodeStorage = $entityTypeManager->getStorage('node');
+    $this->termStorage = $entityTypeManager->getStorage('taxonomy_term');
   }
 
   /**
-   * Get all event sections for a meeting.
+   * Get agenda for a meeting.
    *
    * @param \Drupal\node\NodeInterface $meeting
    *   The meeting.
    *
    * @return \Drupal\Core\Entity\EntityInterface[]
-   *   The meeting sections.
+   *   Agenda for a meeting.
    */
-  public function getAllMeetingSections(NodeInterface $meeting) {
-    return $this->nodeStorage->loadByProperties([
-      'type' => 'event_section',
+  public function getAllMeetingAgendas(NodeInterface $meeting) {
+    return $this->termStorage->loadByProperties([
+      'vid' => 'event_agendas',
       'field_event' => $meeting->id(),
     ]);
   }

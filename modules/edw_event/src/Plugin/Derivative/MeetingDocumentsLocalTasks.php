@@ -3,10 +3,10 @@
 namespace Drupal\edw_event\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\edw_event\Services\MeetingDocumentsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -17,11 +17,11 @@ class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriver
   use StringTranslationTrait;
 
   /**
-   * The entity field manager.
+   * The meeting document service.
    *
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   * @var \Drupal\edw_event\Services\MeetingDocumentsService
    */
-  protected $entityFieldManager;
+  protected $meetingDocuments;
 
   /**
    * The module handler.
@@ -33,13 +33,13 @@ class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriver
   /**
    * Constructs a new MeetingDocumentsLocalTasks object.
    *
-   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
-   *   The entity field manager.
+   * @param \Drupal\edw_event\Services\MeetingDocumentsService $meeting_documents
+   *   The meeting document service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler service.
    */
-  public function __construct(EntityFieldManagerInterface $entity_field_manager, ModuleHandlerInterface $module_handler) {
-    $this->entityFieldManager = $entity_field_manager;
+  public function __construct(MeetingDocumentsService $meeting_documents, ModuleHandlerInterface $module_handler) {
+    $this->meetingDocuments = $meeting_documents;
     $this->moduleHandler = $module_handler;
   }
 
@@ -48,7 +48,7 @@ class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriver
    */
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
-      $container->get('entity_field.manager'),
+      $container->get('edw_event.meeting.documents.service'),
       $container->get('module_handler')
     );
   }
@@ -59,7 +59,8 @@ class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriver
    * @SuppressWarnings(PHPMD.LongVariable)
    */
   public function getDerivativeDefinitions($base_plugin_definition) {
-    $tabs = $this->getLocalSubTasks();
+    $tabs = $this->meetingDocuments->getDocumentPhases();
+    $this->moduleHandler->alter('meeting_documents_phase', $tabs);
     $weight = 1;
     foreach ($tabs as $id => $title) {
       $this->derivatives["edw_event.documents.$id"] = [
@@ -72,24 +73,6 @@ class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriver
     $this->moduleHandler->alter('meeting_documents_local_tasks', $this->derivatives);
 
     return $this->derivatives;
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @todo Move this later in MeetingService because is called twice.
-   */
-  protected function getLocalSubTasks() {
-    $tabs = [];
-    $fieldName = 'field_document_phase';
-    $field_definitions = $this->entityFieldManager->getFieldDefinitions('media', 'document');
-    if (isset($field_definitions[$fieldName])) {
-      /** @var \Drupal\field\Entity\FieldConfig $field_definition */
-      $field_definition = $field_definitions[$fieldName];
-      $tabs = $field_definition->getFieldStorageDefinition()->getSetting('allowed_values');
-    }
-    $this->moduleHandler->alter('meeting_documents_phase', $tabs);
-    return $tabs;
   }
 
 }

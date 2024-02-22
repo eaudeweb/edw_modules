@@ -5,6 +5,7 @@ namespace Drupal\edw_event\Routing;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\edw_event\Services\MeetingDocumentsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -18,11 +19,11 @@ use Symfony\Component\Routing\RouteCollection;
 class ManageDocumentsRoutes implements ContainerInjectionInterface {
 
   /**
-   * The entity field manager.
+   * The meeting document service.
    *
-   * @var \Drupal\Core\Entity\EntityFieldManagerInterface
+   * @var \Drupal\edw_event\Services\MeetingDocumentsService
    */
-  protected $entityFieldManager;
+  protected $meetingDocuments;
 
   /**
    * The module handler.
@@ -34,13 +35,13 @@ class ManageDocumentsRoutes implements ContainerInjectionInterface {
   /**
    * Constructs a new Routes object.
    *
-   * @param \Drupal\Core\Entity\EntityFieldManagerInterface $entity_field_manager
-   *   The entity field manager.
+   * @param \Drupal\edw_event\Services\MeetingDocumentsService $meeting_documents
+   *    The entity field manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler service.
+   *   The meeting document service.
    */
-  public function __construct(EntityFieldManagerInterface $entity_field_manager, ModuleHandlerInterface $module_handler) {
-    $this->entityFieldManager = $entity_field_manager;
+  public function __construct(MeetingDocumentsService $meeting_documents, ModuleHandlerInterface $module_handler) {
+    $this->meetingDocuments = $meeting_documents;
     $this->moduleHandler = $module_handler;
   }
 
@@ -49,7 +50,7 @@ class ManageDocumentsRoutes implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_field.manager'),
+      $container->get('edw_event.meeting.documents.service'),
       $container->get('module_handler')
     );
   }
@@ -62,7 +63,9 @@ class ManageDocumentsRoutes implements ContainerInjectionInterface {
    */
   public function routes() {
     $routes = new RouteCollection();
-    foreach ($this->getDocumentPhase() as $phase => $title) {
+    $phases = $this->meetingDocuments->getDocumentPhases();
+    $this->moduleHandler->alter('meeting_documents_phase', $phases);
+    foreach ($phases as $phase => $title) {
       $path = str_replace('_', '-', $phase);
       $route = new Route("/node/{node}/documents/{$path}");
 
@@ -84,24 +87,6 @@ class ManageDocumentsRoutes implements ContainerInjectionInterface {
     }
 
     return $routes;
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @todo Move this later in MeetingService because is called twice.
-   */
-  protected function getDocumentPhase() {
-    $phase = [];
-    $fieldName = 'field_document_phase';
-    $field_definitions = $this->entityFieldManager->getFieldDefinitions('media', 'document');
-    if (isset($field_definitions[$fieldName])) {
-      /** @var \Drupal\field\Entity\FieldConfig $field_definition */
-      $field_definition = $field_definitions[$fieldName];
-      $phase = $field_definition->getFieldStorageDefinition()->getSetting('allowed_values');
-    }
-    $this->moduleHandler->alter('meeting_documents_phase', $phase);
-    return $phase;
   }
 
 }
