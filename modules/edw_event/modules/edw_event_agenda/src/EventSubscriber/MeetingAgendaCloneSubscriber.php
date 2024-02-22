@@ -5,6 +5,7 @@ namespace Drupal\edw_event_agenda\EventSubscriber;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\entity_clone\Event\EntityCloneEvent;
 use Drupal\entity_clone\Event\EntityCloneEvents;
+use Drupal\node\NodeInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -37,6 +38,10 @@ class MeetingAgendaCloneSubscriber implements EventSubscriberInterface {
    * @see \Drupal\entity_clone\Event\EntityCloneEvents::POST_CLONE
    */
   public function postCloneMeetingAgenda(EntityCloneEvent $event): void {
+    $entity = $event->getEntity();
+    if (!$entity instanceof NodeInterface || $entity->bundle() != 'event') {
+      return;
+    }
     $properties = $event->getProperties();
     $agendas = array_filter($properties['referenced']['meeting_agenda'], function ($value) {
       return $value == TRUE;
