@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_event_section_phase
+    - node.type.event_section
+  module:
+    - options
+id: node.event_section.field_event_section_phase
+field_name: field_event_section_phase
+entity_type: node
+bundle: event_section
+label: 'Meeting section type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
