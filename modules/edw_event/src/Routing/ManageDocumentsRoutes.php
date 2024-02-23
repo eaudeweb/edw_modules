@@ -3,7 +3,6 @@
 namespace Drupal\edw_event\Routing;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\edw_event\Services\MeetingDocumentsService;
 use Symfony\Component\DependencyInjection\ContainerInterface;

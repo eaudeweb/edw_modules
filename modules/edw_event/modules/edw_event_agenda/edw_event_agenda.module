@@ -31,7 +31,7 @@ function edw_event_agenda_form_entity_clone_form_alter(&$form, FormStateInterfac
 
   /** @var \Drupal\edw_event_agenda\Services\MeetingAgendaService $agendaService */
   $agendaService = \Drupal::service('edw_event_agenda.meeting.agenda.service');
-  $agendas = $agendaService->getAllMeetingAgendas($node);
+  $agendas = $agendaService->getAllMeetingAgendas($node, FALSE);
   foreach ($agendas as $agenda) {
     $form['referenced']['meeting_agenda'][$agenda->id()] = [
       '#type' => 'checkbox',
