@@ -59,7 +59,7 @@ class MeetingAgendaService {
    */
   public function getAllMeetingAgendas(NodeInterface $meeting, bool $checkStatus) {
     $ids = $this->getMeetingAgendaIds($meeting->id(), $checkStatus);
-    return $this->nodeStorage->loadMultiple($ids);
+    return $this->termStorage->loadMultiple($ids);
   }
 
   /**
