@@ -1,0 +1,34 @@
+edw_event.meeting_sections.settings:
+  path: '/node/{node}/reorder-sections'
+  defaults:
+    _title: 'Meeting sections'
+    _entity_view: 'meeting_sections.order_meeting_sections'
+  requirements:
+    _entity_access: 'node.update'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE
+
+edw_event.documents.settings:
+  path: '/node/{node}/documents'
+  defaults:
+    _title: 'Manage Documents'
+    _controller: '\Drupal\edw_event\Controller\ManageDocumentsController::blankPage'
+  requirements:
+    _entity_access: 'node.update'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE
+
+route_callbacks:
+  - '\Drupal\edw_event\Routing\ManageDocumentsRoutes::routes'

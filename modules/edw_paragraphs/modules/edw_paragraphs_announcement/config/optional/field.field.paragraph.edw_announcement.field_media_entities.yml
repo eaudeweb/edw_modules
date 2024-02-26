@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_media_entities
+    - media.type.document
+    - paragraphs.paragraphs_type.edw_announcement
+id: paragraph.edw_announcement.field_media_entities
+field_name: field_media_entities
+entity_type: paragraph
+bundle: edw_announcement
+label: Documents
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      document: document
+    sort:
+      field: created
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

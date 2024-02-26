@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW Event Agenda module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function edw_event_agenda_form_entity_clone_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  /** @var \Drupal\node\Entity\Node $node */
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface || $node->bundle() != 'event') {
+    return;
+  }
+
+  if (!isset($form['referenced'])) {
+    $form['referenced'] = [
+      '#tree' => TRUE,
+    ];
+  }
+
+  $form['referenced']['meeting_agenda'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Clone meeting agenda.'),
+  ];
+
+  /** @var \Drupal\edw_event_agenda\Services\MeetingAgendaService $agendaService */
+  $agendaService = \Drupal::service('edw_event_agenda.meeting.agenda.service');
+  $agendas = $agendaService->getAllMeetingAgendas($node, FALSE);
+  foreach ($agendas as $agenda) {
+    $form['referenced']['meeting_agenda'][$agenda->id()] = [
+      '#type' => 'checkbox',
+      '#title' => $agenda->getName(),
+      '#default_value' => TRUE,
+    ];
+  }
+}

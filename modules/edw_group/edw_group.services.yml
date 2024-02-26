@@ -1,0 +1,10 @@
+services:
+  edw_group.meeting:
+    class: Drupal\edw_group\Services\MeetingService
+    arguments: ['@entity_type.manager', '@logger.factory', '@entity_field.manager']
+
+  edw_group.node_grants:
+    class: 'Drupal\edw_group\NodeGrants'
+    arguments: ['@edw_group.meeting']
+    tags:
+      - { name: node_access_grants }

@@ -1,0 +1,10 @@
+services:
+  edw_event_agenda.meeting.agenda.service:
+    class: Drupal\edw_event_agenda\Services\MeetingAgendaService
+    arguments: [ '@entity_type.manager', '@database' ]
+
+  edw_event_agenda.meeting.agenda.clone_subscriber:
+    class: Drupal\edw_event_agenda\EventSubscriber\MeetingAgendaCloneSubscriber
+    arguments: [ '@entity_type.manager' ]
+    tags:
+      - { name: event_subscriber }

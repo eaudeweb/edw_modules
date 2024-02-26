@@ -1,0 +1,5 @@
+# Libraries for the configuration the Eau de Web Backend theme.
+select2.theme:
+  css:
+    component:
+      css/select2.edwt_backend.css: {}

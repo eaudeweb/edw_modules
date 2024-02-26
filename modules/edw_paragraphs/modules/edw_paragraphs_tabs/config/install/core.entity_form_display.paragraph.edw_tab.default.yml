@@ -1,0 +1,33 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - paragraphs.paragraphs_type.edw_tab
+  module:
+    - entity_reference_revisions
+id: paragraph.edw_tab.default
+targetEntityType: paragraph
+bundle: edw_tab
+mode: default
+content:
+  field_paragraphs:
+    type: entity_reference_revisions_autocomplete
+    weight: 1
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ""
+    third_party_settings: {}
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ""
+    third_party_settings: {}
+hidden:
+  created: true
+  status: true
