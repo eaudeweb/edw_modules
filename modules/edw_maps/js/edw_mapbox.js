@@ -15,6 +15,10 @@
                         const countryColor = settings.edw_map.countryColor;
                         const areaColor = settings.edw_map.areaColor;
                         const clearMapSource = settings.edw_map.clearMapSource;
+                        const maxZoom = settings.edw_map.maxZoom;
+                        let hoverCountryColor = settings.edw_map.countryHoverColor;
+                        let hoverAreaColor = settings.edw_map.areaHoverColor;
+                        const hoverPopups = settings.edw_map.hoverPopups;
                         const baseCountryCarto = ['rgb', 237, 237, 237];
                         const lineCarto = ['rgb', 165, 165, 165];
 
@@ -46,7 +50,7 @@
                             style: getMapStyle(), // map style url
                             center: settings.edw_map.center, // starting position
                             zoom: settings.edw_map.zoom, // starting zoom
-                            maxZoom: mapType === 'clear_map' ? 5 : undefined,
+                            maxZoom: maxZoom,
                             pitch: settings.edw_map.pitch, // angle towards the horizon,
                             cooperativeGestures: true,
                             renderWorldCopies: settings.edw_map.worldCopies,
@@ -129,8 +133,14 @@
 
                         // Ads layers used for highlighting countries/areas.
                         function addMapExtraLayers() {
-                            let darkerCountryColor = lightenColor(countryColor, 20);
-                            let darkerAreaColor = lightenColor(areaColor, 20);
+                            if (hoverCountryColor === null || hoverCountryColor.length === 0) {
+                                hoverCountryColor = lightenColor(countryColor, 20);
+                            }
+
+                            if (hoverAreaColor === null || hoverAreaColor.length === 0) {
+                                hoverAreaColor = lightenColor(areaColor, 20);
+                            }
+
                             let baseLayer = null;
 
                             switch (mapType) {
@@ -153,10 +163,10 @@
                                             'fill-color': [ // Colors state borders.
                                                 'case',
                                                 ['boolean', ['feature-state', 'hover'], false],
-                                                '#' + darkerCountryColor,
+                                                '#' + hoverCountryColor,
                                                 '#' + countryColor,
                                             ],
-                                            'fill-outline-color': '#' + darkerCountryColor,
+                                            'fill-outline-color': '#' + hoverCountryColor,
                                             'fill-opacity': 0,
                                         },
                                     },
@@ -172,12 +182,14 @@
                                             'source-layer': sourceLayer,
                                             type: 'fill',
                                             paint: {
-                                                'fill-color': '#' + darkerCountryColor,
+                                                'fill-color': '#' + hoverCountryColor,
                                                 'fill-opacity': 0,
                                             },
                                         },
                                         baseLayer
                                     );
+
+                                    map.setFilter('country-boundaries-highlight', ['==', ['get', 'ISO3CD'], null]);
                                 }
                             }
 
@@ -200,8 +212,8 @@
                                         'type': 'fill',
                                         'source': 'areas',
                                         'paint': {
-                                            'fill-color': '#' + darkerAreaColor,
-                                            'fill-outline-color': '#' + darkerAreaColor,
+                                            'fill-color': '#' + hoverAreaColor,
+                                            'fill-outline-color': '#' + hoverAreaColor,
                                             'fill-opacity': 0,
                                         }
                                     },
@@ -320,7 +332,7 @@
                             }
 
                             const supercluster = new Supercluster({
-                                maxZoom: mapType === 'clear_map' ? 4 : 16,
+                                maxZoom: maxZoom - 1,
                             });
                             supercluster.load(featurePoints);
 
@@ -366,7 +378,9 @@
                             } else {
                                 cartotileMoseEvents();
                             }
-                            map.on('click', 'country-boundaries', openCountryPopup);
+                            if (!hoverPopups) {
+                                map.on('click', 'country-boundaries', openCountryPopup);
+                            }
                         }
 
                         // Open highlighted country popup at click.
@@ -383,7 +397,11 @@
                                     currentPopup = null;
                                 }
 
-                                currentPopup = new mapboxgl.Popup()
+                                currentPopup = new mapboxgl.Popup(
+                                    {
+                                        closeButton: !hoverPopups,
+                                        closeOnClick: !hoverPopups
+                                    })
                                     .setLngLat(e.lngLat)
                                     .setHTML(data.popup)
                                     .addTo(map);
@@ -413,6 +431,9 @@
                                 {source: 'boundaries', sourceLayer: sourceLayer, id: hoveredStateId},
                                 {hover: true}
                             );
+                            if (hoverPopups) {
+                                openCountryPopup(e);
+                            }
                         }
 
                         function hoverOutCountryCursor() {
@@ -424,6 +445,10 @@
                                 );
                             }
                             hoveredStateId = null;
+                            if (hoverPopups && currentPopup) {
+                                currentPopup.remove();
+                                currentPopup = null;
+                            }
                         }
 
                         // Sets mose events on a new layer because carto-tile features have no id.
@@ -437,11 +462,19 @@
                                 map.getCanvas().style.cursor = 'pointer';
                                 map.setFilter('country-boundaries-highlight', ['==', ['get', 'ISO3CD'], iso3Code]);
                                 map.setPaintProperty('country-boundaries-highlight', 'fill-opacity', 1);
+                                if (hoverPopups) {
+                                    openCountryPopup(e);
+                                }
                             });
 
                             map.on('mouseleave', 'country-boundaries-highlight', () => {
                                 map.getCanvas().style.cursor = 'default';
+                                map.setFilter('country-boundaries-highlight', ['==', ['get', 'ISO3CD'], null]);
                                 map.setPaintProperty('country-boundaries-highlight', 'fill-opacity', 0);
+                                if (hoverPopups && currentPopup) {
+                                    currentPopup.remove();
+                                    currentPopup = null;
+                                }
                             })
                         }
 
@@ -458,12 +491,34 @@
                                 map.setPaintProperty('areas-highlight-layer', 'fill-opacity', opacity);
                                 map.getCanvas().style.cursor = 'pointer';
                                 e.originalEvent.stopPropagation();
+                                if (hoverPopups) {
+                                    if (currentPopup) {
+                                        currentPopup.remove();
+                                        currentPopup = null;
+                                    }
+
+                                    currentPopup = new mapboxgl.Popup({
+                                        closeButton: !hoverPopups,
+                                        closeOnClick: !hoverPopups
+                                    })
+                                        .setLngLat(e.lngLat)
+                                        .setHTML(popup)
+                                        .addTo(map);
+                                }
                             });
 
                             map.on('mouseleave', 'areas-highlight-layer', () => {
                                 map.getCanvas().style.cursor = 'default';
                                 map.setPaintProperty('areas-highlight-layer', 'fill-opacity', 0);
+                                if (hoverPopups && currentPopup) {
+                                    currentPopup.remove();
+                                    currentPopup = null;
+                                }
                             })
+
+                            if (hoverPopups) {
+                                return;
+                            }
 
                             map.on('click', 'areas-layer', (e) => {
                                 let popup = e.features[0].properties.popup;
@@ -472,7 +527,10 @@
                                         currentPopup.remove();
                                         currentPopup = null;
                                     }
-                                    currentPopup = new mapboxgl.Popup()
+                                    currentPopup = new mapboxgl.Popup({
+                                        closeButton: !hoverPopups,
+                                        closeOnClick: !hoverPopups
+                                    })
                                         .setLngLat(e.lngLat)
                                         .setHTML(popup)
                                         .addTo(map);
@@ -489,7 +547,7 @@
                                     sources: {
                                         'clear-map-source': {
                                             type: 'raster',
-                                            tiles: ['https://geoservices.un.org/arcgis/rest/services/ClearMap_WebTopo/MapServer/tile/{z}/{y}/{x}'],
+                                            tiles: ['https://geoservices.un.org/arcgis/rest/services/ClearMap_WebPlain/MapServer/tile/{z}/{y}/{x}'],
                                             tileSize: 256,
                                             minzoom: 0,
                                             maxzoom: 18

@@ -69,17 +69,22 @@ class MapboxMapStyle extends StylePluginBase {
    */
   private EdwMapsDataService $edwMapsDataService;
 
+  const COLORS = [
+    'country' => ['country_color', 'country_hover_color'],
+    'area' => ['area_color', 'area_hover_color'],
+  ];
+
   /**
    * Plugin constructor.
    */
   public function __construct(
-    array $configuration,
-          $plugin_id,
-          $plugin_definition,
-    ConfigFactory $configFactory,
+    array                       $configuration,
+                                $plugin_id,
+                                $plugin_definition,
+    ConfigFactory               $configFactory,
     EntityFieldManagerInterface $fieldTypeManager,
-    FormBuilder $formBuilder,
-    EdwMapsDataService $edwMapsDataService
+    FormBuilder                 $formBuilder,
+    EdwMapsDataService          $edwMapsDataService
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->configFactory = $configFactory;
@@ -199,6 +204,11 @@ class MapboxMapStyle extends StylePluginBase {
       $areaData = $this->edwMapsDataService->getAreaData($view, $areaSourceField, $popupAreaSourceField);
     }
 
+    $maxZoom = isset($options['display_options']['max_zoom']) ? (int) $options['display_options']['max_zoom'] : 22;
+    if ($options['tile_options']['map_type'] == 'clear_map' && $maxZoom > 5) {
+      $maxZoom = 5;
+    }
+
     $settings = [
       'containerId' => $containerId,
       'mapboxToken' => $config->get('token'),
@@ -211,14 +221,18 @@ class MapboxMapStyle extends StylePluginBase {
       ],
       'pitch' => (float) $options['display_options']['pitch'],
       'zoom' => (float) $options['display_options']['zoom'],
+      'maxZoom' => $maxZoom,
       'disableScrollZoom' => (boolean) $options['display_options']['disable_scroll_zoom'],
       'worldCopies' => (boolean) $options['display_options']['world_copies'],
       'renderClusters' => (boolean) $options['display_options']['clusters'],
+      'hoverPopups' => (boolean) $options['display_options']['hover_popups'],
       'renderPins' => $renderPins,
       'renderCountries' => $renderCountries,
       'renderAreas' => $renderAreas,
       'countryColor' => $options['rendering_options']['country_color'],
+      'countryHoverColor' => $options['rendering_options']['country_hover_color'],
       'areaColor' => $options['rendering_options']['area_color'],
+      'areaHoverColor' => $options['rendering_options']['area_hover_color'],
       'pinData' => $pinData,
       'countryData' => $countryData,
       'areaData' => $areaData,
@@ -338,15 +352,14 @@ class MapboxMapStyle extends StylePluginBase {
       $formState->setErrorByName('style_options][display_options][center][long', $this->t('Longitude value is wrong.'));
     }
 
-    $countryColor = $values['rendering_options']['country_color'];
-    $areaColor = $values['rendering_options']['area_color'];
-
-    if (!empty($countryColor) && !$this->isValidHexColor($countryColor)) {
-      $formState->setErrorByName('style_options][rendering_options][country_color', $this->t('Invalid HEX color for country.'));
-    }
-
-    if (!empty($areaColor) && !$this->isValidHexColor($areaColor)) {
-      $formState->setErrorByName('style_options][rendering_options][area_color', $this->t('Invalid HEX color for area.'));
+    foreach (self::COLORS as $category => $fields) {
+      foreach ($fields as $field) {
+        $value = $values['rendering_options'][$field];
+        if (!empty($value) && !$this->isValidHexColor($value)) {
+          $formState->setErrorByName("style_options][rendering_options][$field",
+            $this->t('Invalid HEX color for @category.', ['@category' => $category]));
+        }
+      }
     }
   }
 

@@ -80,6 +80,19 @@ trait EdwMapsElementsTrait {
         ],
       ],
     ];
+
+    $form['tile_options']['clear_map_disclaimer'] = [
+      '#type' => 'container',
+      'message' => [
+        '#type' => 'markup',
+        '#markup' => $this->t('<div class="warning"">Clear map has a maximum zoom level of 5. Some pins may appear <b> overlapped </b> even at maximum zoom.'),
+      ],
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[tile_options][map_type]"]' => ['value' => 'clear_map'],
+        ],
+      ],
+    ];
   }
 
   /**
@@ -216,6 +229,34 @@ trait EdwMapsElementsTrait {
         ],
       ],
     ];
+
+    $form['rendering_options']['area_hover_color'] = [
+      '#title' => $this->t('Hover color to highlight areas (HEX)'),
+      '#description' => $this->t('If not set a lighter shade of main color will be used.'),
+      '#type' => 'textfield',
+      '#default_value' => $this->options['rendering_options']['area_hover_color'] ?? NULL,
+      '#field_prefix' => '#',
+      '#required' => FALSE,
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[rendering_options][render_items][area]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
+    $form['rendering_options']['country_hover_color'] = [
+      '#title' => $this->t('Hover Color to highlight countries (HEX)'),
+      '#description' => $this->t('If not set a lighter shade of main color will be used.'),
+      '#type' => 'textfield',
+      '#default_value' => $this->options['rendering_options']['country_hover_color'] ?? NULL,
+      '#field_prefix' => '#',
+      '#required' => FALSE,
+      '#states' => [
+        'visible' => [
+          ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
   }
 
   /**
@@ -301,6 +342,18 @@ trait EdwMapsElementsTrait {
       '#required' => TRUE,
     ];
 
+    $form['display_options']['max_zoom'] = [
+      '#title' => $this->t('Maximum zoom'),
+      '#type' => 'number',
+      '#min' => 0,
+      '#max' => 22,
+      '#step' => 1,
+      '#default_value' => $this->options['display_options']['max_zoom'] ?? 22,
+      '#required' => FALSE,
+      '#description' => $this->t('<b>Do not change this unless you really need it!</b> It also affects the maximum level of pin clustering, so you can see overlapping pins.</br>
+If Clear Map is use the max zoom level will be<b> 5 </b>unless you select a lower value.'),
+    ];
+
     $form['display_options']['pitch'] = [
       '#title' => $this->t('Pitch'),
       '#description' => $this->t('Angle towards the horizon'),
@@ -317,13 +370,13 @@ trait EdwMapsElementsTrait {
       '#title' => $this->t('Default map center'),
       '#description' => $this->t('The reference longitude and latitude of the projection between -180-90 and 18090 inclusive.'),
       'long' => [
-        '#title' => 'Longitude',
+        '#title' => $this->t('Longitude'),
         '#type' => 'textfield',
         '#default_value' => $this->options['display_options']['center']['long'] ?? 0,
         '#required' => TRUE,
       ],
       'lat' => [
-        '#title' => 'Latitude',
+        '#title' => $this->t('Latitude'),
         '#type' => 'textfield',
         '#default_value' => $this->options['display_options']['center']['lat'] ?? 0,
         '#required' => TRUE,
@@ -332,25 +385,44 @@ trait EdwMapsElementsTrait {
 
     $form['display_options']['disable_scroll_zoom'] = [
       '#type' => 'checkbox',
-      '#title' => 'Disable scroll zoom',
+      '#title' => $this->t('Disable scroll zoom'),
       '#default_value' => $this->options['display_options']['disable_scroll_zoom'] ?? 0,
     ];
 
     $form['display_options']['world_copies'] = [
       '#type' => 'checkbox',
-      '#title' => 'Render world copies',
+      '#title' => $this->t('Render world copies'),
       '#default_value' => $this->options['display_options']['world_copies'] ?? 0,
     ];
 
     $form['display_options']['clusters'] = [
       '#type' => 'checkbox',
-      '#title' => 'Enable pin clustering',
+      '#title' => $this->t('Enable pin clustering'),
       '#default_value' => $this->options['display_options']['clusters'] ?? 1,
       '#states' => [
         'visible' => [
           ':input[name="style_options[rendering_options][render_items][pin]"]' => ['checked' => TRUE],
         ],
       ],
+    ];
+
+    $form['display_options']['hover_popups'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show popups at hover for territories'),
+      '#description' => $this->t('If selected, country/areas pop-ups at hover instead of click'),
+      '#default_value' => $this->options['display_options']['hover_popups'] ?? 0,
+      '#states' => [
+        'visible' => [
+          [
+            ':input[name="style_options[rendering_options][render_items][area]"]' => ['checked' => TRUE],
+          ],
+          'OR',
+          [
+            ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ],
+
     ];
   }
 
