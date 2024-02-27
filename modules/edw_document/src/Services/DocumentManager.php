@@ -192,8 +192,8 @@ class DocumentManager {
    * Given a list of files, create an archive of those files and saves it as a
    * temporary file.
    *
-   * @param array $filesUrls
-   *   An array of urls.
+   * @param array $files
+   *   Array with files.
    *
    * @return string
    *   URL to the zip file.
@@ -204,16 +204,10 @@ class DocumentManager {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function archiveFiles(array $filesUrls) {
+  public function archiveFiles(array $files) {
     $this->archive = new \ZipArchive();
     $this->archive->open($this->getArchiveFilePath(), \ZipArchive::CREATE);
 
-    $fids = $this->entityTypeManager->getStorage('file')
-      ->getQuery()
-      ->accessCheck()
-      ->condition('uri', $filesUrls, 'IN')
-      ->execute();
-    $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
     foreach ($files as $file) {
       $filepath = $file->getFileUri();
       $content = file_get_contents($filepath);
@@ -240,7 +234,7 @@ class DocumentManager {
    * Archive files.
    *
    * @param array $files
-   *   An array of urls.
+   *   Array with files.
    *
    * @return bool
    *   TRUE if successful, FALSE if not.
