@@ -408,21 +408,9 @@ If Clear Map is use the max zoom level will be<b> 5 </b>unless you select a lowe
 
     $form['display_options']['hover_popups'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Show popups at hover for territories'),
-      '#description' => $this->t('If selected, country/areas pop-ups at hover instead of click'),
+      '#title' => $this->t('Show popups at hover'),
+      '#description' => $this->t('If selected, popups will be shown at hover instead of click'),
       '#default_value' => $this->options['display_options']['hover_popups'] ?? 0,
-      '#states' => [
-        'visible' => [
-          [
-            ':input[name="style_options[rendering_options][render_items][area]"]' => ['checked' => TRUE],
-          ],
-          'OR',
-          [
-            ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
-          ],
-        ],
-      ],
-
     ];
   }
 

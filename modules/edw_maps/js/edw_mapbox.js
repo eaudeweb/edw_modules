@@ -203,7 +203,7 @@
                                             'fill-color': '#' + areaColor,
                                             'fill-outline-color': '#' + areaColor,
                                             'fill-opacity': mapType === 'clear_map' ? 0.8 : 1,
-                                        }
+                                        },
                                     },
                                     baseLayer);
 
@@ -215,7 +215,7 @@
                                             'fill-color': '#' + hoverAreaColor,
                                             'fill-outline-color': '#' + hoverAreaColor,
                                             'fill-opacity': 0,
-                                        }
+                                        },
                                     },
                                     baseLayer);
                             }
@@ -278,24 +278,51 @@
                             // Markers are rendered on the top of everything.
                             let marker = new mapboxgl.Marker(el).setLngLat(coordinates);
                             if (data.popup) {
-                                let popup = new mapboxgl.Popup()
+                                let popup = new mapboxgl.Popup(
+                                    {
+                                        closeButton: !hoverPopups,
+                                        closeOnClick: !hoverPopups
+                                    })
                                     .setLngLat(coordinates)
                                     .setHTML(data.popup);
-                                marker.getElement().onclick = (ev) => {
-                                    // Close last opened popup.
-                                    if (currentPopup) {
+
+                                let markerElement = marker.getElement();
+                                markerElement.onmousemove = (event) => {
+                                    if (hoverPopups) {
+                                        openMarkerPopup(event, popup);
+                                    }
+                                    event.stopPropagation();
+                                }
+
+                                markerElement.onmouseleave = (event) => {
+                                    if (hoverPopups && currentPopup) {
                                         currentPopup.remove();
                                         currentPopup = null;
                                     }
-                                    popup.addTo(map);
-                                    currentPopup = popup;
                                     // Don't send event to the other layers.
-                                    ev.stopPropagation();
+                                    event.stopPropagation();
+                                }
+
+                                if (!hoverPopups) {
+                                    // Display popup un click.
+                                    markerElement.onclick = (event) => openMarkerPopup(event, popup)
                                 }
                             }
 
                             marker.addTo(map);
                             markers.push(marker);
+                        }
+
+                        // Opens a new popup for markers.
+                        function openMarkerPopup(event, popup) {
+                            if (currentPopup) {
+                                currentPopup.remove();
+                                currentPopup = null;
+                            }
+                            popup.addTo(map);
+                            currentPopup = popup;
+                            // Don't send event to the other layers.
+                            event.stopPropagation();
                         }
 
                         // Creates and adds to map a new cluster element.
@@ -310,19 +337,35 @@
                             clusterMarker.style.backgroundSize = '100%';
 
                             let nextZoomLevel = supercluster.getClusterExpansionZoom(cluster.properties.cluster_id, mapZoom) * 1.2;
-                            clusterMarker.addEventListener("click", (ev) => {
+                            clusterMarker.onclick = (event) => {
                                 map.flyTo({
                                     center: coordinates,
                                     essential: true,
                                     zoom: nextZoomLevel
                                 });
-                                ev.stopPropagation();
-                            })
+                                event.stopPropagation();
+                            };
 
-                            let clusterMarket = new mapboxgl.Marker(clusterMarker)
+                            // Prevent country popups/highlight color to be shown when hovering on clusters.
+                            clusterMarker.onmousemove = (event) => {
+                                if (currentPopup) {
+                                    currentPopup.remove();
+                                    currentPopup = null;
+                                }
+                                event.stopPropagation();
+                            }
+                            clusterMarker.onmouseleave = (event) => {
+                                if (currentPopup) {
+                                    currentPopup.remove();
+                                    currentPopup = null;
+                                }
+                                event.stopPropagation();
+                            }
+
+                            clusterMarker = new mapboxgl.Marker(clusterMarker)
                                 .setLngLat(coordinates)
-                            clusters.push(clusterMarket);
-                            clusterMarket.addTo(map)
+                            clusters.push(clusterMarker);
+                            clusterMarker.addTo(map);
                         }
 
                         // Draws clusters.
@@ -505,15 +548,17 @@
                                         .setHTML(popup)
                                         .addTo(map);
                                 }
+                                e.stopPropagation();
                             });
 
-                            map.on('mouseleave', 'areas-highlight-layer', () => {
+                            map.on('mouseleave', 'areas-highlight-layer', (e) => {
                                 map.getCanvas().style.cursor = 'default';
                                 map.setPaintProperty('areas-highlight-layer', 'fill-opacity', 0);
                                 if (hoverPopups && currentPopup) {
                                     currentPopup.remove();
                                     currentPopup = null;
                                 }
+                                e.stopPropagation();
                             })
 
                             if (hoverPopups) {
