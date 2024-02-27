@@ -76,7 +76,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('document.manager'),
+      $container->get('edw_document.document.manager'),
       $container->get('module_handler'),
     );
   }
@@ -176,7 +176,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
       '#ajax' => [
         'callback' => [$this, 'ajaxSubmit'],
         'event' => 'click',
-        'url' => Url::fromRoute('document.download_documents_form'),
+        'url' => Url::fromRoute('edw_document.document.download_documents.form'),
         'options' => [
           'query' => [
             'ajax_form' => 1,
