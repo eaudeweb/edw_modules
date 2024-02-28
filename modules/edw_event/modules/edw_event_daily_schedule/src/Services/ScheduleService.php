@@ -38,6 +38,17 @@ class ScheduleService {
    *   The schedule items.
    */
   public function getScheduleItems(Paragraph $parent) {
+    if ($parent->isNew()) {
+      $scheduleItems = [];
+      foreach ($parent->get('field_paragraphs') as $paragraph) {
+        /** @var Paragraph $paragraphEntity */
+        $paragraphEntity = $paragraph->entity;
+        if ($paragraphEntity->bundle() == 'edw_daily_schedule_item' && $paragraphEntity->isPublished()) {
+          $scheduleItems[] = $paragraphEntity;
+        }
+      }
+      return $scheduleItems;
+    }
     return $this->paragraphStorage->loadByProperties([
       'parent_id' => $parent->id(),
       'type' => 'edw_daily_schedule_item',
