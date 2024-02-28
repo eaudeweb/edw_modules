@@ -7,7 +7,8 @@ select2.theme:
 manage-documents:
   css:
     component:
-      css/manage-documents.css: { weight: -50 }
+      css/manage-documents.css: {}
+      css/dialog.css: {}
 
 bootstrap:
   css:
