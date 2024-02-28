@@ -13,11 +13,11 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
-use Drupal\edw_document\Ajax\DownloadCommand;
 use Drupal\edw_document\Form\DownloadDocumentsForm;
 use Drupal\edw_document\Services\DocumentManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -105,9 +105,7 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
     }
     if (count($files) < 2) {
       $path = $this->documentManager->downloadFile($files);
-      $response->addCommand(new RedirectCommand($path));
-      $response->addCommand(new CloseModalDialogCommand());
-      return $response;
+      return new RedirectResponse($path);
     }
     $this->documentManager->generateArchive($files);
     $response->addCommand(new CloseModalDialogCommand());
