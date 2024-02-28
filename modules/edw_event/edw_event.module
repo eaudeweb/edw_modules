@@ -21,6 +21,13 @@ function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form
     return;
   }
 
+  /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_event.meeting.service');
+  $sections = $meetingService->getAllMeetingSections($node, FALSE);
+  if (!$sections) {
+    return;
+  }
+
   $form['meeting_sections'] = [
     '#type' => 'checkbox',
     '#title' => t('Clone meeting sections.'),
@@ -30,7 +37,7 @@ function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form
 
   $form['meeting_sections_status'] = [
     '#type' => 'fieldset',
-    '#title' => t('Select what sections you want to clone as published.'),
+    '#title' => t('Select what sections you want to clone as published'),
     '#states' => [
       'visible' => [
         ':input[name="meeting_sections"]' => ['checked' => TRUE],
@@ -38,9 +45,6 @@ function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form
     ],
   ];
 
-  /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
-  $meetingService = \Drupal::service('edw_event.meeting.service');
-  $sections = $meetingService->getAllMeetingSections($node, FALSE);
   foreach ($sections as $section) {
     $form['meeting_sections_status'][$section->id()] = [
       '#type' => 'checkbox',

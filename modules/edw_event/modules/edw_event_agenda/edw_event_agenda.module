@@ -24,14 +24,16 @@ function edw_event_agenda_form_entity_clone_form_alter(&$form, FormStateInterfac
     ];
   }
 
-  $form['referenced']['meeting_agenda'] = [
-    '#type' => 'fieldset',
-    '#title' => t('Clone meeting agenda.'),
-  ];
-
   /** @var \Drupal\edw_event_agenda\Services\MeetingAgendaService $agendaService */
   $agendaService = \Drupal::service('edw_event_agenda.meeting.agenda.service');
   $agendas = $agendaService->getAllMeetingAgendas($node, FALSE);
+  if (!$agendas) {
+    return;
+  }
+  $form['referenced']['meeting_agenda'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Clone meeting agenda'),
+  ];
   foreach ($agendas as $agenda) {
     $form['referenced']['meeting_agenda'][$agenda->id()] = [
       '#type' => 'checkbox',

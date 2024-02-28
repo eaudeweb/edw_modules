@@ -43,6 +43,9 @@ class MeetingAgendaCloneSubscriber implements EventSubscriberInterface {
       return;
     }
     $properties = $event->getProperties();
+    if (!isset($properties['referenced']) || !$properties['referenced']['meeting_agenda']) {
+      return;
+    }
     $agendas = array_filter($properties['referenced']['meeting_agenda'], function ($value) {
       return $value == TRUE;
     });
