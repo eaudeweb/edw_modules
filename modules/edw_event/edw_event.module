@@ -59,7 +59,7 @@ function edw_event_form_entity_clone_form_alter(&$form, FormStateInterface $form
  */
 function edw_event_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $classResolver = \Drupal::service('class_resolver');
-  if (\Drupal::moduleHandler()->moduleExists('edw_event_schedule')) {
+  if (\Drupal::moduleHandler()->moduleExists('edw_event_agenda')) {
     if ($form_id == 'media_document_add_form') {
       $classResolver->getInstanceFromDefinition(MeetingDocumentForm::class)
         ->alter($form, $form_state);
