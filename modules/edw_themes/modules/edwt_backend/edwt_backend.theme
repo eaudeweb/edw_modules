@@ -50,6 +50,7 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       $firstResult = reset($variables['result']);
       $phase = str_replace('_order', '', $view->current_display);
       $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_entity, $phase);
+      $variables['group_id'] = $firstResult->tid;
     }
     if ($view->id() == 'documents'
       && $view->current_display == 'in_session_order'
@@ -57,6 +58,7 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       $firstResult = reset($variables['result']);
       $phase = str_replace('_order', '', $view->current_display);
       $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_relationship_entities['field_agenda'], $phase);
+      $variables['group_id'] = $firstResult->_relationship_entities['field_agenda']->id();
     }
   }
 }
