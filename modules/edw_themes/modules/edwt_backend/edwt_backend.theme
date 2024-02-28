@@ -52,7 +52,7 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_entity, $phase);
     }
     if ($view->id() == 'documents'
-      && in_array($view->current_display, ['in_session_order', 'post_session_order'])
+      && $view->current_display == 'in_session_order'
       && isset($variables['result'])) {
       $firstResult = reset($variables['result']);
       $phase = str_replace('_order', '', $view->current_display);
