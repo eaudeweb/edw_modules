@@ -105,6 +105,8 @@ class DocumentManager {
   /**
    * Returns the file type based on uri extension.
    *
+   * @todo Check if we still need this function.
+   *
    * @param string $uri
    *   The URI to check.
    *
@@ -351,7 +353,7 @@ class DocumentManager {
         continue;
       }
       $url = $file->getFileUri();
-      if (!in_array($this->getUriType($url), $formats)) {
+      if (!in_array(strtolower(pathinfo($url, PATHINFO_EXTENSION)), $formats)) {
         unset($files[$fid]);
       }
     }
