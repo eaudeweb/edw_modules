@@ -19,6 +19,13 @@ class MeetingService {
   protected $nodeStorage;
 
   /**
+   * The term storage.
+   *
+   * @var \Drupal\taxonomy\TermStorageInterface
+   */
+  protected $termStorage;
+
+  /**
    * The database connection.
    *
    * @var \Drupal\Core\Database\Connection
@@ -35,6 +42,7 @@ class MeetingService {
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection) {
     $this->nodeStorage = $entityTypeManager->getStorage('node');
+    $this->termStorage = $entityTypeManager->getStorage('taxonomy_term');
     $this->connection = $connection;
   }
 
@@ -91,6 +99,20 @@ class MeetingService {
   }
 
   /**
+   * Loads one or more terms.
+   *
+   * @param array $ids
+   *   An array of entity IDs.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   An array of entity objects indexed by their IDs. Returns an empty array
+   *   if no matching entities are found.
+   */
+  public function loadMultipleTerms(array $ids) {
+    return $this->termStorage->loadMultiple($ids);
+  }
+
+  /**
    * Get sections for a meeting, ordered.
    *
    * @param int|string $meetingId
@@ -118,6 +140,30 @@ class MeetingService {
     $query->orderBy('d.weight');
     // Draggableviews doesn't store the new items unless the form is saved.
     return array_unique(array_merge_recursive($query->execute()->fetchCol(), $ids));
+  }
+
+  /**
+   * Get document types in use for a phase of the meeting.
+   *
+   * @param int|string $meetingId
+   *   The meeting id.
+   * @param string $phase
+   *   Route phase (pre_session|in_session|post_session).
+   *
+   * @return array
+   *   Array with document types ids.
+   */
+  public function getDocumentTypesIdsInUse(int|string $meetingId, string $phase) {
+    $query = $this->connection->select('media__field_document_types', 'types');
+    $query->addField('types', 'field_document_types_target_id', 'type');
+    $query->innerJoin('media__field_meetings', 'meeting', 'meeting.entity_id = types.entity_id');
+    $query->innerJoin('media__field_document_phase', 'phase', 'types.entity_id = phase.entity_id');
+    $query->condition('types.bundle', 'document');
+    $query->condition('meeting.field_meetings_target_id', [$meetingId], 'IN');
+    $query->condition('phase.field_document_phase_value', $phase);
+    $query->innerJoin('media_field_data', 'media', 'media.mid = types.entity_id');
+    $query->condition('media.status', 1);
+    return $query->execute()->fetchCol();
   }
 
 }
