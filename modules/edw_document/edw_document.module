@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\edw_document\Form\DownloadDocumentsForm;
+use Drupal\file\Entity\File;
 use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Item\Field;
 
@@ -167,4 +168,18 @@ function edw_document_clean_document_cron() {
   /** @var \Drupal\edw_document\Services\DocumentCronManager $cronManager */
   $cronManager = \Drupal::service('edw_document.document.cron_manager');
   $cronManager->cleaupOldDirectories();
+}
+
+/**
+ * Implements hook_file_url_alter().
+ */
+function edw_document_file_url_alter(&$uri) {
+  /** @var \Drupal\edw_document\Services\DocumentManager $documentManager */
+  $documentManager = \Drupal::service('edw_document.document.manager');
+  $file = $documentManager->getFileByUri($uri);
+  if ($file instanceof File) {
+    $uuid = $file->uuid();
+    $url = Url::fromRoute('edw_document.serve_file', ['uuid' => $uuid], ['query' => ['filename' => $file->getFilename()]]);
+    $uri = $url->toString();
+  }
 }

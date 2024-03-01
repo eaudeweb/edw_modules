@@ -5,9 +5,6 @@ namespace Drupal\edw_document\Controller;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
-use Drupal\Core\Ajax\PrependCommand;
-use Drupal\Core\Ajax\RedirectCommand;
-use Drupal\Core\Ajax\RemoveCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -16,7 +13,6 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\edw_document\Form\DownloadDocumentsForm;
 use Drupal\edw_document\Services\DocumentManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -50,7 +46,7 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
    * Constructs a new \Drupal\Core\Controller\FormController object.
    *
    * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
-   *   The form builder.v
+   *   The form builder.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
@@ -107,9 +103,7 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
       $path = $this->documentManager->downloadFile($files);
       return new RedirectResponse($path);
     }
-    $this->documentManager->generateArchive($files);
-    $response->addCommand(new CloseModalDialogCommand());
-    return $response;
+    return $this->documentManager->generateArchive($files);
   }
 
 }

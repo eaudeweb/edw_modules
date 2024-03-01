@@ -28,3 +28,11 @@ edw_document.document.download_documents.controller:
     _title: 'Download documents'
   requirements:
     _permission: 'view media'
+
+edw_document.serve_file:
+  path: '/download/file/{uuid}'
+  defaults:
+    _controller: '\Drupal\edw_document\Controller\FileController::serveFile'
+  requirements:
+    _permission: 'access content'
+    uuid: '.+'

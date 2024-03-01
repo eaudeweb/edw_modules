@@ -15,6 +15,8 @@ use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Service for DocumentManager.
@@ -238,8 +240,8 @@ class DocumentManager {
    * @param array $files
    *   Array with files.
    *
-   * @return bool
-   *   TRUE if successful, FALSE if not.
+   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+   *   The zip file as response.
    *
    * @throws \Drupal\Core\Archiver\ArchiverException
    */
@@ -262,20 +264,16 @@ class DocumentManager {
       throw new ArchiverException('Zip archive could not be closed.');
     }
 
-    try {
-      header('Content-Type: application/zip');
-      header('Content-Length: ' . filesize($tempFilename));
-      header('Content-Disposition: attachment; filename="download.zip"');
-      readfile($tempFilename);
-    }
-    catch (\Exception $e) {
-      throw $e;
-    }
-    finally {
-      unlink($tempFilename);
-    }
+    $headers = [
+      'Content-Type' => 'application/zip',
+      'Content-Length' => filesize($tempFilename),
+    ];
 
-    return $result;
+    $response = new BinaryFileResponse($tempFilename, 200, $headers);
+    $response->setContentDisposition('attachment', 'download.zip');
+    $response->deleteFileAfterSend();
+
+    return $response;
   }
 
   /**
@@ -433,6 +431,24 @@ class DocumentManager {
       'html' => "$iconsPath/text-html.png",
       'link' => "$iconsPath/text-html.png",
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileByUri(string $uri) {
+    $file = $this->entityTypeManager->getStorage('file')->loadByProperties(['uri' => $uri]);
+    return reset($file);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileByUuid(string $uuid) {
+    $file = $this->entityTypeManager->getStorage('file')->loadByProperties([
+      'uuid' => $uuid,
+    ]);
+    return reset($file);
   }
 
 }
