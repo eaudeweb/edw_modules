@@ -127,7 +127,26 @@ class MeetingService {
    * @return array
    *   Array with agenda items ids ordered by weight.
    */
-  public function orderMeetingAgendaIds(int|string $meetingId, string $view_name, string $view_display, array $ids = []): array {
+  public function orderMeetingSectionIds(int|string $meetingId, string $view_name, string $view_display, array $ids = []): array {
+    return $this->getOrderIds($meetingId, $view_name, $view_display, $ids);
+  }
+
+  /**
+   * Get order from draggableviews table.
+   *
+   * @param int|string $meetingId
+   *   The meeting id.
+   * @param string $view_name
+   *   The view name to check against.
+   * @param string $view_display
+   *   The ID of the active view's display.
+   * @param array $ids
+   *   Array with entity ids.
+   *
+   * @return array
+   *   Array with agenda items ids ordered by weight.
+   */
+  public function getOrderIds(int|string $meetingId, string $view_name, string $view_display, array $ids = []): array {
     $args = json_encode([$meetingId]);
     $query = $this->connection->select('draggableviews_structure', 'd')
       ->fields('d', ['entity_id'])

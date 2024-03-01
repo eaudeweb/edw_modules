@@ -3,48 +3,14 @@
 namespace Drupal\edw_event_agenda\Services;
 
 use Drupal\Core\Database\Connection;
+use Drupal\edw_event\Services\MeetingService;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * The Meeting service class.
  */
-class MeetingAgendaService {
-
-  /**
-   * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected Connection $connection;
-
-  /**
-   * The node storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  protected $nodeStorage;
-
-  /**
-   * The term storage.
-   *
-   * @var \Drupal\taxonomy\TermStorageInterface
-   */
-  protected $termStorage;
-
-  /**
-   * The MeetingService constructor.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager.
-   * @param \Drupal\Core\Database\Connection $connection
-   *   The database connection.
-   */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection) {
-    $this->nodeStorage = $entityTypeManager->getStorage('node');
-    $this->termStorage = $entityTypeManager->getStorage('taxonomy_term');
-    $this->connection = $connection;
-  }
+class MeetingAgendaService extends MeetingService {
 
   /**
    * Get agenda for a meeting.
@@ -129,19 +95,8 @@ class MeetingAgendaService {
    * @return array
    *   Array with agenda items ids ordered by weight.
    */
-  public function orderMeetingAgendaIds(int|string $meetingId, string $view_name, string $view_display, array $ids = NULL): array {
-    $args = json_encode([$meetingId]);
-    $query = $this->connection->select('draggableviews_structure', 'd')
-      ->fields('d', ['entity_id'])
-      ->condition('view_name', $view_name)
-      ->condition('view_display', $view_display)
-      ->condition('d.args', $args);
-    if ($ids) {
-      $query->condition('d.entity_id', $ids, 'IN');
-    }
-    $query->orderBy('d.weight');
-    // Draggableviews doesn't store the new items unless the form is saved.
-    return array_unique(array_merge_recursive($query->execute()->fetchCol(), $ids));
+  public function orderMeetingAgendaIds(int|string $meetingId, string $view_name, string $view_display, array $ids = []): array {
+    return parent::getOrderIds($meetingId, $view_name, $view_display, $ids);
   }
 
   /**
