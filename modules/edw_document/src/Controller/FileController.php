@@ -14,6 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Controller for files.
@@ -79,6 +80,9 @@ class FileController extends ControllerBase implements ContainerInjectionInterfa
    * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
    *   The response object for serving the file.
    *
+   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+   *   Thrown when no file with the provided UUID exists.
+   *
    * @SuppressWarnings(PHPMD.UnusedFormalParameter)
    */
   public function serveFile(Request $request, $uuid) {
@@ -92,11 +96,14 @@ class FileController extends ControllerBase implements ContainerInjectionInterfa
     if (!$file instanceof FileInterface) {
       throw new FileNotExistsException();
     }
+    $uri = $file->getFileUri();
+    if (!file_exists($uri)) {
+      return throw new NotFoundHttpException();
+    }
     $headers = [
       'Content-Type' => $file->getMimeType(),
       'Content-Length' => $file->getSize(),
     ];
-    $uri = $file->getFileUri();
     $filename = $request->query->get('filename') ?? $file->getFilename();
     $response = new BinaryFileResponse($uri, 200, $headers);
     $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename);
