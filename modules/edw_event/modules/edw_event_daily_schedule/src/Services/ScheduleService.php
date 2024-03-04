@@ -41,7 +41,7 @@ class ScheduleService {
     if ($parent->isNew()) {
       $scheduleItems = [];
       foreach ($parent->get('field_paragraphs') as $paragraph) {
-        /** @var Paragraph $paragraphEntity */
+        /** @var \Drupal\paragraphs\Entity\Paragraph $paragraphEntity */
         $paragraphEntity = $paragraph->entity;
         if ($paragraphEntity->bundle() == 'edw_daily_schedule_item' && $paragraphEntity->isPublished()) {
           $scheduleItems[] = $paragraphEntity;
