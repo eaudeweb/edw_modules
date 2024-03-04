@@ -22,7 +22,7 @@ edw_document.document.download_documents.form:
     _permission: 'view media'
 
 edw_document.document.download_documents.controller:
-  path: '/download-documents'
+  path: '/download/documents'
   defaults:
     _controller: '\Drupal\edw_document\Controller\DocumentController::archiveFiles'
     _title: 'Download documents'
