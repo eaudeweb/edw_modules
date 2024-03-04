@@ -94,7 +94,7 @@ class FileController extends ControllerBase implements ContainerInjectionInterfa
     /** @var \Drupal\file\Entity\File $file */
     $file = reset($files);
     if (!$file instanceof FileInterface) {
-      throw new FileNotExistsException();
+      return throw new NotFoundHttpException();
     }
     $uri = $file->getFileUri();
     if (!file_exists($uri)) {
