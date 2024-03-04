@@ -16,14 +16,24 @@ function edw_event_daily_schedule_paragraph_presave(Paragraph $entity) {
   if ($entity->bundle() == 'edw_daily_schedule_item') {
     /** @var \Drupal\paragraphs\Entity\Paragraph $parent */
     $parent = $entity->getParentEntity();
+    if ($parent == NULL) {
+      return;
+    }
     $scheduleItems = $scheduleService->getScheduleItems($parent);
     $status = (!empty($scheduleItems) && !$parent->isPublished());
     $scheduleService->updateParagraphStatus($parent, $status);
   }
   if ($entity->bundle() == 'edw_daily_schedule') {
     $scheduleItems = $scheduleService->getScheduleItems($entity);
-    $status = (!empty($scheduleItems) && !$entity->isPublished());
-    $scheduleService->updateParagraphStatus($entity, $status);
+    $hasPublishedItem = false;
+    foreach ($scheduleItems as $item) {
+      /** @var \Drupal\paragraphs\Entity\Paragraph $item */
+      if ($item->isPublished()) {
+        $hasPublishedItem = true;
+        break;
+      }
+    }
+    $scheduleService->updateParagraphStatus($entity, $hasPublishedItem);
   }
 }
 
