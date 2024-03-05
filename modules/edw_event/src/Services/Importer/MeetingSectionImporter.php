@@ -106,7 +106,7 @@ class MeetingSectionImporter {
     $viewReference = $this->createViewReferenceParagraph();
     $section->set('field_content', [
       'target_id' => $viewReference->id(),
-      'revision_target_id' => $viewReference->getRevisionId(),
+      'target_revision_id' => $viewReference->getRevisionId(),
     ]);
     $validation = $section->validate();
     if ($validation->count() > 0) {
