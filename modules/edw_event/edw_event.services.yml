@@ -3,6 +3,10 @@ services:
     class: Drupal\edw_event\Services\MeetingService
     arguments: [ '@entity_type.manager', '@database' ]
 
+  edw_event.meeting_section.importer:
+    class: Drupal\edw_event\Services\Importer\MeetingSectionImporter
+    arguments: [ '@entity_type.manager', '@logger.factory' ]
+
   edw_event.meeting.documents.service:
     class: Drupal\edw_event\Services\MeetingDocumentsService
     arguments: [ '@entity_field.manager' ]
