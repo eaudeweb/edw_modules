@@ -8,12 +8,6 @@ use Drupal\node\NodeInterface;
 
 /**
  * The meeting section importer class.
- *
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.NPathComplexity)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.StaticAccess)
  */
 class MeetingSectionImporter {
 
