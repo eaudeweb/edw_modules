@@ -2,7 +2,6 @@
 
 namespace Drupal\edw_event_daily_schedule\Services;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 
@@ -38,6 +37,17 @@ class ScheduleService {
    *   The schedule items.
    */
   public function getScheduleItems(Paragraph $parent) {
+    if ($parent->isNew()) {
+      $scheduleItems = [];
+      foreach ($parent->get('field_paragraphs') as $paragraph) {
+        /** @var \Drupal\paragraphs\Entity\Paragraph $paragraphEntity */
+        $paragraphEntity = $paragraph->entity;
+        if ($paragraphEntity->bundle() == 'edw_daily_schedule_item' && $paragraphEntity->isPublished()) {
+          $scheduleItems[] = $paragraphEntity;
+        }
+      }
+      return $scheduleItems;
+    }
     return $this->paragraphStorage->loadByProperties([
       'parent_id' => $parent->id(),
       'type' => 'edw_daily_schedule_item',
