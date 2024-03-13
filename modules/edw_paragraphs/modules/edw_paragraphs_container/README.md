@@ -10,6 +10,7 @@ This module provides a paragraph Container useful when you want to store other c
 | Background image | field_background_media | -           | Entity reference           | Single      | No       | No           | Select list |
 | Container size   | field_container_size   | -           | List (text)                | Single      | Yes      | No           | Select list |
 | Content          | field_paragraphs       | -           | Entity reference revisions | Multiple    | Yes      | No           | Paragraph   |
+| Hide on mobile   | field_hide_on_mobile   | -           | Boolean                    | Single      | No       | No           | Checkbox    |
 
 
 ## Installation
