@@ -2,7 +2,6 @@
 
 namespace Drupal\edw_event_daily_schedule\Services;
 
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\paragraphs\Entity\Paragraph;
 
