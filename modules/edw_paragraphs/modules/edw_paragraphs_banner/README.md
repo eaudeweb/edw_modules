@@ -10,7 +10,7 @@ Provides Banner paragraph that display a prominent message and related action.
 | Description    | field_description | -                                           | Text (formatted, long) | Single      | Yes      | Yes          | Text area      |
 | Image          | field_media       | -                                           | Media entity reference | Single      | Yes      | No           | Media library  |
 | Call to action | field_link        | -                                           | Link                   | Single      | No       | No           | Link           |
-| Variations     | field_variations  |                                             | List (text)            | Single      | No       | Yes          | Chosen/Similar |
+| Variations     | field_banner_variations  |                                             | List (text)            | Single      | No       | Yes          | Chosen/Similar |
 
 ## Installation
 
