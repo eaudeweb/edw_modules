@@ -185,4 +185,32 @@ class MeetingService {
     return $query->execute()->fetchCol();
   }
 
+  /**
+   * Get entity reference ids in use for a field, for a given phase and meeting.
+   *
+   * For examples, a field Entity reference "Contact groups".
+   *
+   * @param int|string $meetingId
+   *   The meeting id.
+   * @param string $phase
+   *   Route phase (pre_session|in_session|post_session).
+   * @param string $field_name
+   *   Field machine name.
+   *
+   * @return array
+   *   Array with ids.
+   */
+  public function getEntityReferenceIdsInUse(int|string $meetingId, string $phase, string $field_name) {
+    $query = $this->connection->select("media__{$field_name}", 'types');
+    $query->addField('types', "{$field_name}_target_id", 'type');
+    $query->innerJoin('media__field_meetings', 'meeting', 'meeting.entity_id = types.entity_id');
+    $query->innerJoin('media__field_document_phase', 'phase', 'types.entity_id = phase.entity_id');
+    $query->condition('types.bundle', 'document');
+    $query->condition('meeting.field_meetings_target_id', [$meetingId], 'IN');
+    $query->condition('phase.field_document_phase_value', $phase);
+    $query->innerJoin('media_field_data', 'media', 'media.mid = types.entity_id');
+    $query->condition('media.status', 1);
+    return $query->execute()->fetchCol();
+  }
+
 }
