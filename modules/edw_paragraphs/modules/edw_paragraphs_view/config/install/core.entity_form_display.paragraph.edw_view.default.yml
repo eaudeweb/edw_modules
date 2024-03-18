@@ -11,6 +11,14 @@ targetEntityType: paragraph
 bundle: edw_view
 mode: default
 content:
+  field_title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: { }
   field_view:
     type: viewsreference_select
     weight: 0
