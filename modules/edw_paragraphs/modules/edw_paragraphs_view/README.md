@@ -7,8 +7,8 @@ allows a content entity to embed a view block.
 #### View
 | Field label | Field name | Description | Field type      | Cardinality | Required | Translatable | Widget                      |
 |-------------|------------|-------------|-----------------|-------------|----------|--------------|-----------------------------|
+| Title       | field_title| -           | Text            | Single      | No       | No           | Text field                  |
 | Block       | field_view | -           | Views reference | Single      | No       | No           | View Reference Autocomplete |
-
 
 ## Installation
 
