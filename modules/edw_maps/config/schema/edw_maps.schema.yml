@@ -1,0 +1,10 @@
+edw_maps.settings:
+  type: config_object
+  label: 'Edw maps settings'
+  mapping:
+    token:
+      type: string
+      label: 'Token'
+    default_style_url:
+      type: string
+      label: 'Default Mapbox Style URL'
