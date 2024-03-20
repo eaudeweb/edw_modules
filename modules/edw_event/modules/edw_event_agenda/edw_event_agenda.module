@@ -35,6 +35,18 @@ function edw_event_agenda_form_entity_clone_form_alter(&$form, FormStateInterfac
     '#title' => t('Clone meeting agenda'),
   ];
   foreach ($agendas as $agenda) {
+    if ($agenda->hasField('field_is_default_agenda')
+      && !$agenda->get('field_is_default_agenda')->isEmpty()
+      && $agenda->get('field_is_default_agenda')->value) {
+      $form['referenced']['meeting_agenda'][$agenda->id()] = [
+        '#type' => 'checkbox',
+        '#title' => $agenda->getName(),
+        '#default_value' => TRUE,
+        '#disabled' => TRUE,
+        '#description' => t('Default agendas are always cloned.'),
+      ];
+      continue;
+    }
     $form['referenced']['meeting_agenda'][$agenda->id()] = [
       '#type' => 'checkbox',
       '#title' => $agenda->getName(),

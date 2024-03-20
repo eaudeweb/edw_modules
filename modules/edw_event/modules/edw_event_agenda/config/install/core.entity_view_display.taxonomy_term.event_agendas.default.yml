@@ -27,4 +27,5 @@ content:
     weight: 1
     region: content
 hidden:
+  field_is_default_agenda: true
   langcode: true
