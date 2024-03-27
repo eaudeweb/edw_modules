@@ -8,3 +8,9 @@ services:
     arguments: [ '@entity_type.manager' ]
     tags:
       - { name: event_subscriber }
+
+  edw_event.meeting.commands:
+    class: Drupal\edw_event_agenda\Commands\AgendaCommands
+    arguments: [ '@edw_event_agenda.meeting.agenda.service' ]
+    tags:
+      - { name: drush.command }

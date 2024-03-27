@@ -2,10 +2,8 @@
 
 namespace Drupal\edw_event_agenda\Services;
 
-use Drupal\Core\Database\Connection;
 use Drupal\edw_event\Services\MeetingService;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * The Meeting service class.
@@ -111,6 +109,35 @@ class MeetingAgendaService extends MeetingService {
    */
   public function loadMultipleAgendaItems(array $ids) {
     return $this->termStorage->loadMultiple($ids);
+  }
+
+  /**
+   * Creates default agenda for a meeting.
+   *
+   * @param int $meetingId
+   *   The meeting id.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function createDefaultAgenda(int $meetingId) {
+    $defaultAgenda = $this->termStorage->getQuery()->accessCheck(FALSE)
+      ->condition('vid', 'event_agendas')
+      ->condition('field_event', $meetingId)
+      ->condition('field_is_default_agenda', TRUE)
+      ->execute();
+    $defaultAgenda = reset($defaultAgenda);
+
+    if (!empty($defaultAgenda)) {
+      return;
+    }
+
+    $defaultAgenda = $this->termStorage->create([
+      'vid' => 'event_agendas',
+      'name' => 'Information documents',
+      'field_event' => $meetingId,
+      'field_is_default_agenda' => TRUE,
+    ]);
+    $defaultAgenda->save();
   }
 
 }
