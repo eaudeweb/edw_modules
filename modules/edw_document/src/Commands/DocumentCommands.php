@@ -9,6 +9,9 @@ use Drupal\Core\Language\Language;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Commands\DrushCommands;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 
 /**
  * Class DocumentCommands for documents.
@@ -132,6 +135,56 @@ class DocumentCommands extends DrushCommands {
       ];
     }
     return new RowsOfFields($table);
+  }
+
+  /**
+   * Get a report with broken URLs.
+   *
+   * @param string $path
+   *   Path to a JSON:API with a list of URLs.
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   *   Rows of fields.
+   *
+   * @command edw_document:analyze-urls
+   * @aliases analyze-urls
+   */
+  public function analyzeUrls(string $path) {
+    $table = [];
+    $data = file_get_contents($path);
+    $links = json_decode($data, TRUE);
+    $table[] = [
+      'uri' => 'Uri',
+    ];
+    echo sprintf("Start checking %d links.\n", count($links));
+    echo 'Processing...';
+    $position = 1;
+    foreach ($links as $link) {
+      if (++$position % 50 == 0) {
+        echo '.';
+      }
+      if ($this->fileExists($link)) {
+        continue;
+      }
+      $table[] = [
+        'uri' => $link,
+      ];
+    }
+    return new RowsOfFields($table);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function fileExists($file) {
+    $client = new Client();
+    try {
+      $res = $client->head($file);
+      return ($res->getStatusCode() == 200);
+    }
+    catch (RequestException | ConnectException $exception) {
+      return FALSE;
+    }
   }
 
   /**
