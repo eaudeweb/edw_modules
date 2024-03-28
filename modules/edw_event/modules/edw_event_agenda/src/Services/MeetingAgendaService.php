@@ -116,10 +116,12 @@ class MeetingAgendaService extends MeetingService {
    *
    * @param int $meetingId
    *   The meeting id.
+   * @param string $agendaName
+   *   The agenda's name.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function createDefaultAgenda(int $meetingId) {
+  public function createDefaultAgenda(int $meetingId, string $agendaName) {
     $defaultAgenda = $this->termStorage->getQuery()->accessCheck(FALSE)
       ->condition('vid', 'event_agendas')
       ->condition('field_event', $meetingId)
@@ -131,12 +133,25 @@ class MeetingAgendaService extends MeetingService {
       return;
     }
 
-    $defaultAgenda = $this->termStorage->create([
+    // If there is a non-default agenda with that name make it default.
+    $properties = [
       'vid' => 'event_agendas',
-      'name' => 'Information documents',
       'field_event' => $meetingId,
-      'field_is_default_agenda' => TRUE,
-    ]);
+      'name' => $agendaName,
+    ];
+    $term = $this->termStorage->loadByProperties($properties);
+    $term = reset($term);
+
+    if (!empty($term)) {
+      $term->set('field_is_default_agenda', TRUE);
+      $term->save();
+      return;
+    }
+
+
+    // Otherwise, create a new default agenda.
+    $properties['field_is_default_agenda'] = TRUE;
+    $defaultAgenda = $this->termStorage->create($properties);
     $defaultAgenda->save();
   }
 

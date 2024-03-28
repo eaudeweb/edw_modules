@@ -33,14 +33,16 @@ class AgendaCommands extends DrushCommands {
    *
    * @param int $meetingId
    *   The meeting id.
+   * @param string $agendaName
+   *   The agenda's name.
    *
    * @command edw_event_agenda:add-default-agenda
    * @aliases default-agenda-add
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function createDefaultAgenda(int $meetingId) {
-    $this->meetingAgendaService->createDefaultAgenda($meetingId);
+  public function createDefaultAgenda(int $meetingId, string $agendaName) {
+    $this->meetingAgendaService->createDefaultAgenda($meetingId, $agendaName);
   }
 
 }
