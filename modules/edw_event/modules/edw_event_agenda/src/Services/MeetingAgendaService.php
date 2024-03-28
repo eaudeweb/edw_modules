@@ -2,10 +2,8 @@
 
 namespace Drupal\edw_event_agenda\Services;
 
-use Drupal\Core\Database\Connection;
 use Drupal\edw_event\Services\MeetingService;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
  * The Meeting service class.
@@ -111,6 +109,50 @@ class MeetingAgendaService extends MeetingService {
    */
   public function loadMultipleAgendaItems(array $ids) {
     return $this->termStorage->loadMultiple($ids);
+  }
+
+  /**
+   * Creates default agenda for a meeting.
+   *
+   * @param int $meetingId
+   *   The meeting id.
+   * @param string $agendaName
+   *   The agenda's name.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function createDefaultAgenda(int $meetingId, string $agendaName) {
+    $defaultAgenda = $this->termStorage->getQuery()->accessCheck(FALSE)
+      ->condition('vid', 'event_agendas')
+      ->condition('field_event', $meetingId)
+      ->condition('field_is_default_agenda', TRUE)
+      ->execute();
+    $defaultAgenda = reset($defaultAgenda);
+
+    if (!empty($defaultAgenda)) {
+      return;
+    }
+
+    // If there is a non-default agenda with that name make it default.
+    $properties = [
+      'vid' => 'event_agendas',
+      'field_event' => $meetingId,
+      'name' => $agendaName,
+    ];
+    $term = $this->termStorage->loadByProperties($properties);
+    $term = reset($term);
+
+    if (!empty($term)) {
+      $term->set('field_is_default_agenda', TRUE);
+      $term->save();
+      return;
+    }
+
+
+    // Otherwise, create a new default agenda.
+    $properties['field_is_default_agenda'] = TRUE;
+    $defaultAgenda = $this->termStorage->create($properties);
+    $defaultAgenda->save();
   }
 
 }
