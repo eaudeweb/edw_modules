@@ -7,7 +7,7 @@ use Drupal\edw_event_agenda\Services\MeetingAgendaService;
 use Drush\Commands\DrushCommands;
 
 /**
- * Class MeetingsCommands for meetings and meeting sections.
+ * Class AgendaCommands for agenda items.
  */
 class AgendaCommands extends DrushCommands {
   /**
@@ -18,7 +18,7 @@ class AgendaCommands extends DrushCommands {
   private MeetingAgendaService $meetingAgendaService;
 
   /**
-   * Constructs a new MeetingsCommands object.
+   * Constructs a new AgendaCommands object.
    *
    * @param \Drupal\edw_event_agenda\Services\MeetingAgendaService $meetingAgendaService
    *   The database connection.
@@ -29,7 +29,7 @@ class AgendaCommands extends DrushCommands {
   }
 
   /**
-   * Create a meeting section with phase.
+   * Creates a default agenda for a meeting.
    *
    * @param int $meetingId
    *   The meeting id.
