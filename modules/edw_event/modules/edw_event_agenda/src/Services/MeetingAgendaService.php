@@ -3,14 +3,38 @@
 namespace Drupal\edw_event_agenda\Services;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\edw_event\Services\MeetingService;
 use Drupal\node\NodeInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- * The Meeting service class.
+ * The MeetingAgendaService class.
  */
 class MeetingAgendaService extends MeetingService {
+
+  /**
+   * The logger channel.
+   * 
+   * @var \Drupal\Core\Logger\LoggerChannelInterface $logger
+   */
+  private LoggerChannelInterface $logger;
+
+  /**
+   * The MeetingAgendaService constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   A database connection.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
+   *   The logger factory.
+   */
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection, LoggerChannelFactory $loggerFactory) {
+    parent::__construct($entityTypeManager, $connection);
+    $this->logger = $loggerFactory->get('edw_event_agenda.meeting.agenda.service');
+  }
 
   /**
    * Get agenda for a meeting.
@@ -111,6 +135,40 @@ class MeetingAgendaService extends MeetingService {
    */
   public function loadMultipleAgendaItems(array $ids) {
     return $this->termStorage->loadMultiple($ids);
+  }
+
+  /**
+   * Creates default agenda for a meeting.
+   *
+   * @param int $meetingId
+   *   The meeting id.
+   * @param string $agendaName
+   *   The agenda's name.
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function createDefaultAgenda(int $meetingId, string $agendaName) {
+    $defaultAgenda = $this->termStorage->getQuery()->accessCheck(FALSE)
+      ->condition('vid', 'event_agendas')
+      ->condition('field_event', $meetingId)
+      ->condition('field_is_default_agenda', TRUE)
+      ->execute();
+    $defaultAgenda = reset($defaultAgenda);
+
+    if (!empty($defaultAgenda)) {
+      $this->logger->warning('There is already a default agenda for this meeting!');
+      return;
+    }
+    
+    $properties = [
+      'vid' => 'event_agendas',
+      'field_event' => $meetingId,
+      'name' => $agendaName,
+      'field_is_default_agenda', TRUE
+    ];
+    $defaultAgenda = $this->termStorage->create($properties);
+    $defaultAgenda->save();
+    $this->logger->info('Created new default agenda with id ' . $defaultAgenda->id());
   }
 
 }
