@@ -4,6 +4,7 @@ namespace Drupal\edw_group;
 
 use Drupal\Core\Session\AccountInterface;
 use Drupal\edw_group\Services\MeetingService;
+use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupMembership;
 use Drupal\node\NodeInterface;
 use Drupal\node_access_grants\NodeAccessGrantsInterface;
@@ -107,8 +108,21 @@ class NodeGrants implements NodeAccessGrantsInterface {
     }
     $grants = [];
     $groups = $this->meetingService->getNodeGroups($node, 'view');
+
     if (empty($groups)) {
-      // If no groups are set, public access view should be permitted.
+      // If no groups are set, private access should be provided for in-session and
+      // production sector.
+      $access = $node->get('field_access')->value;
+      if (in_array($access, ['participants', 'production_sector'])) {
+        $grants[] = [
+          'realm' => static::GLOBAL_REALM,
+          'gid' => 0,
+          'grant_view' => 0,
+          'grant_update' => 0,
+          'grant_delete' => 0,
+        ];
+        return $grants;
+      }
       $grants[] = [
         'realm' => static::GLOBAL_REALM,
         'gid' => 0,
@@ -157,13 +171,22 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if (!$account->isAuthenticated()) {
       return [];
     }
+
+    if (in_array('content_manager', $account->getRoles())) {
+      $grants[static::GLOBAL_REALM][] = $account->id();
+      return $grants;
+    }
+
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
     $memberships = GroupMembership::loadByUser($account);
     $grants = [];
     foreach ($memberships as $membership) {
-      $grants[static::EDW_VIEW_REALM][] = $membership->getGroupId();
-      $grants[static::EDW_UPDATE_REALM][] = $membership->getGroupId();
-      $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
+      $group = Group::load($membership->getGroupId());
+      if ($group->isPublished()) {
+        $grants[static::EDW_VIEW_REALM][] = $membership->getGroupId();
+        $grants[static::EDW_UPDATE_REALM][] = $membership->getGroupId();
+        $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
+      }
     }
     return $grants;
   }
