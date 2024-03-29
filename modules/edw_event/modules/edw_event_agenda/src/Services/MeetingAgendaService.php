@@ -28,6 +28,8 @@ class MeetingAgendaService extends MeetingService {
    *   The entity type manager.
    * @param \Drupal\Core\Database\Connection $connection
    *   A database connection.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
+   *   The logger factory.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection, LoggerChannelFactory $loggerFactory) {
     parent::__construct($entityTypeManager, $connection);
