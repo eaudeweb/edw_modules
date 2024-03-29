@@ -4,7 +4,7 @@ namespace Drupal\edw_event_agenda\Services;
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\edw_event\Services\MeetingService;
 use Drupal\node\NodeInterface;
@@ -16,7 +16,7 @@ class MeetingAgendaService extends MeetingService {
 
   /**
    * The logger channel.
-   * 
+   *
    * @var \Drupal\Core\Logger\LoggerChannelInterface $logger
    */
   private LoggerChannelInterface $logger;
@@ -31,7 +31,7 @@ class MeetingAgendaService extends MeetingService {
    * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
    *   The logger factory.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection, LoggerChannelFactory $loggerFactory) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Connection $connection, LoggerChannelFactoryInterface $loggerFactory) {
     parent::__construct($entityTypeManager, $connection);
     $this->logger = $loggerFactory->get('edw_event_agenda.meeting.agenda.service');
   }
@@ -159,7 +159,7 @@ class MeetingAgendaService extends MeetingService {
       $this->logger->warning('There is already a default agenda for this meeting!');
       return;
     }
-    
+
     $properties = [
       'vid' => 'event_agendas',
       'field_event' => $meetingId,
