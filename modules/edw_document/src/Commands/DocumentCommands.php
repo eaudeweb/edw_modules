@@ -47,6 +47,13 @@ class DocumentCommands extends DrushCommands {
   protected $messenger;
 
   /**
+   * Files report array.
+   *
+   * @var array
+   */
+  protected $filesReport = [];
+
+  /**
    * Constructs a new DocumentCommands object.
    *
    * @param \Drupal\Core\Database\Connection $connection
@@ -149,13 +156,10 @@ class DocumentCommands extends DrushCommands {
    * @command edw_document:analyze-urls
    * @aliases analyze-urls
    */
-  public function analyzeUrls(string $path) {
+  public function analyzeUrls(string $path, $options = ['format' => 'table']) {
     $table = [];
     $data = file_get_contents($path);
     $links = json_decode($data, TRUE);
-    $table[] = [
-      'uri' => 'Uri',
-    ];
     echo sprintf("Start checking %d links.\n", count($links));
     echo 'Processing...';
     $position = 1;
@@ -204,6 +208,109 @@ class DocumentCommands extends DrushCommands {
     $query->addField('c', 'langcode', 'file_langcode');
     $query->addField('c', 'filename', 'file_filename');
     return $query->execute()->fetchAll();
+  }
+
+  /**
+   * Get a report with duplicates compared with SHA.
+   *
+   * @command edw_document:analyze-files-sha
+   * @aliases analyze-files-sha
+   */
+  public function analyzeSha($options = ['format' => 'table']): RowsOfFields {
+    $query = $this->connection->select('media__field_files', 'a');
+    $query->addField('a', 'field_files_target_id', 'fid');
+    $query->addField('a', 'entity_id', 'entityId');
+    $query->addField('a', 'langcode', 'langcode');
+    $query->innerJoin('file_managed', 'b', 'a.field_files_target_id = b.fid');
+    $query->addField('b', 'uri', 'path');
+    $results = $query->execute()->fetchAll();
+    foreach ($results as $result) {
+      $this->setReportItem($result->fid, $result->path, $result->entityId, $result->langcode);
+    }
+    $table = [];
+    array_multisort(array_column($this->filesReport, 'sha'), SORT_ASC, $this->filesReport);
+    foreach ($this->filesReport as $value) {
+      $duplicates = $this->getFileReport($value['fid']);
+      if (count($duplicates) < 2) {
+        continue;
+      }
+      $table[] = [
+        'fid' => $value['fid'],
+        'sha' => $value['sha'],
+        'entity_id' => $value['entity_id'],
+        'langcode' => $value['langcode'],
+      ];
+    }
+    return new RowsOfFields($table);
+  }
+
+  /**
+   * Return duplicates for a given fid.
+   *
+   * @param int $fid
+   *   The file ID.
+   *
+   * @return array
+   *   Return the report.
+   */
+  protected function getFileReport(int $fid) {
+    $sha = $this->getShaByFid($fid);
+    return $this->getReportItemsBySha($sha);
+  }
+
+  /**
+   * Return a SHA256 for a specific fid.
+   *
+   * @param int $fid
+   *   The file ID.
+   *
+   * @return string
+   *   Return the file SHA256.
+   */
+  public function getShaByFid(int $fid) {
+    $key = array_search($fid, array_column($this->filesReport, 'fid'));
+    return $this->filesReport[$key]['sha'];
+  }
+
+  /**
+   * Given a SHA256 as a string, find all duplicates.
+   *
+   * @param string $sha
+   *   A string as a SHA256.
+   *
+   * @return array
+   *   Return a list with duplicates.
+   */
+  public function getReportItemsBySha($sha) {
+    $array = $this->filesReport;
+
+    return array_values(array_filter($array, function ($value) use ($sha) {
+      return $value['sha'] == $sha;
+    }));
+  }
+
+  /**
+   * Given a path, set a new SHA256 for a specific file id.
+   *
+   * @param int $fid
+   *   The file ID.
+   * @param string $path
+   *   A string containing a file path.
+   * @param int $entityId
+   *   The entity ID where file is used.
+   * @param string $langcode
+   *   The entity ID langcode.
+   */
+  public function setReportItem(int $fid, string $path, int $entityId, string $langcode = 'en') {
+    if (file_exists($path)) {
+      $sha = hash_file('sha256', $path);
+      $this->filesReport[] = [
+        'fid' => $fid,
+        'sha' => $sha,
+        'entity_id' => $entityId,
+        'langcode' => $langcode,
+      ];
+    }
   }
 
 }
