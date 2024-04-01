@@ -24,24 +24,6 @@ function edw_group_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 }
 
 /**
- * Implements hook_ENTITY_TYPE_insert().
- *
- * Create the default meeting group.
- */
-function edw_group_node_insert(NodeInterface $node) {
-  if ($node->bundle() != 'event') {
-    return;
-  }
-
-  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
-  $meetingService = \Drupal::service('edw_group.meeting');
-  if (!$meetingService->isAllowed()) {
-    return;
-  }
-  $meetingService->createGroupForMeeting($node);
-}
-
-/**
  * Implements hook_ENTITY_TYPE_update().
  *
  * Update meeting group name.
