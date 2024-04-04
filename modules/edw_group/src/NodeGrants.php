@@ -3,7 +3,8 @@
 namespace Drupal\edw_group;
 
 use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\edw_group\Services\MeetingService;
 use Drupal\group\Entity\Group;
@@ -56,11 +57,19 @@ class NodeGrants implements NodeAccessGrantsInterface {
   private EntityStorageInterface $userStorage;
 
   /**
+   * The module handler service.
+   * 
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
+
+  /**
    * Constructs a NodeGrants object.
    */
-  public function __construct(MeetingService $meetingService, EntityTypeManager $entityTypeManager) {
+  public function __construct(MeetingService $meetingService, EntityTypeManagerInterface $entityTypeManager, ModuleHandlerInterface $moduleHandler) {
     $this->meetingService = $meetingService;
     $this->userStorage = $entityTypeManager->getStorage('user');
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -140,7 +149,9 @@ class NodeGrants implements NodeAccessGrantsInterface {
       // If no groups are set, private access should be provided for in-session and
       // production sector.
       $access = $node->get('field_access')->value;
-      if (in_array($access, ['participants', 'production_sector'])) {
+      $privateRoles = ['participants'];
+      $this->moduleHandler->alter('private_access_roles', $privateRoles);
+      if (in_array($access, $privateRoles)) {
         $grants[] = [
           'realm' => static::EDW_VIEW_REALM,
           'gid' => 0,
