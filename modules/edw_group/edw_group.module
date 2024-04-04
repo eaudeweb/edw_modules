@@ -53,6 +53,7 @@ function edw_group_node_delete(NodeInterface $node) {
   /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
   $meetingService = \Drupal::service('edw_group.meeting');
   $bundle = $node->bundle();
+  
   if ($bundle == 'event') {
     if (!$meetingService->isAllowed()) {
       return;
