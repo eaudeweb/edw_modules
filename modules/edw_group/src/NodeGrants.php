@@ -150,7 +150,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
       // production sector.
       $access = $node->get('field_access')->value;
       $privateRoles = ['participants'];
-      $this->moduleHandler->alter('private_access_roles', $privateRoles);
+      $this->moduleHandler->invokeAll('private_access_roles', [&$privateRoles]);
       if (in_array($access, $privateRoles)) {
         $grants[] = [
           'realm' => static::EDW_VIEW_REALM,
