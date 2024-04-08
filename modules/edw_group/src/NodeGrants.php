@@ -2,8 +2,6 @@
 
 namespace Drupal\edw_group;
 
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\edw_group\Services\MeetingService;
@@ -50,15 +48,8 @@ class NodeGrants implements NodeAccessGrantsInterface {
   protected MeetingService $meetingService;
 
   /**
-   * The user storage.
-   *
-   * @var \Drupal\Core\Entity\EntityStorageInterface
-   */
-  private EntityStorageInterface $userStorage;
-
-  /**
    * The module handler service.
-   * 
+   *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   private ModuleHandlerInterface $moduleHandler;
@@ -66,9 +57,8 @@ class NodeGrants implements NodeAccessGrantsInterface {
   /**
    * Constructs a NodeGrants object.
    */
-  public function __construct(MeetingService $meetingService, EntityTypeManagerInterface $entityTypeManager, ModuleHandlerInterface $moduleHandler) {
+  public function __construct(MeetingService $meetingService, ModuleHandlerInterface $moduleHandler) {
     $this->meetingService = $meetingService;
-    $this->userStorage = $entityTypeManager->getStorage('user');
     $this->moduleHandler = $moduleHandler;
   }
 
@@ -131,18 +121,14 @@ class NodeGrants implements NodeAccessGrantsInterface {
       throw new \InvalidArgumentException();
     }
     $grants = [];
-
-    $contentManagers = $this->userStorage->loadByProperties(['roles' => 'content_manager']);
-    foreach ($contentManagers as $contentManager) {
-      // Content managers can perform all operations on meeting sections regardless of group.
-      $grants[] = [
-        'realm' => static::EDW_REALM_CONTENT_MANAGERS,
-        'gid' => $contentManager->id(),
-        'grant_view' => 1,
-        'grant_update' => 1,
-        'grant_delete' => 1,
-      ];
-    }
+    // Content managers can perform all operations on meeting sections regardless of group.
+    $grants[] = [
+      'realm' => static::EDW_REALM_CONTENT_MANAGERS,
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 1,
+      'grant_delete' => 1,
+    ];
 
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
@@ -212,7 +198,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     }
 
     if (in_array('content_manager', $account->getRoles())) {
-      $grants[static::EDW_REALM_CONTENT_MANAGERS][] = $account->id();
+      $grants[static::EDW_REALM_CONTENT_MANAGERS][] = 0;
       return $grants;
     }
 
