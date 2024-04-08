@@ -132,8 +132,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
 
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
-      // If no groups are set, private access should be provided for in-session and
-      // production sector.
+      // If no groups are set, private access should be provided for in-session.
       $access = $node->get('field_access')->value;
       $privateRoles = ['participants'];
       $this->moduleHandler->invokeAll('private_access_roles', [&$privateRoles]);

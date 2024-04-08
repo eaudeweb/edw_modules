@@ -13,9 +13,6 @@ settings:
     -
       value: participants
       label: Participants
-    -
-      value: production_sector
-      label: 'Production sector'
   allowed_values_function: ''
 module: options
 locked: false
