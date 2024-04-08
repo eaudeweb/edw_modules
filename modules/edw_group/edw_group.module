@@ -24,24 +24,6 @@ function edw_group_form_alter(&$form, FormStateInterface $form_state, $form_id) 
 }
 
 /**
- * Implements hook_ENTITY_TYPE_insert().
- *
- * Create the default meeting group.
- */
-function edw_group_node_insert(NodeInterface $node) {
-  if ($node->bundle() != 'event') {
-    return;
-  }
-
-  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
-  $meetingService = \Drupal::service('edw_group.meeting');
-  if (!$meetingService->isAllowed()) {
-    return;
-  }
-  $meetingService->createGroupForMeeting($node);
-}
-
-/**
  * Implements hook_ENTITY_TYPE_update().
  *
  * Update meeting group name.
@@ -68,16 +50,31 @@ function edw_group_node_update(NodeInterface $node) {
  * Delete the meeting group.
  */
 function edw_group_node_delete(NodeInterface $node) {
-  if ($node->bundle() != 'event') {
-    return;
-  }
   /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
   $meetingService = \Drupal::service('edw_group.meeting');
-  if (!$meetingService->isAllowed()) {
+  $bundle = $node->bundle();
+  
+  if ($bundle == 'event') {
+    if (!$meetingService->isAllowed()) {
+      return;
+    }
+    $groups = $meetingService->getGroupsCreatedForMeeting($node);
+    foreach ($groups as $group) {
+      $group->delete();
+    }
     return;
   }
-  $groups = $meetingService->getGroupsCreatedForMeeting($node);
-  foreach ($groups as $group) {
-    $group->delete();
+  
+  if ($bundle == 'event_section') {
+    $meetingService->deleteMeetingSectionGroups($node);
   }
+}
+
+/**
+ * Implements hook_private_access_roles().
+ *
+ * Updates private roles for node grants system.
+ */
+function edw_group_private_access_roles(&$privateRoles) {
+
 }

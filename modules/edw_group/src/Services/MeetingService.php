@@ -170,4 +170,24 @@ class MeetingService {
     $group->save();
   }
 
+  /**
+   * Deletes the groups associated with a meeting section.
+   *
+   * @param \Drupal\node\NodeInterface $section
+   *   The meeting $section.
+   */
+  public function deleteMeetingSectionGroups(NodeInterface $section): void {
+    if ($section->bundle() != 'event_section') {
+      return;
+    }
+    $viewGroups = $section->get('field_groups')->referencedEntities();
+    $moderatorGroups = $section->get('field_moderator_groups')
+      ->referencedEntities();
+    $groups = array_merge($viewGroups, $moderatorGroups);
+    foreach ($groups as $group) {
+      $group->delete();
+    }
+  }
+
+
 }

@@ -2,8 +2,10 @@
 
 namespace Drupal\edw_group;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\edw_group\Services\MeetingService;
+use Drupal\group\Entity\Group;
 use Drupal\group\Entity\GroupMembership;
 use Drupal\node\NodeInterface;
 use Drupal\node_access_grants\NodeAccessGrantsInterface;
@@ -29,6 +31,11 @@ class NodeGrants implements NodeAccessGrantsInterface {
   const EDW_DELETE_REALM = 'edw:group:delete';
 
   /**
+   * The realm used to check access for content managers.
+   */
+  const EDW_REALM_CONTENT_MANAGERS = 'edw:group:content_managers';
+
+  /**
    * The global realm.
    */
   const GLOBAL_REALM = 'all';
@@ -38,13 +45,21 @@ class NodeGrants implements NodeAccessGrantsInterface {
    *
    * @var \Drupal\edw_group\Services\MeetingService
    */
-  protected $meetingService;
+  protected MeetingService $meetingService;
+
+  /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
 
   /**
    * Constructs a NodeGrants object.
    */
-  public function __construct(MeetingService $meetingService) {
+  public function __construct(MeetingService $meetingService, ModuleHandlerInterface $moduleHandler) {
     $this->meetingService = $meetingService;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -106,9 +121,32 @@ class NodeGrants implements NodeAccessGrantsInterface {
       throw new \InvalidArgumentException();
     }
     $grants = [];
+    // Content managers can perform all operations on meeting sections regardless of group.
+    $grants[] = [
+      'realm' => static::EDW_REALM_CONTENT_MANAGERS,
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 1,
+      'grant_delete' => 1,
+    ];
+
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
-      // If no groups are set, public access view should be permitted.
+      // If no groups are set, private access should be provided for in-session.
+      $access = $node->get('field_access')->value;
+      $privateRoles = ['participants'];
+      $this->moduleHandler->invokeAll('private_access_roles', [&$privateRoles]);
+      if (in_array($access, $privateRoles)) {
+        $grants[] = [
+          'realm' => static::EDW_VIEW_REALM,
+          'gid' => 0,
+          'grant_view' => 0,
+          'grant_update' => 0,
+          'grant_delete' => 0,
+        ];
+        return $grants;
+      }
+
       $grants[] = [
         'realm' => static::GLOBAL_REALM,
         'gid' => 0,
@@ -157,13 +195,22 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if (!$account->isAuthenticated()) {
       return [];
     }
+
+    if (in_array('content_manager', $account->getRoles())) {
+      $grants[static::EDW_REALM_CONTENT_MANAGERS][] = 0;
+      return $grants;
+    }
+
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
     $memberships = GroupMembership::loadByUser($account);
     $grants = [];
     foreach ($memberships as $membership) {
-      $grants[static::EDW_VIEW_REALM][] = $membership->getGroupId();
-      $grants[static::EDW_UPDATE_REALM][] = $membership->getGroupId();
-      $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
+      $group = Group::load($membership->getGroupId());
+      if ($group->isPublished()) {
+        $grants[static::EDW_VIEW_REALM][] = $membership->getGroupId();
+        $grants[static::EDW_UPDATE_REALM][] = $membership->getGroupId();
+        $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
+      }
     }
     return $grants;
   }

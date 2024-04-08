@@ -1,0 +1,15 @@
+edw_event_groups.meeting_access_groups.settings:
+  path: '/node/{node}/access'
+  defaults:
+    _title: 'Meeting groups'
+    _entity_view: 'meeting_groups.access_groups'
+  requirements:
+    _entity_access: 'node.update'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE
