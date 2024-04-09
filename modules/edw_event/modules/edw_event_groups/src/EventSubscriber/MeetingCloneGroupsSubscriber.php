@@ -97,7 +97,7 @@ class MeetingCloneGroupsSubscriber implements EventSubscriberInterface {
       $fieldAccess = $meetingSection->get('field_access')->value;
       $access = ['participants'];
       $this->moduleHandler->invokeAll('private_access_roles', [&$access]);
-      if (in_array($fieldAccess, ['participants', 'production_sector'])) {
+      if (in_array($fieldAccess, $access)) {
         $groups = $this->getGroups($fieldAccess, $newMeetingGroups);
         $meetingSection->set('field_groups', $groups);
         $meetingSection->save();
@@ -157,7 +157,7 @@ class MeetingCloneGroupsSubscriber implements EventSubscriberInterface {
     $groupsIds = [];
     foreach ($meetingGroups as $group) {
       if ($group->get('field_access')->value == $accessValue) {
-        $groupsIds = $group->id();
+        $groupsIds[] = $group->id();
       }
     }
     return $groupsIds;

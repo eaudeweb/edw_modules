@@ -302,7 +302,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: "<p>There are <b>no</b> groups configured for this meeting.</p>\r\n<p> Meeting participants and production sector users will have no access to view this meetings' sections. </p>"
+          content: "<p>There are <b>no</b> groups configured for this meeting.</p>\r\n<p> Meeting participants users will have no access to view this meetings' sections. </p>"
           tokenize: false
       sorts: {  }
       arguments:
