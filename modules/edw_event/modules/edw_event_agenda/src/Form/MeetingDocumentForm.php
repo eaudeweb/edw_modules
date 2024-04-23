@@ -81,7 +81,16 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
    */
   public function formRedirect(array &$form, FormStateInterface $form_state) {
     $meetingId = $this->currentRequest->get('nid');
-    $phase = $form_state->getUserInput()['field_document_phase'] ?? $this->currentRequest->get('field_document_phase');
+    $selectedPhase = $form_state->getUserInput()['field_document_phase'];
+    $phase = $this->currentRequest->get('field_document_phase');
+    if (!empty($selectedPhase) && is_array($selectedPhase)) {
+      $phase = $selectedPhase[0];
+    }
+
+    if (!empty($selectedPhase) && !is_array($selectedPhase)) {
+      $phase = $selectedPhase;
+    }
+
     $form_state->setRedirect("edw_event.documents.$phase", ['node' => $meetingId]);
   }
 
