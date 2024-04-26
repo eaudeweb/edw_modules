@@ -193,7 +193,8 @@ class MapboxMapStyle extends StylePluginBase {
     $popupCountrySource = $options['popup_options']['country_popup_source'];
     $popupAreaSourceField = $options['popup_options']['area_popup_source'];
     $countryClickSource = $options['country_click']['country_click_source'];
-
+    $mapType = $options['tile_options']['map_type'];
+      
     $pinData = [];
     $countryData = [];
     $areaData = [];
@@ -216,7 +217,7 @@ class MapboxMapStyle extends StylePluginBase {
     $settings = [
       'containerId' => $containerId,
       'mapboxToken' => $config->get('token'),
-      'mapType' => $options['tile_options']['map_type'],
+      'mapType' => $mapType,
       'mapboxStyleUrl' => empty($options['tile_options']['style_url']) ? $config->get('default_style_url') : $options['tile_options']['style_url'],
       'projection' => $options['display_options']['projection'],
       'center' => [
@@ -240,7 +241,7 @@ class MapboxMapStyle extends StylePluginBase {
       'pinData' => $pinData,
       'countryData' => $countryData,
       'areaData' => $areaData,
-      'clearMapSource' => $this->edwMapsDataService->getClearMapSource(),
+      'clearMapSource' => $mapType == 'clear_map' ? $this->edwMapsDataService->getClearMapSource() : NULL,
       'countryLinks' => !empty($countryClickSource) && $countryClickSource != '_none',
     ];
 

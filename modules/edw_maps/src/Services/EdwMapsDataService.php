@@ -4,16 +4,20 @@ namespace Drupal\edw_maps\Services;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandler;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Render\Renderer;
 use Drupal\Core\Url;
 use Drupal\views\ResultRow;
 use Drupal\views\ViewExecutable;
+use Exception;
 use geoPHP;
 
 /**
  * The EDW MAPS data service.
  */
 class EdwMapsDataService {
+
+  use MessengerTrait;
 
   /**
    * The entity type manager.
@@ -194,11 +198,16 @@ class EdwMapsDataService {
   public function unzipGeoJson() {
     $path = $this->moduleHandler->getModule('edw_maps')
         ->getPath() . '/assets/country_boundaries';
-    $zip = new \ZipArchive();
-    $res = $zip->open("$path/country_polygon.zip");
-    if ($res === TRUE) {
-      $zip->extractTo($path);
-      $zip->close();
+    try {
+      $zip = new \ZipArchive();
+      $res = $zip->open("$path/country_polygon.zip");
+      if ($res === TRUE) {
+        $zip->extractTo($path);
+        $zip->close();
+      }
+    } catch (Exception $e) {
+      $this->messenger()->addWarning('Could not extract geoJson file. Error message ' . $e->getMessage());
+
     }
   }
 
@@ -286,7 +295,7 @@ class EdwMapsDataService {
       if (empty($entity)) {
         return NULL;
       }
-      return $entity->toUrl('canonical', ['absolute' => true])->toString();
+      return $entity->toUrl('canonical', ['absolute' => TRUE])->toString();
     }
 
     $entity = $this->getEntity($row, $linkSource);
