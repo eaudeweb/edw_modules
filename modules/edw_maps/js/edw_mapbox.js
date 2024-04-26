@@ -19,6 +19,7 @@
                         let hoverCountryColor = settings.edw_map.countryHoverColor;
                         let hoverAreaColor = settings.edw_map.areaHoverColor;
                         const hoverPopups = settings.edw_map.hoverPopups;
+                        const countryLinks = settings.edw_map.countryLinks;
                         const baseCountryCarto = ['rgb', 237, 237, 237];
                         const lineCarto = ['rgb', 165, 165, 165];
 
@@ -424,6 +425,9 @@
                             if (!hoverPopups) {
                                 map.on('click', 'country-boundaries', openCountryPopup);
                             }
+                            if (countryLinks) {
+                                map.on('click', 'country-boundaries', openCountryNewTab);
+                            }
                         }
 
                         // Open highlighted country popup at click.
@@ -448,6 +452,19 @@
                                     .setLngLat(e.lngLat)
                                     .setHTML(data.popup)
                                     .addTo(map);
+                            }
+                        }
+
+                        // Opens a new tab when clicking on a country.
+                        function openCountryNewTab(e) {
+                            let iso3Code = e.features[0].properties.ISO3CD;
+                            if (mapType === 'custom') {
+                                iso3Code = e.features[0].properties.iso_3166_1_alpha_3;
+                            }
+
+                            let data = countryData.find(data => data.iso3 === iso3Code);
+                            if (data.link) {
+                                window.open(data.link, '_blank').focus();
                             }
                         }
 

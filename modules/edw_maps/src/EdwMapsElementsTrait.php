@@ -155,7 +155,7 @@ trait EdwMapsElementsTrait {
     $form['rendering_options']['pins_source'] = [
       '#title' => $this->t('Data Source for Pins'),
       '#type' => 'select',
-      '#description' => $this->t('Which Geofield you want to use to draw pins?'),
+      '#description' => $this->t('Which geofield do you want to use to draw pins?'),
       '#options' => $geoFieldSources,
       '#default_value' => $this->options['rendering_options']['pins_source'] ?? NULL,
       '#states' => [
@@ -171,7 +171,7 @@ trait EdwMapsElementsTrait {
     $form['rendering_options']['area_source'] = [
       '#title' => $this->t('Data Source for Area'),
       '#type' => 'select',
-      '#description' => $this->t('Which Geofield you want to use to draw areas?'),
+      '#description' => $this->t('Which geofield do you want to use to draw areas?'),
       '#options' => $geoFieldSources,
       '#default_value' => $this->options['rendering_options']['area_source'] ?? NULL,
       '#states' => [
@@ -187,7 +187,7 @@ trait EdwMapsElementsTrait {
     $form['rendering_options']['country_source'] = [
       '#title' => $this->t('Data Source for Country'),
       '#type' => 'select',
-      '#description' => $this->t('Which Geofield you want to use to draw countries?'),
+      '#description' => $this->t('Which string field (ISO3) do you want to use to draw countries?'),
       '#options' => $iso3FieldSources,
       '#default_value' => $this->options['rendering_options']['country_source'] ?? NULL,
       '#states' => [
@@ -293,7 +293,7 @@ trait EdwMapsElementsTrait {
       '#empty_value' => '_none',
       '#states' => [
         'visible' => [
-          ':input[name="style_options[rendering_options][render_items][area]"]' => ['checked' => TRUE],
+          ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
         ],
       ],
     ];
@@ -306,10 +306,37 @@ trait EdwMapsElementsTrait {
       '#default_value' => $this->options['popup_options']['country_popup_source'] ?? NULL,
       '#empty_option' => t('- None -'),
       '#empty_value' => '_none',
+    ];
+  }
+
+  /**
+   * Sets target link options at click on a country.
+   *
+   * @param array $form
+   *   The form.
+   * @param array $fields
+   *   The link fields available.
+   */
+  protected function setContryClickOptions(&$form, array $fields) {
+    $form['country_click'] = [
+      '#type' => 'fieldset',
+      '#title' => $this->t('Country target links at click'),
+      '#description' => 'Here you can choose to open a new tab when clicking on a country. This only works well if popups are not displayed or are displayed at hover.',
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
       '#states' => [
         'visible' => [
           ':input[name="style_options[rendering_options][render_items][country]"]' => ['checked' => TRUE],
         ],
+      ],
+      'country_click_source' => [
+        '#title' => $this->t('Data Source for country redirects'),
+        '#type' => 'select',
+        '#description' => $this->t('Which link field you want to use as target when clicking on a country ?'),
+        '#options' => $fields,
+        '#default_value' => $this->options['country_click']['country_click_source'] ?? NULL,
+        '#empty_option' => t('- None -'),
+        '#empty_value' => '_none',
       ],
     ];
   }

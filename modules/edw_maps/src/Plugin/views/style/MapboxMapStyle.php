@@ -156,6 +156,8 @@ class MapboxMapStyle extends StylePluginBase {
 
     $geofieldSources = $this->getAvailableDataSources('geofield');
     $iso3FieldSources = $this->getAvailableDataSources('string');
+    $linkSources = $this->getAvailableDataSources('link');
+
     $allFields = $this->getAvailableDataSources('all');
 
     $this->setFieldsets($form);
@@ -164,6 +166,7 @@ class MapboxMapStyle extends StylePluginBase {
     $this->setRenderingOptionsCheckbox($form, $geofieldSources, $iso3FieldSources);
     $this->setRenderingOptions($form, $geofieldSources, $iso3FieldSources);
     $this->setPopupOptions($form, $allFields);
+    $this->setContryClickOptions($form, $linkSources);
     $this->setDisplayOptions($form);
   }
 
@@ -189,6 +192,7 @@ class MapboxMapStyle extends StylePluginBase {
     $popupPinSource = $options['popup_options']['pin_popup_source'];
     $popupCountrySource = $options['popup_options']['country_popup_source'];
     $popupAreaSourceField = $options['popup_options']['area_popup_source'];
+    $countryClickSource = $options['country_click']['country_click_source'];
 
     $pinData = [];
     $countryData = [];
@@ -198,7 +202,7 @@ class MapboxMapStyle extends StylePluginBase {
       $pinData = $this->edwMapsDataService->getPinData($view, $pinsSourceField, $popupPinSource);
     }
     if ($renderCountries) {
-      $countryData = $this->edwMapsDataService->getCountryData($view, $countrySourceField, $popupCountrySource);
+      $countryData = $this->edwMapsDataService->getCountryData($view, $countrySourceField, $popupCountrySource, $countryClickSource);
     }
     if ($renderAreas) {
       $areaData = $this->edwMapsDataService->getAreaData($view, $areaSourceField, $popupAreaSourceField);
@@ -237,6 +241,7 @@ class MapboxMapStyle extends StylePluginBase {
       'countryData' => $countryData,
       'areaData' => $areaData,
       'clearMapSource' => $this->edwMapsDataService->getClearMapSource(),
+      'countryLinks' => !empty($countryClickSource) && $countryClickSource != '_none',
     ];
 
     return [
@@ -266,6 +271,9 @@ class MapboxMapStyle extends StylePluginBase {
    */
   protected function getAvailableDataSources(string $type) {
     $availableFields = [];
+    if ($type == 'link') {
+      $availableFields['default'] = $this->t('Link to default entity');
+    }
     /** @var \Drupal\views\Plugin\views\ViewsHandlerInterface $handler */
     $fieldHandlers = $this->displayHandler->getHandlers('field');
     foreach ($fieldHandlers as $fieldId => $handler) {

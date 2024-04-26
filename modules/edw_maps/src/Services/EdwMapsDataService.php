@@ -99,7 +99,7 @@ class EdwMapsDataService {
    * @return array
    *   The formatted country data.
    */
-  public function getCountryData(ViewExecutable $view, string $dataSource, string $popupSource) {
+  public function getCountryData(ViewExecutable $view, string $dataSource, string $popupSource, string $linkSource) {
     $rows = $view->result;
     $data = [];
     foreach ($rows as $row) {
@@ -111,6 +111,7 @@ class EdwMapsDataService {
       $data[] = [
         'iso3' => $entity->get($dataSource)->value,
         'popup' => $this->getPopupContent($view, $row, $popupSource, 'country'),
+        'link' => $this->getRedirectLink($row, $linkSource),
       ];
     }
 
@@ -260,6 +261,47 @@ class EdwMapsDataService {
     }
 
     return $entity;
+  }
+
+  /**
+   * Gets link to redirect to when clicking on a territory.
+   *
+   * @param \Drupal\views\ResultRow $row
+   *   The current row.
+   * @param string $linkSource
+   *   The link's source.
+   *
+   * @return string|null
+   *   The url if it exists, otherwise null.
+   *
+   * @throws \Drupal\Core\Entity\EntityMalformedException
+   */
+  private function getRedirectLink(ResultRow $row, string $linkSource) {
+    if (empty($linkSource) || $linkSource == '_none') {
+      return NULL;
+    }
+
+    if ($linkSource == 'default') {
+      $entity = $row->_entity;
+      if (empty($entity)) {
+        return NULL;
+      }
+      return $entity->toUrl('canonical', ['absolute' => true])->toString();
+    }
+
+    $entity = $this->getEntity($row, $linkSource);
+    $link = $entity->get($linkSource)->getValue();
+    $link = reset($link);
+    if (!empty($link)) {
+      // Convert internal links to absolute links.
+      $url = Url::fromUri($link['uri']);
+      if ($url->isRouted()) {
+        return $url->setAbsolute()->toString();
+      }
+      return $link['uri'];
+    }
+
+    return NULL;
   }
 
 }
