@@ -1,0 +1,7 @@
+plugin.plugin_configuration.search_api_processor.field_value:
+  type: search_api.fields_processor_configuration
+  label: 'Field value whitelisting'
+  mapping:
+    replacement:
+      type: sequence
+      label: 'Filters'
