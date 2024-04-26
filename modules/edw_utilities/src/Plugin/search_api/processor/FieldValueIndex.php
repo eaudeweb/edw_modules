@@ -105,8 +105,6 @@ class FieldValueIndex extends ProcessorPluginBase implements PluginFormInterface
         if ($object->hasField($field_name)) {
           $field_value = $object->get($field_name)->value;
           $enabled = $field_value == $filter_value;
-          \Drupal::logger('sapi')->notice('%id: %field_value=%filter_value enabled=%enabled',
-            ['%id' => $object->id(), '%field_value' => $field_value, '%filter_value' => $filter_value, '%enabled' => $enabled]);
         }
       }
       if (!$enabled) {
