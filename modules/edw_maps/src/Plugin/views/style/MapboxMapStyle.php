@@ -46,28 +46,28 @@ class MapboxMapStyle extends StylePluginBase {
    *
    * @var \Drupal\Core\Config\ConfigFactory
    */
-  private ConfigFactory $configFactory;
+  protected ConfigFactory $configFactory;
 
   /**
    * The field type manager.
    *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
-  private EntityFieldManagerInterface $fieldTypeManager;
+  protected EntityFieldManagerInterface $fieldTypeManager;
 
   /**
    * The form builder service.
    *
    * @var \Drupal\Core\Form\FormBuilder
    */
-  private FormBuilder $formBuilder;
+  protected FormBuilder $formBuilder;
 
   /**
    * The EDW Maps data service.
    *
    * @var \Drupal\edw_maps\Services\EdwMapsDataService
    */
-  private EdwMapsDataService $edwMapsDataService;
+  protected EdwMapsDataService $edwMapsDataService;
 
   const COLORS = [
     'country' => ['country_color', 'country_hover_color'],
@@ -306,7 +306,7 @@ class MapboxMapStyle extends StylePluginBase {
    * @return bool
    *   If it is valid or not.
    */
-  private function isValidLatitude($latitude) {
+  protected function isValidLatitude($latitude) {
     if (!is_numeric($latitude)) {
       return FALSE;
     }
@@ -323,7 +323,7 @@ class MapboxMapStyle extends StylePluginBase {
    * @return bool
    *   If it is valid or not.
    */
-  private function isValidLongitude($longitude) {
+  protected function isValidLongitude($longitude) {
     if (!is_numeric($longitude)) {
       return FALSE;
     }
@@ -340,7 +340,7 @@ class MapboxMapStyle extends StylePluginBase {
    * @return bool
    *   If it is valid or not.
    */
-  private function isValidHexColor($color) {
+  protected function isValidHexColor($color) {
     $pattern = '/^[A-Fa-f0-9]{6}$/';
     return preg_match($pattern, $color) === 1;
   }
@@ -351,7 +351,7 @@ class MapboxMapStyle extends StylePluginBase {
    * @param \Drupal\Core\Form\FormStateInterface $formState
    *   The form state.
    */
-  private function validateFields(FormStateInterface $formState) {
+  protected function validateFields(FormStateInterface $formState) {
     $values = $formState->getValues()['style_options'];
     if (!$this->isValidLatitude($values['display_options']['center']['lat'])) {
       $formState->setErrorByName('style_options][display_options][center][lat', $this->t('Latitude value is wrong.'));

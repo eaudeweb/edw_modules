@@ -31,14 +31,14 @@ class EdwMapsDataService {
    *
    * @var \Drupal\Core\Render\Renderer
    */
-  private Renderer $renderer;
+  protected Renderer $renderer;
 
   /**
    * The module handler to invoke hooks.
    *
    * @var \Drupal\Core\Extension\ModuleHandler
    */
-  private ModuleHandler $moduleHandler;
+  protected ModuleHandler $moduleHandler;
 
   /**
    * The EdwMapsDataService constructor.
@@ -226,7 +226,7 @@ class EdwMapsDataService {
    * @return callable|\Drupal\Component\Render\MarkupInterface|mixed|void|null
    *   The rendered item or null.
    */
-  private function getPopupContent(ViewExecutable $view, ResultRow $row, string $popupSource, string $renderItem) {
+  protected function getPopupContent(ViewExecutable $view, ResultRow $row, string $popupSource, string $renderItem) {
     if (empty($popupSource) || $popupSource == '_none') {
       return NULL;
     }
@@ -256,7 +256,7 @@ class EdwMapsDataService {
    * @return \Drupal\Core\Entity\EntityInterface|null
    *   The entity.
    */
-  private function getEntity(ResultRow $row, string $fieldId) {
+  protected function getEntity(ResultRow $row, string $fieldId) {
     $entity = $row->_entity;
     $relationShipEntities = $row->_relationship_entities;
     if ($entity->hasField($fieldId)) {
@@ -285,7 +285,7 @@ class EdwMapsDataService {
    *
    * @throws \Drupal\Core\Entity\EntityMalformedException
    */
-  private function getRedirectLink(ResultRow $row, string $linkSource) {
+  protected function getRedirectLink(ResultRow $row, string $linkSource) {
     if (empty($linkSource) || $linkSource == '_none') {
       return NULL;
     }
