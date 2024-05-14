@@ -100,15 +100,24 @@ class FieldValueIndex extends ProcessorPluginBase implements PluginFormInterface
     /** @var \Drupal\search_api\Item\ItemInterface $item */
     foreach ($items as $item_id => $item) {
       $object = $item->getOriginalObject()->getValue();
-      $enabled = FALSE;
       if ($object instanceof FieldableEntityInterface) {
         if ($object->hasField($field_name)) {
-          $field_value = $object->get($field_name)->value;
-          $enabled = $field_value == $filter_value;
+          $field_type = $object->get($field_name)->getFieldDefinition()->getType();
+          switch ($field_type) {
+            case 'entity_reference':
+              $field_values = array_column($object->get($field_name)->getValue(), 'target_id');
+              break;
+
+            default:
+              $field_values = array_column($object->get($field_name)->getValue(), 'value');
+              break;
+          }
+          $enabled = in_array($filter_value, $field_values);
+          // Not all content types has same field.
+          if (!$enabled) {
+            unset($items[$item_id]);
+          }
         }
-      }
-      if (!$enabled) {
-        unset($items[$item_id]);
       }
     }
   }
