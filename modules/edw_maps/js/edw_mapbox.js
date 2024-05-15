@@ -521,6 +521,9 @@
                                 }
                                 map.getCanvas().style.cursor = 'pointer';
                                 map.setFilter('country-boundaries-highlight', ['==', ['get', 'ISO3CD'], iso3Code]);
+                                if (data.hoverColor !== undefined) {
+                                    map.setPaintProperty('country-boundaries-highlight', 'fill-color', data.hoverColor);
+                                }
                                 map.setPaintProperty('country-boundaries-highlight', 'fill-opacity', 1);
                                 if (hoverPopups) {
                                     openCountryPopup(e);
