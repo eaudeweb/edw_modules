@@ -31,12 +31,14 @@
 
           let columnsLayoutValue = columnsLayoutSelect.val();
           let resetSelectValue = true;
+          let allowedValues = [];
           columnsLayoutSelect.find('option').each(function () {
             let optionValue = $(this).val();
             let allowedValue = (optionValue.split('-').length - 1) === (columnsCount - 1);
 
             if (allowedValue) {
               $(this).show();
+              allowedValues.push(optionValue)
               if (columnsLayoutValue === optionValue) {
                 resetSelectValue = false;
               }
@@ -44,12 +46,10 @@
               $(this).hide();
               $(this).removeAttr('selected');
             }
-
           });
 
           if (resetSelectValue) {
-            let firstAllowedOption = columnsLayoutSelect.find('option:visible').first().val();
-            columnsLayoutSelect.val(firstAllowedOption);
+            columnsLayoutSelect.find('option[value="' + allowedValues[0] + '"]').attr('selected', 'selected');
           }
 
           columnsLayoutSelect.trigger("chosen:updated");
