@@ -2,13 +2,6 @@
   Drupal.behaviors.paragraph_columns = {
     attach: function (context, settings) {
       $(function () {
-        let mapping = {
-          1: ['100'],
-          2: ['50-50', '25-75', '75-25', '33-66', '66-33'],
-          3: ['33-33-33'],
-          4: ['25-25-25-25']
-        };
-
         $(once('initNumberOfColumnsField', '.field--name-field-number-of-columns select')).on('change', function () {
           let value = $(this).val();
           let columnsLayoutSelect = $(this).closest('.paragraph-type--edw-columns').find('.field--name-field-columns-layout select');
@@ -31,8 +24,8 @@
         });
 
         function rebuildColumnsLayoutFiled(columnsLayoutSelect, numberOfColumns) {
-          let allowedValues = mapping[numberOfColumns];
-          if (typeof allowedValues == "undefined" || allowedValues.length == 0) {
+          let columnsCount = parseInt(numberOfColumns);
+          if (isNaN(columnsCount) || columnsCount < 1) {
             return;
           }
 
@@ -40,7 +33,7 @@
           let resetSelectValue = true;
           columnsLayoutSelect.find('option').each(function () {
             let optionValue = $(this).val();
-            let allowedValue = allowedValues.indexOf(optionValue) != -1;
+            let allowedValue = (optionValue.split('-').length - 1) === (columnsCount - 1);
 
             if (allowedValue) {
               $(this).show();
@@ -55,13 +48,13 @@
           });
 
           if (resetSelectValue) {
-            let firstValue = allowedValues[0];
-            columnsLayoutSelect.find('option[value="' + firstValue + '"]').attr('selected', 'selected');
+            let firstAllowedOption = columnsLayoutSelect.find('option:visible').first().val();
+            columnsLayoutSelect.val(firstAllowedOption);
           }
 
           columnsLayoutSelect.trigger("chosen:updated");
         }
-      })
+      });
     }
   }
 })(jQuery, Drupal, once);
