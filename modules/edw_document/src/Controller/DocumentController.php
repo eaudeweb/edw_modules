@@ -3,7 +3,6 @@
 namespace Drupal\edw_document\Controller;
 
 use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\CloseModalDialogCommand;
 use Drupal\Core\Ajax\OpenModalDialogCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -15,6 +14,7 @@ use Drupal\edw_document\Services\DocumentManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Controller routines for documents.
@@ -95,11 +95,17 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
     $fieldName = $request->query->get('field_name') ?? 'field_files';
     $this->documentManager->setEntityTypeId('media');
     $files = $this->documentManager->getFilteredFiles($args['ids'], $fieldName, $args['format'], $args['language']);
-    $response = new AjaxResponse();
+    $text = count($args['ids']) >= 2 ? 'Files' : 'File';
     if (empty($files)) {
-      return $response;
+      $script = <<<EOD
+    <script type="text/javascript">
+      alert("$text not found in the selected language!");
+      window.close();
+    </script>
+    EOD;
+      return new Response($script);
     }
-    if (count($files) < 2) {
+    if (count($files) == 1) {
       $path = $this->documentManager->downloadFile($files);
       return new RedirectResponse($path);
     }
