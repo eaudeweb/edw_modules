@@ -612,7 +612,7 @@
                                     sources: {
                                         'clear-map-source': {
                                             type: 'raster',
-                                            tiles: ['https://geoservices.un.org/arcgis/rest/services/ClearMap_WebPlain/MapServer/tile/{z}/{y}/{x}'],
+                                            tiles: ['https://geoservices.un.org/arcgis/rest/services/ClearMap_WebTopo/MapServer/tile/{z}/{y}/{x}'],
                                             tileSize: 256,
                                             minzoom: 0,
                                             maxzoom: 18
