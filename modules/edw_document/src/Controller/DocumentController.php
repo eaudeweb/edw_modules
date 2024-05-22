@@ -103,7 +103,9 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
       window.close();
     </script>
     EOD;
-      return new Response($script);
+      $response = new Response($script);
+      $response->setStatusCode(404);
+      return $response;
     }
     if (count($files) == 1) {
       $path = $this->documentManager->downloadFile($files);
