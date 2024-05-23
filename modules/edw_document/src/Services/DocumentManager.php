@@ -16,7 +16,7 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Service for DocumentManager.
@@ -339,6 +339,10 @@ class DocumentManager {
    *
    * @return array
    *   An array with URLs.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Symfony\Component\Filesystem\Exception\FileNotFoundException
    */
   public function getFilteredFiles(array $nids, string $fieldName, array $formats, array $languages) {
     $result = $this->database->select("{$this->entityTypeId}__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
@@ -350,8 +354,12 @@ class DocumentManager {
       if (!$file instanceof File) {
         continue;
       }
-      $url = $file->getFileUri();
-      if (!in_array(strtolower(pathinfo($url, PATHINFO_EXTENSION)), $formats)) {
+      $uri = $file->getFileUri();
+      $fileError = $this->fileSystem->getDestinationFilename($uri, FileSystemInterface::EXISTS_ERROR);
+      if ($fileError) {
+        throw new FileNotFoundException($uri);
+      }
+      if (!in_array(strtolower(pathinfo($uri, PATHINFO_EXTENSION)), $formats)) {
         unset($files[$fid]);
       }
     }

@@ -12,6 +12,7 @@ use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\edw_document\Form\DownloadDocumentsForm;
 use Drupal\edw_document\Services\DocumentManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -94,24 +95,26 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
     }, $request->query->all());
     $fieldName = $request->query->get('field_name') ?? 'field_files';
     $this->documentManager->setEntityTypeId('media');
-    $files = $this->documentManager->getFilteredFiles($args['ids'], $fieldName, $args['format'], $args['language']);
-    $text = count($args['ids']) >= 2 ? 'Files' : 'File';
-    if (empty($files)) {
-      $script = <<<EOD
-    <script type="text/javascript">
-      alert("$text not found in the selected language!");
-      window.close();
-    </script>
-    EOD;
-      $response = new Response($script);
+    $response = new Response();
+
+    try {
+      $files = $this->documentManager->getFilteredFiles($args['ids'], $fieldName, $args['format'], $args['language']);
+      if (empty($files)) {
+        $response->setStatusCode(204);
+        return $response;
+      }
+
+      if (count($files) < 2) {
+        $path = $this->documentManager->downloadFile($files);
+        return new RedirectResponse($path);
+      }
+
+      return $this->documentManager->generateArchive($files);
+    } catch (FileNotFoundException) {
       $response->setStatusCode(404);
+      $response->setContent('Files not found');
       return $response;
     }
-    if (count($files) == 1) {
-      $path = $this->documentManager->downloadFile($files);
-      return new RedirectResponse($path);
-    }
-    return $this->documentManager->generateArchive($files);
   }
 
 }
