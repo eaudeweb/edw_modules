@@ -9,7 +9,7 @@ use Drupal\edw_decoupled\Authentication\Provider\SimpleOauthAuthenticationProvid
 /**
  * Modifies services related to decoupled functionalities.
  */
-class EDWDecoupledApiServiceProvider extends ServiceProviderBase {
+class EdwDecoupledApiServiceProvider extends ServiceProviderBase {
 
   /**
    * {@inheritdoc}
