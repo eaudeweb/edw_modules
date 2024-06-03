@@ -1,0 +1,8 @@
+name: EDW Event Groups
+description: This module provides custom access to meeting sections based on groups.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - eaudeweb:edw_event
+  - drupal:group

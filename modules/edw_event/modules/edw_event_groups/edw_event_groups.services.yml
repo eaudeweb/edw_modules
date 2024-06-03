@@ -1,0 +1,6 @@
+services:
+  edw_event_groups.meeting.clone_subscriber:
+    class: Drupal\edw_event_groups\EventSubscriber\MeetingCloneGroupsSubscriber
+    arguments: [ '@entity_type.manager', '@module_handler' ]
+    tags:
+      - { name: event_subscriber }

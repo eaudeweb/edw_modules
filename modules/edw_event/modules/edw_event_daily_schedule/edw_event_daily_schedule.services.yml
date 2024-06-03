@@ -1,0 +1,5 @@
+services:
+  edw_event_daily_schedule.schedule.service:
+    class: Drupal\edw_event_daily_schedule\Services\ScheduleService
+    arguments: [ '@entity_type.manager' ]
+

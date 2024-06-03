@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  theme:
+    - edwt_backend
+_core:
+  default_config_hash: Hh01DLj9k7UnNdPpOQXHZHW7GHf2OPNDQyCJF7_R9ac
+id: edwt_backend_primary_local_tasks
+theme: edwt_backend
+region: pre_content
+weight: -3
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Primary tabs'
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: false
+visibility: {  }

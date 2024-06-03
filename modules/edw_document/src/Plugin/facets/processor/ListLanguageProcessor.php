@@ -55,7 +55,7 @@ class ListLanguageProcessor extends ProcessorPluginBase implements BuildProcesso
       $configuration,
       $pluginId,
       $pluginDefinition,
-      $container->get('file.language_manager')
+      $container->get('edw_document.file.language_manager')
     );
   }
 

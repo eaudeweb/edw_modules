@@ -1,21 +1,38 @@
-document.modal:
+edw_document.document.modal:
   path: '/document-download/modal/{entity_type}/{entity}/{field_name}'
   defaults:
     _title: 'Modal'
     _controller: '\Drupal\edw_document\Controller\DocumentController::modal'
   requirements:
-    _permission: 'access content'
+    _permission: 'view media'
     node: \d+
   options:
     parameters:
       entity:
         type: entity:{entity_type}
-document.download_documents_form:
-  path: '/download-documents'
+
+edw_document.document.download_documents.form:
+  path: '/download-documents/settings'
   defaults:
     _form: Drupal\edw_document\Form\DownloadDocumentsForm
     _title: 'Download documents'
     entityTypeId: NULL
     entityIds: NULL
   requirements:
+    _permission: 'view media'
+
+edw_document.document.download_documents.controller:
+  path: '/download/documents'
+  defaults:
+    _controller: '\Drupal\edw_document\Controller\DocumentController::archiveFiles'
+    _title: 'Download documents'
+  requirements:
+    _permission: 'view media'
+
+edw_document.serve_file:
+  path: '/download/file/{uuid}'
+  defaults:
+    _controller: '\Drupal\edw_document\Controller\FileController::serveFile'
+  requirements:
     _permission: 'access content'
+    uuid: '.+'

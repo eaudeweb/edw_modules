@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_hide_on_mobile
+    - paragraphs.paragraphs_type.edw_container
+id: paragraph.edw_container.field_hide_on_mobile
+field_name: field_hide_on_mobile
+entity_type: paragraph
+bundle: edw_container
+label: 'Hide on mobile'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -2,6 +2,7 @@
 
 namespace Drupal\edw_document\Services;
 
+use Drupal\Core\Archiver\ArchiverException;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -14,7 +15,8 @@ use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
-use Drupal\file\FileInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Service for DocumentManager.
@@ -105,6 +107,8 @@ class DocumentManager {
   /**
    * Returns the file type based on uri extension.
    *
+   * @todo Check if we still need this function.
+   *
    * @param string $uri
    *   The URI to check.
    *
@@ -175,18 +179,14 @@ class DocumentManager {
   /**
    * If is given only a files, open in a new tab.
    *
-   * @param array $url
-   *   URL to find the file.
+   * @param array $files
+   *   Array with files.
    *
    * @return string
    *   The URI of the file.
    */
-  public function downloadFile(array $url) {
-    $url = reset($url);
-    $file = $this->entityTypeManager->getStorage('file')->loadByProperties([
-      'uri' => $url,
-    ]);
-    $file = reset($file);
+  public function downloadFile(array $files) {
+    $file = reset($files);
     return $this->fileUrlGenerator->generateAbsoluteString($file->getFileUri());
   }
 
@@ -196,26 +196,22 @@ class DocumentManager {
    * Given a list of files, create an archive of those files and saves it as a
    * temporary file.
    *
-   * @param array $filesUrls
-   *   An array of urls.
+   * @param array $files
+   *   Array with files.
    *
    * @return string
    *   URL to the zip file.
+   *
+   * @obsolete Kept for backwards compatibility.
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function archiveFiles(array $filesUrls) {
+  public function archiveFiles(array $files) {
     $this->archive = new \ZipArchive();
     $this->archive->open($this->getArchiveFilePath(), \ZipArchive::CREATE);
 
-    $fids = $this->entityTypeManager->getStorage('file')
-      ->getQuery()
-      ->accessCheck()
-      ->condition('uri', $filesUrls, 'IN')
-      ->execute();
-    $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
     foreach ($files as $file) {
       $filepath = $file->getFileUri();
       $content = file_get_contents($filepath);
@@ -239,17 +235,45 @@ class DocumentManager {
   }
 
   /**
-   * {@inheritdoc}
+   * Archive files.
+   *
+   * @param array $files
+   *   Array with files.
+   *
+   * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+   *   The zip file as response.
+   *
+   * @throws \Drupal\Core\Archiver\ArchiverException
    */
-  public function getArchiveFilePath() {
-    $date = new DrupalDateTime('now', 'UTC');
-    $prefix = $date->format('d-m-Y') . '-';
-    $this->directory = $this->getDirectoryRoot() . DIRECTORY_SEPARATOR . uniqid($prefix);
-    $zipFileName = 'documents.zip';
+  public function generateArchive(array $files) {
+    $tempFilename = $this->fileSystem->tempnam('temporary://', 'DocumentsZip');
+    $archive = new \ZipArchive();
+    $result = $archive->open($this->fileSystem->realpath($tempFilename), \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+    if (!$result) {
+      throw new ArchiverException('Zip archive could not be created. Error ' . $result);
+    }
+    foreach ($files as $file) {
+      $filepath = $file->getFileUri();
+      $content = file_get_contents($filepath);
+      if (!empty($content)) {
+        $archive->addFromString($file->label(), $content);
+      }
+    }
+    $result = $archive->close();
+    if (!$result) {
+      throw new ArchiverException('Zip archive could not be closed.');
+    }
 
-    $this->fileSystem->prepareDirectory($this->directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
-    $destination = $this->fileSystem->realpath($this->directory);
-    return $destination . DIRECTORY_SEPARATOR . $zipFileName;
+    $headers = [
+      'Content-Type' => 'application/zip',
+      'Content-Length' => filesize($tempFilename),
+    ];
+
+    $response = new BinaryFileResponse($tempFilename, 200, $headers);
+    $response->setContentDisposition('attachment', 'download.zip');
+    $response->deleteFileAfterSend();
+
+    return $response;
   }
 
   /**
@@ -286,6 +310,22 @@ class DocumentManager {
   }
 
   /**
+   * {@inheritdoc}
+   *
+   * @obsolete Kept for backwards compatibility.
+   */
+  public function getArchiveFilePath() {
+    $date = new DrupalDateTime('now', 'UTC');
+    $prefix = $date->format('d-m-Y') . '-';
+    $this->directory = $this->getDirectoryRoot() . DIRECTORY_SEPARATOR . uniqid($prefix);
+    $zipFileName = 'documents.zip';
+
+    $this->fileSystem->prepareDirectory($this->directory, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
+    $destination = $this->fileSystem->realpath($this->directory);
+    return $destination . DIRECTORY_SEPARATOR . $zipFileName;
+  }
+
+  /**
    * Return a list with urls ready to be downloaded.
    *
    * @param array $nids
@@ -299,6 +339,10 @@ class DocumentManager {
    *
    * @return array
    *   An array with URLs.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Symfony\Component\Filesystem\Exception\FileNotFoundException
    */
   public function getFilteredFiles(array $nids, string $fieldName, array $formats, array $languages) {
     $result = $this->database->select("{$this->entityTypeId}__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
@@ -306,18 +350,21 @@ class DocumentManager {
     $result->condition('f.langcode', $languages, 'IN');
     $fids = $result->execute()->fetchCol();
     $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
-    $urls = [];
-    foreach ($files as $file) {
+    foreach ($files as $fid => $file) {
       if (!$file instanceof File) {
         continue;
       }
-      $url = $file->getFileUri();
-      if (in_array($this->getUriType($url), $formats)) {
-        $urls[] = $url;
+      $uri = $file->getFileUri();
+      $fileError = $this->fileSystem->getDestinationFilename($uri, FileSystemInterface::EXISTS_ERROR);
+      if ($fileError) {
+        throw new FileNotFoundException($uri);
+      }
+      if (!in_array(strtolower(pathinfo($uri, PATHINFO_EXTENSION)), $formats)) {
+        unset($files[$fid]);
       }
     }
 
-    return $urls;
+    return $files;
   }
 
   /**
@@ -392,6 +439,24 @@ class DocumentManager {
       'html' => "$iconsPath/text-html.png",
       'link' => "$iconsPath/text-html.png",
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileByUri(string $uri) {
+    $file = $this->entityTypeManager->getStorage('file')->loadByProperties(['uri' => $uri]);
+    return reset($file);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileByUuid(string $uuid) {
+    $file = $this->entityTypeManager->getStorage('file')->loadByProperties([
+      'uuid' => $uuid,
+    ]);
+    return reset($file);
   }
 
 }

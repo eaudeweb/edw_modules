@@ -51,7 +51,7 @@ class DownloadFileFormatter extends GenericFileFormatter implements ContainerFac
       $configuration['label'],
       $configuration['view_mode'],
       $configuration['third_party_settings'],
-      $container->get('document.manager'),
+      $container->get('edw_document.document.manager'),
     );
   }
 
@@ -99,7 +99,7 @@ class DownloadFileFormatter extends GenericFileFormatter implements ContainerFac
       '#object' => $entity,
       '#button' => [
         '#type' => 'link',
-        '#url' => Url::fromRoute('document.modal', [
+        '#url' => Url::fromRoute('edw_document.document.modal', [
           'entity_type' => $entity->getEntityTypeId(),
           'entity' => $entity->id(),
           'field_name' => $items->getName(),

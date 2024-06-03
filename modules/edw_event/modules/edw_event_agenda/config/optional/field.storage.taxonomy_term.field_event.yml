@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - taxonomy
+id: taxonomy_term.field_event
+field_name: field_event
+entity_type: taxonomy_term
+type: entity_reference
+settings:
+  target_type: node
+module: core
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

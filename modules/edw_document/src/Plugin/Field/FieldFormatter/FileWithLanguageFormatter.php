@@ -72,7 +72,7 @@ class FileWithLanguageFormatter extends GenericFileFormatter implements Containe
       $configuration['label'],
       $configuration['view_mode'],
       $configuration['third_party_settings'],
-      $container->get('file.language_manager'),
+      $container->get('edw_document.file.language_manager'),
     );
   }
 

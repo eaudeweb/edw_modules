@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW Group module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function edw_group_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $currentUser = \Drupal::currentUser();
+  if (!$currentUser->hasPermission('edit access groups')
+    && isset($form['field_groups'])) {
+    unset($form['field_groups']);
+  }
+  if (!$currentUser->hasPermission('edit moderator groups')
+    && isset($form['field_moderator_groups'])) {
+    unset($form['field_moderator_groups']);
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ *
+ * Delete the meeting group.
+ */
+function edw_group_node_delete(NodeInterface $node) {
+  /** @var \Drupal\edw_group\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_group.meeting');
+  $bundle = $node->bundle();
+  
+  if ($bundle == 'event') {
+    if (!$meetingService->isAllowed()) {
+      return;
+    }
+    $groups = $meetingService->getGroupsCreatedForMeeting($node);
+    foreach ($groups as $group) {
+      $group->delete();
+    }
+    return;
+  }
+  
+  if ($bundle == 'event_section') {
+    $meetingService->deleteMeetingSectionGroups($node);
+  }
+}
+
+/**
+ * Implements hook_private_access_roles().
+ *
+ * Updates private roles for node grants system.
+ */
+function edw_group_private_access_roles(&$privateRoles) {
+
+}

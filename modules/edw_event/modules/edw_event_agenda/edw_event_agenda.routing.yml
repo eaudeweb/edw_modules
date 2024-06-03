@@ -1,0 +1,15 @@
+edw_event_agenda.meeting_agenda.settings:
+  path: '/node/{node}/agenda'
+  defaults:
+    _title: 'Meeting agenda'
+    _entity_view: 'event_agendas.meeting_agenda'
+  requirements:
+    _entity_access: 'node.update'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE

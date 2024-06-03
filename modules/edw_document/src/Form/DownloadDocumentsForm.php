@@ -76,7 +76,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('document.manager'),
+      $container->get('edw_document.document.manager'),
       $container->get('module_handler'),
     );
   }
@@ -176,7 +176,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
       '#ajax' => [
         'callback' => [$this, 'ajaxSubmit'],
         'event' => 'click',
-        'url' => Url::fromRoute('document.download_documents_form'),
+        'url' => Url::fromRoute('edw_document.document.download_documents.form'),
         'options' => [
           'query' => [
             'ajax_form' => 1,
@@ -227,6 +227,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
     $this->preselectDefaultValues($form, $form_state);
     $formats = array_filter($form_state->getUserInput()['format']);
     $languages = array_filter($form_state->getUserInput()['language']);
+    // @todo Update logic and use generateArchive() instead of archiveFiles().
     $entities = $this->entityTypeManager->getStorage($this->entityTypeId)->loadMultiple($this->entityIds);
     $filesUrls = $this->documentManager->getFilteredFiles(array_keys($entities), $this->fieldName, $formats, $languages);
     $path = (count($filesUrls) < 2) ? $this->documentManager->downloadFile($filesUrls) : $this->documentManager->archiveFiles($filesUrls);

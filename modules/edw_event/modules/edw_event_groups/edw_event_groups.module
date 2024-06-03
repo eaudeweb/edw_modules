@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Basic module file for EDW event groups module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\node\NodeInterface;
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function mlfs_groups_form_entity_clone_form_alter(&$form, FormStateInterface $formState, $formId) {
+  /** @var \Drupal\node\Entity\Node $node */
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if (!$node instanceof NodeInterface || $node->bundle() != 'event') {
+    return;
+  }
+
+  $form['meeting_groups'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Clone meeting access groups.'),
+    '#description' => t('If the cloned entity should be saved with all the access groups.'),
+    '#default_value' => TRUE,
+  ];
+}

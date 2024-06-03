@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.media.field_document_phase
+    - media.type.document
+  module:
+    - options
+id: media.document.field_document_phase
+field_name: field_document_phase
+entity_type: media
+bundle: document
+label: 'Document phase'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: pre_session
+default_value_callback: ''
+settings: {  }
+field_type: list_string
