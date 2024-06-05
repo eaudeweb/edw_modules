@@ -1,0 +1,8 @@
+edw_utilities.terms_autocomplete:
+  path: '/search/autocomplete/{vid}/terms'
+  defaults:
+    _controller: '\Drupal\edw_utilities\Controller\TermsAutocompleteController::autocomplete'
+    _title: 'Terms autocomplete'
+    _format: json
+  requirements:
+    _permission: 'access content'
