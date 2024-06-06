@@ -77,7 +77,7 @@ class TermsAutocompleteController extends ControllerBase {
     $query = $this->termStorage->getQuery()
       ->accessCheck()
       ->condition('vid', $vid);
-    $this->moduleHandler->invokeAll('terms_autocomplete_query_alter', [$vid, $input, $properties, &$query]);
+    $this->moduleHandler->invokeAll('terms_autocomplete_query_alter', [$vid, $input, &$query, $properties]);
     $ids = $query->execute();
     $terms = $ids ? $this->termStorage->loadMultiple($ids) : [];
     foreach ($terms as $term) {
@@ -86,7 +86,7 @@ class TermsAutocompleteController extends ControllerBase {
         ])->toString(),
         $term->label(),
       );
-      $this->moduleHandler->invokeAll('terms_autocomplete_label_alter', [$vid, $term, $properties, &$label]);
+      $this->moduleHandler->invokeAll('terms_autocomplete_label_alter', [$vid, $term, &$label, $properties]);
       $results[] = [
         'value' => EntityAutocomplete::getEntityLabels([$term]),
         'label' => $label,

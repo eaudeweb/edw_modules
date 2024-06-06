@@ -15,14 +15,14 @@ use Drupal\views\Plugin\views\query\QueryPluginBase;
  *   The vocabulary id.
  * @param string $input
  *   The text to extract named entities for.
- * @param array $properties
- *   A list of additional properties.
  * @param \Drupal\Core\Entity\Query\Sql\Query $query
  *   The query plugin object for the query.
+ * @param array $properties
+ *   A list of additional properties.
  *
  * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
-function hook_terms_autocomplete_query_alter(string $vid, string $input, array $properties, Query &$query) {
+function hook_terms_autocomplete_query_alter(string $vid, string $input, Query &$query, array $properties = []) {
   // For example, assuming the result should be sorted, grouped and limited to
   // 10 terms.
   $query
@@ -45,7 +45,7 @@ function hook_terms_autocomplete_query_alter(string $vid, string $input, array $
  *
  * @SuppressWarnings(PHPMD.UnusedFormalParameter)
  */
-function hook_terms_autocomplete_label_alter(string $vid, Term $term, array $properties, string &$label) {
+function hook_terms_autocomplete_label_alter(string $vid, Term $term, string &$label, array $properties = []) {
   // For example, filter by term instead of open the term page.
   if ($vid == 'climate_change_toolkit') {
     $request = \Drupal::requestStack()->getCurrentRequest();
