@@ -132,7 +132,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
 
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
-      array_merge($grants, $this->getPrivateSectionGrants($node));
+      $grants = array_merge($grants, $this->getPrivateSectionGrants($node));
     }
 
     foreach ($groups as $group) {
