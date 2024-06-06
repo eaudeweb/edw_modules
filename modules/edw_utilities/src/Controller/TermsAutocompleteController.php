@@ -66,6 +66,8 @@ class TermsAutocompleteController extends ControllerBase {
    */
   public function autocomplete(Request $request, string $vid) {
     $results = [];
+    // A list with additional properties related for each project.
+    $properties = ($request->query->has('properties')) ? $request->query->all()['properties'] : [];
     $input = $request->query->get('q');
     // Get the typed string from the URL, if it exists.
     if (!$input) {
@@ -75,7 +77,7 @@ class TermsAutocompleteController extends ControllerBase {
     $query = $this->termStorage->getQuery()
       ->accessCheck()
       ->condition('vid', $vid);
-    $this->moduleHandler->invokeAll('terms_autocomplete_query_alter', [$vid, $input, &$query]);
+    $this->moduleHandler->invokeAll('terms_autocomplete_query_alter', [$vid, $input, $properties, &$query]);
     $ids = $query->execute();
     $terms = $ids ? $this->termStorage->loadMultiple($ids) : [];
     foreach ($terms as $term) {
@@ -84,7 +86,7 @@ class TermsAutocompleteController extends ControllerBase {
         ])->toString(),
         $term->label(),
       );
-      $this->moduleHandler->invokeAll('terms_autocomplete_label_alter', [$vid, $term, &$label]);
+      $this->moduleHandler->invokeAll('terms_autocomplete_label_alter', [$vid, $term, $properties, &$label]);
       $results[] = [
         'value' => EntityAutocomplete::getEntityLabels([$term]),
         'label' => $label,
