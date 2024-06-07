@@ -76,3 +76,47 @@ function edw_event_form_alter(&$form, FormStateInterface $form_state, $form_id) 
       ->alter($form, $form_state);
   }
 }
+
+/** 
+ * Implements hook_ENTITY_TYPE_delete(). 
+ */
+function edw_event_node_delete(NodeInterface $node) {
+  if ($node->bundle() != 'event') {
+    return;
+  }
+  
+  /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_event.meeting.service');
+  $entities = $meetingService->getAllMeetingSections($node, FALSE);
+  foreach ($entities as $entity) {
+    $entity->delete();
+    \Drupal::logger('node')->info(t('The @entity-type %label has been deleted.', [
+      '@entity-type' => $entity->getEntityType()->getSingularLabel(),
+      '%label' => $entity->label() ?? $entity->id(),
+    ]));
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function edw_event_node_update(NodeInterface $node) {
+  if ($node->isNew() || empty($node->original) || $node->bundle() != 'event') {
+    return;
+  }
+  /** @var \Drupal\node\Entity\Node $originalNode */
+  $originalNode = $node->original;
+  $oldNumber = $originalNode->get('field_number')->value;
+  $newNumber = $node->get('field_number')->value;
+  if ($oldNumber === $newNumber) {
+    return;
+  }
+  
+  /** @var \Drupal\edw_event\Services\MeetingService $meetingService */
+  $meetingService = \Drupal::service('edw_event.meeting.service');
+  $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+  $entities = $meetingService->getAllMeetingSections($node, FALSE);
+  foreach ($entities as $entity) {
+    $nodeStorage->save($entity);
+  }
+}
