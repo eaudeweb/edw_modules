@@ -8,7 +8,7 @@ id: node.event_section.field_title
 field_name: field_title
 entity_type: node
 bundle: event_section
-label: 'Tab Title'
+label: 'Page Title'
 description: ''
 required: false
 translatable: true
