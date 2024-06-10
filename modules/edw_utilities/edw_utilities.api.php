@@ -64,3 +64,15 @@ function hook_terms_autocomplete_label_alter(string $vid, Term $term, string &$l
     );
   }
 }
+
+/**
+ * Change languages available in the file dropdown.
+ *
+ * @param array $languages
+ *   An array of languages as provided by \Drupal::languageManager()->getStandardLanguageList().
+ *
+ * @ingroup entity_crud
+ */
+function hook_file_languages_alter(array &$languages) {
+  $languages = ['fr' => 'French'];
+}
