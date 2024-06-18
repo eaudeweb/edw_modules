@@ -59,8 +59,16 @@ The following functionalities are provided out of the box:
 2. **custom block** to show automatically the children tabs. When user is clicking on a tab element the appropriate
 tab page is selected, highlighted and its content is presented to the user. There is a button to create new tab page
 which appears when the user has the appropriate permission.
-3. TODO
-4. TODO: (not implemented) Import a calendar entry from ICS file 
+3. Extra local tasks and route callbacks for In-session: 
+```php
+edw_event.in_session.tasks:
+deriver: 'Drupal\edw_event\Plugin\Derivative\DocumentsInSessionLocalTasks'
+
+route_callbacks:
+  - '\Drupal\edw_event\Routing\DocumentsInSessionRoutes::routes'
+```
+4. TODO
+5. TODO: (not implemented) Import a calendar entry from ICS file 
 
 ## Sub-modules
 

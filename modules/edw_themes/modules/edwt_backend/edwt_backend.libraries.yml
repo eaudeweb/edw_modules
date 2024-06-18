@@ -9,6 +9,12 @@ manage-documents:
     component:
       css/manage-documents.css: {}
       css/dialog.css: {}
+  js:
+    js/manage-documents.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
 
 bootstrap:
   css:

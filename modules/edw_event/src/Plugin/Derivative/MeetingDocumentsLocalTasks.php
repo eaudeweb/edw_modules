@@ -14,8 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class MeetingDocumentsLocalTasks extends DeriverBase implements ContainerDeriverInterface {
 
-  use StringTranslationTrait;
-
   /**
    * The meeting document service.
    *

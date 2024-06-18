@@ -28,7 +28,6 @@
 .accordion-item:last-of-type>.accordion-header .accordion-button{
     font-size: 18px;
     font-weight: 400;
-    text-transform: uppercase;
 }
 
 .view-display-id-in_session_order .gin-layer-wrapper,

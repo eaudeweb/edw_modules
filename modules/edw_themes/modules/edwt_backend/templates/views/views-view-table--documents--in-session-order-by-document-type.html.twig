@@ -19,19 +19,20 @@
   sticky ? 'sticky-enabled',
 ]
 %}
+
 <div class="accordion" id="{{ group_id }}">
   <div class="accordion-item">
     <h2 class="accordion-header">
       <button class="accordion-button collapsed" {# or only accordion-button #}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#panel-in-session-by-{{ group_id }}"
+              data-bs-target="#panel-in-session-by-document-{{ group_id }}"
               aria-expanded="false" {# or true #}
-              aria-controls="panel-in-session-by-{{ group_id }}">
+              aria-controls="panel-in-session-by-document-{{ group_id }}">
         {{ title }}
       </button>
     </h2>
-    <div id="panel-in-session-by-{{ group_id }}" class="accordion-collapse collapse multi-collapse"> {# or accordion-collapse collapse show #}
+    <div id="panel-in-session-by-document-{{ group_id }}" class="accordion-collapse collapse"> {# or accordion-collapse collapse show #}
       <table{{ attributes.addClass(classes) }}>
         <div class="accordion-body">
           {% if add_document %}

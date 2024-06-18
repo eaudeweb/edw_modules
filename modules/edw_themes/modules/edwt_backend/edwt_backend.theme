@@ -26,6 +26,20 @@ function edwt_backend_theme_suggestions_views_view_table_alter(array &$suggestio
 /**
  * Implements hook_theme_suggestions_HOOK_alter().
  */
+function edwt_backend_theme_suggestions_views_view_alter(array &$suggestions, array $variables): void {
+  $view = $variables['view'];
+
+  // Add an extra check because the view could have been deleted.
+  if (!$view instanceof ViewExecutable) {
+    return;
+  }
+  $suggestions[] = 'views_view__' . $view->id();
+  $suggestions[] = 'views_view__' . $view->id() . '__' . $view->current_display;
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
 function edwt_backend_theme_suggestions_form_alter(array &$suggestions, array $variables): void {
   $routeMatch = \Drupal::routeMatch();
   if (!empty($routeMatch->getParameter('view_id'))) {
@@ -59,6 +73,20 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       $phase = str_replace('_order', '', $view->current_display);
       $variables['add_document'] = $meetingDocumentsService->addDocumentModal($firstResult->_relationship_entities['field_agenda'], $phase);
       $variables['group_id'] = $firstResult->_relationship_entities['field_agenda']->id();
+    }
+    if ($view->id() == 'documents'
+      && $view->current_display == 'in_session_order_by_document_type'
+      && isset($variables['result'])) {
+      $event = \Drupal::routeMatch()->getParameter('node');
+      $firstResult = reset($variables['result']);
+      $url = Url::fromRoute('entity.media.add_form', [
+        'media_type' => 'document',
+        'nid' => $event->id(),
+        'field_document_types' => $firstResult->_relationship_entities['field_document_types']->id(),
+        'field_document_phase' => 'in_session',
+      ]);
+      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url);
+      $variables['group_id'] = $firstResult->_relationship_entities['field_document_types']->id();
     }
   }
 }
