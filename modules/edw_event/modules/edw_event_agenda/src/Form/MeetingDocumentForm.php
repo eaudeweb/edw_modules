@@ -87,11 +87,6 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
     $meetingId = $this->currentRequest->get('nid');
     $phase = $this->currentRequest->get('field_document_phase');
     $phase = $this->getDocumentPhase($phase, $form_state);
-    $documentType = $this->currentRequest->get('field_document_types');
-    if (isset($documentType) && $phase == 'in_session') {
-      $form_state->setRedirect("edw_event.documents.in_session.document_type", ['node' => $meetingId]);
-      return;
-    }
     $form_state->setRedirect("edw_event.documents.$phase", ['node' => $meetingId]);
   }
 
