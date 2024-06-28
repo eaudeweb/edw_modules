@@ -21,6 +21,10 @@ manage-groups:
     component:
       css/manage-groups.css: {}
 
+in-session-agendas:
+  js:
+    js/in-session-agendas.js: {}
+
 bootstrap:
   css:
     theme:
