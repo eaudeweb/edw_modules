@@ -48,12 +48,3 @@ function edw_group_node_delete(NodeInterface $node) {
     $meetingService->deleteMeetingSectionGroups($node);
   }
 }
-
-/**
- * Implements hook_private_access_roles().
- *
- * Updates private roles for node grants system.
- */
-function edw_group_private_access_roles(&$privateRoles) {
-
-}

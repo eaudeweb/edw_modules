@@ -21,7 +21,12 @@ function edw_paragraphs_gallery_preprocess_paragraph__edw_gallery(&$variables) {
 
   $style = ImageStyle::load('crop_thumbnail');
   $items = $dynamicGallery = [];
+  $currentUser = \Drupal::currentUser();
+  /** @var \Drupal\media\Entity\Media $media */
   foreach ($paragraph->get('field_gallery_items')->referencedEntities() as $media) {
+    if (!$media->access('view', $currentUser)) {
+      continue;
+    }
     $source = $media->getSource();
     $field_name = $source->getConfiguration()['source_field'];
     $caption = $source->getMetadata($media, 'thumbnail_alt_value') ?? $media->label();

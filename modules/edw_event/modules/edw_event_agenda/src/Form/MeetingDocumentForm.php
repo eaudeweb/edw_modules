@@ -69,6 +69,10 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
       $form['field_agenda']['widget']['#default_value'] = [$agendaId];
       $form['field_agenda']['widget']['#disabled'] = TRUE;
     }
+    $documentType = $this->currentRequest->get('field_document_types');
+    if (isset($documentType)) {
+      $form['field_document_types']['widget']['#default_value'] = [$documentType];
+    }
     $phase = $this->currentRequest->get('field_document_phase');
     if (isset($phase)) {
       $form['field_document_phase']['widget']['#default_value'] = [$phase];
@@ -81,7 +85,9 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
    */
   public function formRedirect(array &$form, FormStateInterface $form_state) {
     $meetingId = $this->currentRequest->get('nid');
-    $phase = $form_state->getUserInput()['field_document_phase'] ?? $this->currentRequest->get('field_document_phase');
+    $phase = $this->currentRequest->get('field_document_phase');
+    $phase = $this->getDocumentPhase($phase, $form_state);
+    $form_state->setRedirect("edw_event.documents.$phase", ['node' => $meetingId]);
     $agendaId = $this->currentRequest->get('field_agenda');
 
     $url_options = [
@@ -89,6 +95,17 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
     ];
 
     $form_state->setRedirect("edw_event.documents.$phase", ['node' => $meetingId], $url_options);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDocumentPhase($phase, FormStateInterface $form_state) {
+    $selectedPhase = $form_state->getUserInput()['field_document_phase'];
+    if (empty($selectedPhase)) {
+      return $phase;
+    }
+    return (is_array($selectedPhase)) ? reset($selectedPhase) : $selectedPhase;
   }
 
 }

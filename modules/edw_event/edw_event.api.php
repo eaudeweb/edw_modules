@@ -32,3 +32,18 @@ function hook_meeting_documents_local_tasks_alter(&$local_tasks) {
 function hook_meeting_documents_phase_alter(array &$tabs) {
   $tabs['annotated_agenda'] = 'Annotated agenda';
 }
+
+/**
+ * Alters tabs and add new types of grouping specific for the website.
+ *
+ * @param array $groups
+ *   An associative array containing list of tabs as key and title.
+ *
+ * @see \Drupal\edw_event\Plugin\Derivative\DocumentsInSessionLocalTasks::getDerivativeDefinitions()
+ * @see \Drupal\edw_event\Routing\DocumentsInSessionRoutes::getDocumentPhase()
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+ */
+function hook_meeting_documents_in_session_groups(array &$groups) {
+  $groups['contanct_group'] = 'Contact group';
+}

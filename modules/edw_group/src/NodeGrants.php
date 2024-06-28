@@ -132,28 +132,8 @@ class NodeGrants implements NodeAccessGrantsInterface {
 
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
-      // If no groups are set, private access should be provided for in-session.
-      $access = $node->get('field_access')->value;
-      $privateRoles = ['participants'];
-      $this->moduleHandler->invokeAll('private_access_roles', [&$privateRoles]);
-      if (in_array($access, $privateRoles)) {
-        $grants[] = [
-          'realm' => static::EDW_VIEW_REALM,
-          'gid' => 0,
-          'grant_view' => 0,
-          'grant_update' => 0,
-          'grant_delete' => 0,
-        ];
-        return $grants;
-      }
-
-      $grants[] = [
-        'realm' => static::GLOBAL_REALM,
-        'gid' => 0,
-        'grant_view' => (int) $node->isPublished(),
-        'grant_update' => 0,
-        'grant_delete' => 0,
-      ];
+      $grants = array_merge($grants, $this->getPrivateSectionGrants($node));
+      $grants = array_map("unserialize", array_unique(array_map("serialize", $grants)));
     }
 
     foreach ($groups as $group) {
@@ -212,6 +192,44 @@ class NodeGrants implements NodeAccessGrantsInterface {
         $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
       }
     }
+    
+    return $grants;
+  }
+
+  /**
+   * Gets private section grants for a node.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The event section node.
+   *
+   * @return array
+   *   The grants.
+   */
+  protected function getPrivateSectionGrants(NodeInterface $node) {
+    $grants = [];
+    // If no groups are set, private access should be provided for in-session.
+    $access = $node->get('field_access')->value;
+    $privateRoles = ['participants'];
+    $this->moduleHandler->invokeAll('private_access_roles', [&$privateRoles]);
+    if (in_array($access, $privateRoles)) {
+      $grants[] = [
+        'realm' => static::EDW_VIEW_REALM,
+        'gid' => 0,
+        'grant_view' => 0,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ];
+      return $grants;
+    }
+
+    $grants[] = [
+      'realm' => static::GLOBAL_REALM,
+      'gid' => 0,
+      'grant_view' => (int) $node->isPublished(),
+      'grant_update' => 0,
+      'grant_delete' => 0,
+    ];
+
     return $grants;
   }
 
