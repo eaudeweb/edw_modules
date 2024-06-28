@@ -16,6 +16,10 @@ manage-documents:
     - core/jquery
     - core/once
 
+in-session-agendas:
+  js:
+    js/in-session-agendas.js: {}
+
 bootstrap:
   css:
     theme:
