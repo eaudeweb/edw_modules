@@ -1,0 +1,17 @@
+.view-meeting-groups .gin-layer-wrapper {
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.main-group-section__container {
+  padding:16px;
+}
+
+.main-content__container {
+  background: var(--gin-bg-layer);
+  border: 1px solid var(--gin-border-color-layer);
+  box-shadow: var(--gin-shadow-l1);
+  border-radius: var(--gin-border-l);
+  margin-bottom: 32px;
+}

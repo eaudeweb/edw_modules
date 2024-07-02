@@ -87,16 +87,18 @@ class MeetingDocumentsService {
    *
    * @param \Drupal\Core\Url $url
    *   The agenda selected for the document.
+   * @param string $title
+   *  The links title
    *
    * @return array
    *   Modal dialog.
    *
    * @SuppressWarnings(PHPMD.StaticAccess)
    */
-  public function addButtonModal(Url $url) {
+  public function addButtonModal(Url $url, string $title) {
     return [
       '#type' => 'link',
-      '#title' => $this->t('Add new document'),
+      '#title' => $this->t($title),
       '#url' => $url,
       '#attributes' => [
         'class' => ['button button--action', 'button--primary', 'use-ajax'],

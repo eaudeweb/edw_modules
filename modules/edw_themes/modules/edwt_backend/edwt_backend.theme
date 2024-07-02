@@ -85,8 +85,24 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
         'field_document_types' => $firstResult->_relationship_entities['field_document_types']->id(),
         'field_document_phase' => 'in_session',
       ]);
-      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url);
+      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url, 'Add new document');
       $variables['group_id'] = $firstResult->_relationship_entities['field_document_types']->id();
+    }
+
+    if ($view->id() == 'meeting_groups' && $view->current_display == 'access_groups'
+      && isset($variables['result'])) {
+      $firstResult = reset($variables['result']);
+      if (empty($firstResult)) {
+        return;
+      }
+      $sectionId = $firstResult->_relationship_entities['reverse__node__field_groups']->id();
+      $event = \Drupal::routeMatch()->getParameter('node');
+      $url = Url::fromRoute('entity.group.add_form', [
+        'group_type' => 'event',
+        'nid' => $event->id(),
+        'event_section' => $sectionId,
+      ]);
+      $variables['add_group'] = $meetingDocumentsService->addButtonModal($url, 'Add new group');
     }
   }
 }
