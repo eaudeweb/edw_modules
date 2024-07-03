@@ -96,6 +96,10 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
         return;
       }
       $sectionId = $firstResult->_relationship_entities['reverse__node__field_groups']->id();
+      if ($firstResult->_entity == null) {
+        $firstRowKey = array_key_first($variables['rows']);
+        $variables['rows'][$firstRowKey]['empty_message'] = t('There are no groups for this section');
+      }
       $event = \Drupal::routeMatch()->getParameter('node');
       $url = Url::fromRoute('entity.group.add_form', [
         'group_type' => 'event',
