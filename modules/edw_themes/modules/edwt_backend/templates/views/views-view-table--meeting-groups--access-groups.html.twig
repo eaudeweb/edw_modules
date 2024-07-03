@@ -44,6 +44,9 @@
 <div class="main-content__container">
     <div class="main-group-section__container">
         <h3> {{ title }} </h3>
+        {% if assign_group %}
+            {{ assign_group }}
+        {% endif %}
         {% if add_group %}
             {{ add_group }}
         {% endif %}
