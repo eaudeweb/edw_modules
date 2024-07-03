@@ -107,6 +107,7 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       $assignUrl = Url::fromRoute('entity_browser.access_groups', [
         'uuid' => $uuid,
         'original_path' => $currentPath,
+        'nid' => $sectionId,
       ]);
       $variables['add_group'] = $meetingDocumentsService->addButtonModal($addUrl, 'Add new group');
       $variables['assign_group'] = $meetingDocumentsService->addButtonModal($assignUrl, 'Assign group');
