@@ -229,7 +229,7 @@ class DownloadDocumentsForm extends FormBase implements ContainerInjectionInterf
     $languages = array_filter($form_state->getUserInput()['language']);
     // @todo Update logic and use generateArchive() instead of archiveFiles().
     $entities = $this->entityTypeManager->getStorage($this->entityTypeId)->loadMultiple($this->entityIds);
-    $filesUrls = $this->documentManager->getFilteredFiles(array_keys($entities), $this->fieldName, $formats, $languages);
+    $filesUrls = $this->documentManager->getFilteredFiles(array_keys($entities), [], $this->fieldName, $formats, $languages);
     $path = (count($filesUrls) < 2) ? $this->documentManager->downloadFile($filesUrls) : $this->documentManager->archiveFiles($filesUrls);
     if (empty($path)) {
       $response->addCommand(new PrependCommand('#download-documents-header', $form['status_message']));
