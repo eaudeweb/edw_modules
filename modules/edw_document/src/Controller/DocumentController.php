@@ -98,7 +98,8 @@ class DocumentController extends ControllerBase implements ContainerInjectionInt
     $response = new Response();
 
     try {
-      $files = $this->documentManager->getFilteredFiles($args['ids'], $fieldName, $args['format'], $args['language']);
+      $revision_ids = $args['vids'] ?? [];
+      $files = $this->documentManager->getFilteredFiles($args['ids'], $revision_ids, $fieldName, $args['format'], $args['language']);
       if (empty($files)) {
         $response->setStatusCode(204);
         return $response;

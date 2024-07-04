@@ -330,6 +330,8 @@ class DocumentManager {
    *
    * @param array $nids
    *   An array of node IDs.
+   * @param array $vids
+   *   An array of node revision ids.
    * @param string $fieldName
    *   The name of the field to get files.
    * @param array $formats
@@ -344,11 +346,18 @@ class DocumentManager {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Symfony\Component\Filesystem\Exception\FileNotFoundException
    */
-  public function getFilteredFiles(array $nids, string $fieldName, array $formats, array $languages) {
+  public function getFilteredFiles(array $nids, array $revision_ids, string $fieldName, array $formats, array $languages) {
     $result = $this->database->select("{$this->entityTypeId}__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
     $result->condition('f.entity_id', $nids, 'IN');
     $result->condition('f.langcode', $languages, 'IN');
     $fids = $result->execute()->fetchCol();
+    if (!empty($revision_ids)) {
+      $revisions = $this->database->select("{$this->entityTypeId}_revision__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
+      $revisions->condition('f.revision_id', $revision_ids, 'IN');
+      $revisions->condition('f.langcode', $languages, 'IN');
+      $extra_fids = $revisions->execute()->fetchCol();
+      $fids = array_unique(array_merge($fids, $extra_fids));
+    }
     $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
     foreach ($files as $fid => $file) {
       if (!$file instanceof File) {
