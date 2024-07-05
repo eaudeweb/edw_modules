@@ -96,14 +96,16 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
         $firstRowKey = array_key_first($variables['rows']);
         $variables['rows'][$firstRowKey]['empty_message'] = t('There are no groups for this section');
       }
-      $event = \Drupal::routeMatch()->getParameter('node');
+
+      $currentPath = \Drupal::request()->getRequestUri();
+      $uuid = \Drupal::service('uuid')->generate();
+
       $addUrl = Url::fromRoute('entity.group.add_form', [
         'group_type' => 'event',
-        'nid' => $event->id(),
-        'event_section' => $sectionId,
+        'nid' => $sectionId,
+        'destination' => $currentPath,
       ]);
-      $uuid = \Drupal::service('uuid')->generate();
-      $currentPath = \Drupal::request()->getRequestUri();
+
       $assignUrl = Url::fromRoute('entity_browser.access_groups', [
         'uuid' => $uuid,
         'original_path' => $currentPath,
