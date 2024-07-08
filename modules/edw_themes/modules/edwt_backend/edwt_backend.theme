@@ -95,6 +95,9 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       if ($firstResult->_entity == NULL) {
         $firstRowKey = array_key_first($variables['rows']);
         $variables['rows'][$firstRowKey]['empty_message'] = t('There are no groups for this section');
+        foreach ($variables['rows'][$firstRowKey]['columns'] as &$value) {
+          $value['content'] = [];
+        }
       }
 
       $currentPath = \Drupal::request()->getRequestUri();
