@@ -33,6 +33,7 @@ class FieldValueIndex extends ProcessorPluginBase implements PluginFormInterface
 
     $configuration += [
       'filters' => '',
+      'negate' => FALSE,
     ];
 
     return $configuration;
@@ -47,6 +48,11 @@ class FieldValueIndex extends ProcessorPluginBase implements PluginFormInterface
       '#title' => $this->t('Filters'),
       '#description' => $this->t('Add field=value. Only fieldable entities with the matching field value get indexed.<b>For now, only one line is supported</b>.'),
       '#default_value' => $this->configuration['filters'],
+    ];
+    $form['negate'] = [
+      '#title' => $this->t('Negate condition'),
+      '#type' => 'checkbox',
+      '#default_value' => $this->configuration['negate'],
     ];
 
     return $form;
@@ -113,6 +119,9 @@ class FieldValueIndex extends ProcessorPluginBase implements PluginFormInterface
               break;
           }
           $enabled = in_array($filter_value, $field_values);
+          if ($this->configuration['negate']) {
+            $enabled = !$enabled;
+          }
           // Not all content types has same field.
           if (!$enabled) {
             unset($items[$item_id]);
