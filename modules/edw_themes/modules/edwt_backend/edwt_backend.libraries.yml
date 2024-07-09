@@ -16,6 +16,11 @@ manage-documents:
     - core/jquery
     - core/once
 
+manage-groups:
+  css:
+    component:
+      css/manage-groups.css: {}
+
 bootstrap:
   css:
     theme:

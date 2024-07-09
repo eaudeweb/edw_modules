@@ -1,6 +1,5 @@
 <?php
 
-use Drupal\Component\Serialization\Json;
 use Drupal\Core\Url;
 use Drupal\views\ViewExecutable;
 
@@ -85,8 +84,38 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
         'field_document_types' => $firstResult->_relationship_entities['field_document_types']->id(),
         'field_document_phase' => 'in_session',
       ]);
-      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url);
+      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url, 'Add new document');
       $variables['group_id'] = $firstResult->_relationship_entities['field_document_types']->id();
+    }
+
+    if ($view->id() == 'meeting_groups' && $view->current_display == 'access_groups'
+      && isset($variables['result'])) {
+      $firstResult = reset($variables['result']);
+      $sectionId = $firstResult->_relationship_entities['reverse__node__field_groups']->id();
+      if ($firstResult->_entity == NULL) {
+        $firstRowKey = array_key_first($variables['rows']);
+        $variables['rows'][$firstRowKey]['empty_message'] = t('There are no groups for this section');
+        foreach ($variables['rows'][$firstRowKey]['columns'] as &$value) {
+          $value['content'] = [];
+        }
+      }
+
+      $currentPath = \Drupal::request()->getRequestUri();
+      $uuid = \Drupal::service('uuid')->generate();
+
+      $addUrl = Url::fromRoute('entity.group.add_form', [
+        'group_type' => 'event',
+        'nid' => $sectionId,
+        'destination' => $currentPath,
+      ]);
+
+      $assignUrl = Url::fromRoute('entity_browser.access_groups', [
+        'uuid' => $uuid,
+        'original_path' => $currentPath,
+        'nid' => $sectionId,
+      ]);
+      $variables['add_group'] = $meetingDocumentsService->addButtonModal($addUrl, 'Add new group');
+      $variables['assign_group'] = $meetingDocumentsService->addButtonModal($assignUrl, 'Assign group');
     }
   }
 }
