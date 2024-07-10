@@ -21,6 +21,14 @@ manage-groups:
     component:
       css/manage-groups.css: {}
 
+scrollto-agendas:
+  js:
+    js/scrollto-agendas.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+
 bootstrap:
   css:
     theme:
