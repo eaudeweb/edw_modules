@@ -9,6 +9,7 @@
 #}
 {{ attach_library('edwt_backend/bootstrap') }}
 {{ attach_library('edwt_backend/manage-documents') }}
+{{ attach_library('edwt_backend/scrollto-agendas') }}
 
 {%
   set classes = [
@@ -25,13 +26,13 @@
       <button class="accordion-button collapsed" {# or only accordion-button #}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-{{ group_id }}"
+              data-bs-target="#panel-pre-session-by-{{ group_id }}"
               aria-expanded="false" {# or true #}
-              aria-controls="panelsStayOpen-{{ group_id }}">
+              aria-controls="panel-pre-session-by-{{ group_id }}">
         {{ title }}
       </button>
     </h2>
-    <div id="panelsStayOpen-{{ group_id }}" class="accordion-collapse collapse"> {# or accordion-collapse collapse show #}
+    <div id="panel-pre-session-by-{{ group_id }}" class="accordion-collapse collapse"> {# or accordion-collapse collapse show #}
       <table{{ attributes.addClass(classes) }}>
         <div class="accordion-body">
           {% if add_document %}
