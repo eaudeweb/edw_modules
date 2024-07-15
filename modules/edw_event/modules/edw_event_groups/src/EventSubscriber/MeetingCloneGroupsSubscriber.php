@@ -76,91 +76,61 @@ class MeetingCloneGroupsSubscriber implements EventSubscriberInterface {
     if (!isset($properties['meeting_groups']) || !$properties['meeting_groups']) {
       return;
     }
-    $originalMeeting = $event->getEntity();
-    $meetingGroups = $this->getAllMeetingGroups($originalMeeting);
+
     $newMeeting = $event->getClonedEntity();
-    $newMeetingGroups = [];
+    $newMeetingSections = $this->getAllMeetingSections($newMeeting);
+    $globalAccess = [];
+    $this->moduleHandler->invokeAll('global_access_groups', [&$globalAccess]);
+    $clonedGroups = [];
 
-    /** @var \Drupal\group\Entity\GroupInterface $meetingGroup */
-    foreach ($meetingGroups as $meetingGroup) {
-      // Clone the meeting group.
-      $newGroup = $meetingGroup->createDuplicate();
-      $newGroup->set('field_event', $newMeeting->id());
-      $label = 'Cloned - ' . $newGroup->label();
-      $newGroup->set('label', $label);
-      $newGroup->save();
-      $newMeetingGroups[] = $newGroup;
-    }
-    $meetingSections = $this->getAllMeetingSections($newMeeting);
-    foreach ($meetingSections as $meetingSection) {
+    foreach ($newMeetingSections as $newMeetingSection) {
       // Update field_groups on each newly created meeting section.
-      $fieldAccess = $meetingSection->get('field_access')->value;
-      $access = ['participants'];
-      $this->moduleHandler->invokeAll('private_access_roles', [&$access]);
-      if (in_array($fieldAccess, $access)) {
-        $groups = $this->getGroups($fieldAccess, $newMeetingGroups);
-        $meetingSection->set('field_groups', $groups);
-        $meetingSection->save();
+      $newGroups = [];
+      $originalGroups = $newMeetingSection->get('field_groups')
+        ->referencedEntities();
+      foreach ($originalGroups as $originalGroup) {
+        $fieldAccess = $originalGroup->get('field_access')->value;
+        if (in_array($fieldAccess, $globalAccess)) {
+          // Reuse global groups or previously cloned groups.
+          $newGroups[] = $originalGroup;
+          continue;
+        }
+
+        if (isset($clonedGroups[$originalGroup->id()])) {
+          // Reuse previously cloned groups.
+          $newGroups[] = $clonedGroups[$originalGroup->id()];
+          continue;
+        }
+
+        // Clone normal groups.
+        $newGroup = $originalGroup->createDuplicate();
+        $newGroup->set('field_event', $newMeeting->id());
+        $label = 'Cloned - ' . $newGroup->label();
+        $newGroup->set('label', $label);
+        $newGroup->save();
+        $clonedGroups[$originalGroup->id()] = $newGroup;
+        $newGroups[] = $newGroup;
       }
-    }
-  }
 
-  /**
-   * Loads all groups for a meeting.
-   *
-   * @param \Drupal\Core\Entity\EntityInterface $entity
-   *   The meeting.
-   *
-   * @return array|\Drupal\Core\Entity\EntityInterface[]
-   *   List of meeting groups.
-   */
-  protected function getAllMeetingGroups(EntityInterface $entity) {
-    if ($entity->bundle() != 'event') {
-      return [];
+      $newMeetingSection->set('field_groups', $newGroups);
+      $newMeetingSection->save();
     }
-
-    return $this->groupStorage->loadByProperties([
-      'type' => 'event',
-      'field_event' => $entity->id(),
-    ]);
   }
 
   /**
    * Gets meeting sections for a meeting.
    *
-   * @param $meeting
+   * @param \Drupal\Core\Entity\EntityInterface $meeting
    *   The meeting.
    *
-   * @return array
+   * @return \Drupal\Core\Entity\EntityInterface[]
    *   The meeting section nodes.
    */
-  protected function getAllMeetingSections($meeting) {
+  protected function getAllMeetingSections(EntityInterface $meeting) {
     return $this->nodeStorage->loadByProperties([
       'type' => 'event_section',
       'field_event' => $meeting->id(),
     ]);
-  }
-
-  /**
-   * Gets groups with a given access value from a list.
-   *
-   * @param $accessValue
-   *   The field_access value.
-   *
-   * @param array $meetingGroups
-   *   The meeting groups.
-   *
-   * @return array
-   *   The filtered groups ids.
-   */
-  private function getGroups($accessValue, array $meetingGroups) {
-    $groupsIds = [];
-    foreach ($meetingGroups as $group) {
-      if ($group->get('field_access')->value == $accessValue) {
-        $groupsIds[] = $group->id();
-      }
-    }
-    return $groupsIds;
   }
 
 }
