@@ -13,3 +13,20 @@ edw_event_groups.meeting_access_groups.settings:
         bundle:
           - event
     _admin_route: TRUE
+
+edw_event_groups.remove_group_from_section:
+  path: '/admin/group/content/manage/section_group/{section}/{group}'
+  defaults:
+    _controller: 'Drupal\mlfs_groups\Controller\GroupsController::removeGroupFromSection'
+    _title: 'Unassign group from section'
+  requirements:
+    _permission: 'administer group'
+    section: '\d+'
+    group: '\d+'
+  options:
+    parameters:
+      section:
+        type: entity:node
+      group:
+        type: entity:group
+    _admin_route: TRUE

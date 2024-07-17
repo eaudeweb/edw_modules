@@ -7,12 +7,12 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
-
+use Drupal\group\Entity\GroupInterface;
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function mlfs_groups_form_entity_clone_form_alter(&$form, FormStateInterface $formState, $formId) {
+function edw_event_groups_form_entity_clone_form_alter(&$form, FormStateInterface $formState, $formId) {
   /** @var \Drupal\node\Entity\Node $node */
   $node = \Drupal::routeMatch()->getParameter('node');
   if (!$node instanceof NodeInterface || $node->bundle() != 'event') {
@@ -25,4 +25,29 @@ function mlfs_groups_form_entity_clone_form_alter(&$form, FormStateInterface $fo
     '#description' => t('If the cloned entity should be saved with all the access groups.'),
     '#default_value' => TRUE,
   ];
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function edw_event_groups_group_delete(GroupInterface $group) {
+  // If a group is deleted cleanup its relationships.
+  $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+  $nids = $nodeStorage->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'event_section')
+    ->condition('field_groups.target_id', $group->id())
+    ->execute();
+
+  foreach ($nids as $nid) {
+    /** @var \Drupal\node\NodeInterface $section */
+    $section = $nodeStorage->load($nid);
+    $groups = $section->get('field_groups')->getValue();
+    $targetIds = array_column($groups, 'target_id');
+    $index = array_search($group->id(), $targetIds);
+    unset($groups[$index]);
+    $section->set('field_groups', $groups);
+    $section->save();
+  }
 }
