@@ -106,6 +106,7 @@ class FileMultiLanguageWidget extends FileWidget {
     $elements['#type'] = 'details';
     $elements['#open'] = TRUE;
     $elements['#title'] = $this->fieldDefinition->getLabel();
+    $elements['#element_validate'] = [[$this, 'validate']];
 
     $elements['languages'] = [
       '#type' => 'horizontal_tabs',
@@ -126,7 +127,8 @@ class FileMultiLanguageWidget extends FileWidget {
       $this->singleFieldIsRequired = $this->fieldDefinition->isRequired() && $language->isDefault();
 
       if ($entity->hasTranslation($language->getId())) {
-        $translatedField = $entity->getTranslation($language->getId())->get($fieldName);
+        $translatedField = $entity->getTranslation($language->getId())
+          ->get($fieldName);
         $elements['languages'][$language->getId()]['data'] = parent::formMultipleElements($translatedField, $form, $form_state);
         continue;
       }
@@ -185,7 +187,8 @@ class FileMultiLanguageWidget extends FileWidget {
         $entity->getTranslation($langcode) :
         $entity->addTranslation($langcode, $values);
 
-      $translationValues = array_column($translation->get($field_name)->getValue(), 'target_id');
+      $translationValues = array_column($translation->get($field_name)
+        ->getValue(), 'target_id');
       if (in_array($item['target_id'], $translationValues)) {
         continue;
       }
@@ -280,6 +283,56 @@ class FileMultiLanguageWidget extends FileWidget {
       }
       static::setWidgetState($form['#parents'], $fieldName, $form_state, $field_state);
     }
+  }
+
+  /**
+   * Validates if the same file is added on different languages.
+   *
+   * @param array $element
+   *   The widget form element.
+   * @param \Drupal\Core\Form\FormStateInterface $formState
+   *   The form state.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function validate(array $element, FormStateInterface $formState) {
+    $fileStorage = $this->entityTypeManager->getStorage('file');
+    $value = $formState->getValue($this->fieldDefinition->getName());
+    if (empty($value) || !isset($value['languages'])) {
+      return;
+    }
+
+    $fileLangMap = [];
+    foreach ($value['languages'] as $langCode => $items) {
+      if (!isset($items['data'])) {
+        continue;
+      }
+
+      foreach ($items['data'] as $item) {
+        foreach ($item['fids'] as $fid) {
+          /** @var \Drupal\file\Entity\File $file */
+          $file = $fileStorage->load($fid);
+          $sha = hash_file('sha256', $file->getFileUri());
+          if (!isset($fileLangMap[$sha])) {
+            $fileLangMap[$sha] = [$langCode];
+            continue;
+          }
+
+          if (!in_array($langCode, $fileLangMap[$sha])) {
+            $languages = [$this->languageManager->getLanguage($fileLangMap[$sha][0])->getName()];
+            $languages[] = $this->languageManager->getLanguage($langCode)->getName();
+
+            $formState->setError($element, $this->t('Same file, %fileName, appears multiple times for different languages: %languages.', [
+              '%fileName' => $file->getFilename(),
+              '%languages' => implode(', ', $languages),
+            ]));
+            return;
+          }
+        }
+      }
+    }
+
   }
 
   /**
