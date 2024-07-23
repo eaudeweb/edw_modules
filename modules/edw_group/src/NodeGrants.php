@@ -70,6 +70,9 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if ($node->bundle() == 'event_section') {
       $grants = array_merge($grants, $this->getNodeMeetingSectionAccessRecords($node));
     }
+    if ($node->bundle() == 'event') {
+      $grants = array_merge($grants, $this->getNodeMeetingAccessRecords($node));
+    }
     return $grants;
   }
 
@@ -86,25 +89,30 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if ($node->bundle() != 'event') {
       throw new \InvalidArgumentException();
     }
-    $grants = [];
-    $groups = $this->meetingService->getNodeGroups($node, 'update');
-    foreach ($groups as $group) {
-      $grants[] = [
+
+    return [
+      [
+        'realm' => static::GLOBAL_REALM,
+        'gid' => 0,
+        'grant_view' => (int) $node->isPublished(),
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ],
+      [
         'realm' => static::EDW_UPDATE_REALM,
-        'gid' => $group->id(),
+        'gid' => $node->id(),
         'grant_view' => 1,
         'grant_update' => 1,
         'grant_delete' => 0,
-      ];
-      $grants[] = [
+      ],
+      [
         'realm' => static::EDW_DELETE_REALM,
-        'gid' => $group->id(),
+        'gid' => $node->id(),
         'grant_view' => 1,
         'grant_update' => 0,
         'grant_delete' => 1,
-      ];
-    }
-    return $grants;
+      ],
+    ];
   }
 
   /**
@@ -146,23 +154,21 @@ class NodeGrants implements NodeAccessGrantsInterface {
       ];
     }
 
-    $groups = $this->meetingService->getNodeGroups($node, 'update');
-    foreach ($groups as $group) {
-      $grants[] = [
-        'realm' => static::EDW_UPDATE_REALM,
-        'gid' => $group->id(),
-        'grant_view' => 1,
-        'grant_update' => 1,
-        'grant_delete' => 0,
-      ];
-      $grants[] = [
-        'realm' => static::EDW_DELETE_REALM,
-        'gid' => $group->id(),
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 1,
-      ];
-    }
+    $grants[] = [
+      'realm' => static::EDW_UPDATE_REALM,
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 1,
+      'grant_delete' => 0,
+    ];
+
+    $grants[] = [
+      'realm' => static::EDW_DELETE_REALM,
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 1,
+    ];
     return $grants;
   }
 
@@ -181,6 +187,22 @@ class NodeGrants implements NodeAccessGrantsInterface {
       return $grants;
     }
 
+    if (in_array('meeting_contributor', $account->getRoles())) {
+      $grants[static::EDW_UPDATE_REALM][] = 0;
+      $grants[static::EDW_DELETE_REALM][] = 0;
+      $grants[static::EDW_VIEW_REALM][] = 0;
+
+      $user = \Drupal::entityTypeManager()
+        ->getStorage('user')
+        ->load($account->id());
+      $accountMeetings = $user->get('field_assigned_meetings')->referencedEntities();
+      foreach ($accountMeetings as $meeting) {
+        $grants[static::EDW_UPDATE_REALM][] = $meeting->id();
+        $grants[static::EDW_DELETE_REALM][] = $meeting->id();
+      }
+      return $grants;
+    }
+
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
     $memberships = GroupMembership::loadByUser($account);
     $grants = [];
@@ -192,7 +214,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
         $grants[static::EDW_DELETE_REALM][] = $membership->getGroupId();
       }
     }
-    
+
     return $grants;
   }
 
