@@ -114,18 +114,18 @@ class NodeGrants implements NodeAccessGrantsInterface {
         'grant_delete' => 0,
       ],
       [
+        'realm' => static::EDW_VIEW_REALM,
+        'gid' => $node->id(),
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ],
+      [
         'realm' => static::EDW_UPDATE_REALM,
         'gid' => $node->id(),
         'grant_view' => 1,
         'grant_update' => 1,
         'grant_delete' => 0,
-      ],
-      [
-        'realm' => static::EDW_DELETE_REALM,
-        'gid' => $node->id(),
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 1,
       ],
     ];
   }
