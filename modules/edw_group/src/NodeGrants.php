@@ -104,30 +104,26 @@ class NodeGrants implements NodeAccessGrantsInterface {
       throw new \InvalidArgumentException();
     }
 
-
-    return [
+    $grants = [
       [
-        'realm' => static::GLOBAL_REALM,
-        'gid' => 0,
-        'grant_view' => (int) $node->isPublished(),
-        'grant_update' => 0,
-        'grant_delete' => 0,
-      ],
-      [
-        'realm' => static::EDW_VIEW_REALM,
-        'gid' => $node->id(),
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 0,
-      ],
-      [
-        'realm' => static::EDW_UPDATE_REALM,
+        'realm' => static::EDW_REALM_MEETING_CONTRIBUTORS,
         'gid' => $node->id(),
         'grant_view' => 1,
         'grant_update' => 1,
         'grant_delete' => 0,
-      ],
+      ]
     ];
+
+    if ($node->isPublished()) {
+      $grants[] = [
+        'realm' => static::GLOBAL_REALM,
+        'gid' => 0,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ];
+    }
+    return $grants;
   }
 
   /**
@@ -185,6 +181,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     }
 
     $grants = [];
+    $grants[static::GLOBAL_REALM][] = 0;
     if (in_array('content_manager', $account->getRoles())) {
       $grants[static::EDW_REALM_CONTENT_MANAGERS][] = 0;
       return $grants;
@@ -193,9 +190,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if (in_array('meeting_contributor', $account->getRoles())) {
       $accountMeetings = $this->getUserMeetings($account);
       foreach ($accountMeetings as $meeting) {
-        $grants[static::EDW_VIEW_REALM][] = $meeting->id();
-        $grants[static::EDW_UPDATE_REALM][] = $meeting->id();
-        $grants[static::EDW_DELETE_REALM][] = $meeting->id();
+        $grants[static::EDW_REALM_MEETING_CONTRIBUTORS][] = $meeting->id();
       }
       return $grants;
     }
@@ -290,24 +285,10 @@ class NodeGrants implements NodeAccessGrantsInterface {
 
     return [
       [
-        'realm' => static::EDW_VIEW_REALM,
-        'gid' => $event->id(),
-        'grant_view' => 1,
-        'grant_update' => 0,
-        'grant_delete' => 0,
-      ],
-      [
-        'realm' => static::EDW_UPDATE_REALM,
+        'realm' => static::EDW_REALM_MEETING_CONTRIBUTORS,
         'gid' => $event->id(),
         'grant_view' => 1,
         'grant_update' => 1,
-        'grant_delete' => 0,
-      ],
-      [
-        'realm' => static::EDW_DELETE_REALM,
-        'gid' => $event->id(),
-        'grant_view' => 1,
-        'grant_update' => 0,
         'grant_delete' => 1,
       ],
     ];
