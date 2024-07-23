@@ -2,6 +2,7 @@
 
 namespace Drupal\edw_group;
 
+use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\edw_group\Services\MeetingService;
@@ -36,6 +37,11 @@ class NodeGrants implements NodeAccessGrantsInterface {
   const EDW_REALM_CONTENT_MANAGERS = 'edw:group:content_managers';
 
   /**
+   * The realm used to check access for meeting contributors.
+   */
+  const EDW_REALM_MEETING_CONTRIBUTORS = 'edw:group:meeting_contributors';
+
+  /**
    * The global realm.
    */
   const GLOBAL_REALM = 'all';
@@ -55,11 +61,19 @@ class NodeGrants implements NodeAccessGrantsInterface {
   private ModuleHandlerInterface $moduleHandler;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  private EntityTypeManager $entityTypeManager;
+
+  /**
    * Constructs a NodeGrants object.
    */
-  public function __construct(MeetingService $meetingService, ModuleHandlerInterface $moduleHandler) {
+  public function __construct(MeetingService $meetingService, ModuleHandlerInterface $moduleHandler, EntityTypeManager $entityTypeManager) {
     $this->meetingService = $meetingService;
     $this->moduleHandler = $moduleHandler;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -89,6 +103,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if ($node->bundle() != 'event') {
       throw new \InvalidArgumentException();
     }
+
 
     return [
       [
@@ -128,6 +143,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
     if ($node->bundle() != 'event_section') {
       throw new \InvalidArgumentException();
     }
+
     $grants = [];
     // Content managers can perform all operations on meeting sections regardless of group.
     $grants[] = [
@@ -138,6 +154,7 @@ class NodeGrants implements NodeAccessGrantsInterface {
       'grant_delete' => 1,
     ];
 
+    $grants = array_merge($grants, $this->getMeetingSectionContributorsGrants($node));
     $groups = $this->meetingService->getNodeGroups($node, 'view');
     if (empty($groups)) {
       $grants = array_merge($grants, $this->getPrivateSectionGrants($node));
@@ -154,21 +171,6 @@ class NodeGrants implements NodeAccessGrantsInterface {
       ];
     }
 
-    $grants[] = [
-      'realm' => static::EDW_UPDATE_REALM,
-      'gid' => 0,
-      'grant_view' => 1,
-      'grant_update' => 1,
-      'grant_delete' => 0,
-    ];
-
-    $grants[] = [
-      'realm' => static::EDW_DELETE_REALM,
-      'gid' => 0,
-      'grant_view' => 1,
-      'grant_update' => 0,
-      'grant_delete' => 1,
-    ];
     return $grants;
   }
 
@@ -182,21 +184,16 @@ class NodeGrants implements NodeAccessGrantsInterface {
       return [];
     }
 
+    $grants = [];
     if (in_array('content_manager', $account->getRoles())) {
       $grants[static::EDW_REALM_CONTENT_MANAGERS][] = 0;
       return $grants;
     }
 
     if (in_array('meeting_contributor', $account->getRoles())) {
-      $grants[static::EDW_UPDATE_REALM][] = 0;
-      $grants[static::EDW_DELETE_REALM][] = 0;
-      $grants[static::EDW_VIEW_REALM][] = 0;
-
-      $user = \Drupal::entityTypeManager()
-        ->getStorage('user')
-        ->load($account->id());
-      $accountMeetings = $user->get('field_assigned_meetings')->referencedEntities();
+      $accountMeetings = $this->getUserMeetings($account);
       foreach ($accountMeetings as $meeting) {
+        $grants[static::EDW_VIEW_REALM][] = $meeting->id();
         $grants[static::EDW_UPDATE_REALM][] = $meeting->id();
         $grants[static::EDW_DELETE_REALM][] = $meeting->id();
       }
@@ -205,7 +202,6 @@ class NodeGrants implements NodeAccessGrantsInterface {
 
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
     $memberships = GroupMembership::loadByUser($account);
-    $grants = [];
     foreach ($memberships as $membership) {
       $group = Group::load($membership->getGroupId());
       if ($group->isPublished()) {
@@ -253,6 +249,68 @@ class NodeGrants implements NodeAccessGrantsInterface {
     ];
 
     return $grants;
+  }
+
+  /**
+   * Gets assigned meetings for a user.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The account.
+   *
+   * @return array
+   *   The meetings array.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function getUserMeetings(AccountInterface $account) {
+    $user = $this->entityTypeManager
+      ->getStorage('user')
+      ->load($account->id());
+
+    return $user->get('field_assigned_meetings')
+      ->referencedEntities();
+  }
+
+  /**
+   * Gets grants for meeting contributors.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   The node to get access records for.
+   *
+   * @return array[]
+   *   The grants array.
+   */
+  protected function getMeetingSectionContributorsGrants(NodeInterface $node) {
+    // Meeting contributors can only manage sections for assigned meetings.
+    $event = $node->get('field_event')->entity;
+    if (!$event instanceof NodeInterface) {
+      return [];
+    }
+
+    return [
+      [
+        'realm' => static::EDW_VIEW_REALM,
+        'gid' => $event->id(),
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+      ],
+      [
+        'realm' => static::EDW_UPDATE_REALM,
+        'gid' => $event->id(),
+        'grant_view' => 1,
+        'grant_update' => 1,
+        'grant_delete' => 0,
+      ],
+      [
+        'realm' => static::EDW_DELETE_REALM,
+        'gid' => $event->id(),
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 1,
+      ],
+    ];
   }
 
 }
