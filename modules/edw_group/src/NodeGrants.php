@@ -181,7 +181,6 @@ class NodeGrants implements NodeAccessGrantsInterface {
     }
 
     $grants = [];
-    $grants[static::GLOBAL_REALM][] = 0;
     if (in_array('content_manager', $account->getRoles())) {
       $grants[static::EDW_REALM_CONTENT_MANAGERS][] = 0;
       return $grants;
@@ -192,7 +191,6 @@ class NodeGrants implements NodeAccessGrantsInterface {
       foreach ($accountMeetings as $meeting) {
         $grants[static::EDW_REALM_MEETING_CONTRIBUTORS][] = $meeting->id();
       }
-      return $grants;
     }
 
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
