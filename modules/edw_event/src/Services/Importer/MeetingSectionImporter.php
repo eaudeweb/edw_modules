@@ -74,12 +74,14 @@ class MeetingSectionImporter {
    *   The page title.
    * @param bool $status
    *   The page status.
+   * @param bool $checkConstraints
+   *   Whether to check constraints or not.
    *
    * @return \Drupal\node\NodeInterface|null
    *   The created section if the section does not exist or NULL if page exists
    *   or something went wrong.
    */
-  public function createMeetingSection(string|int $meetingId, string $phase, string $title, bool $status = TRUE): mixed {
+  public function createMeetingSection(string|int $meetingId, string $phase, string $title, bool $status = TRUE, bool $checkConstraints = TRUE): mixed {
     $entities = $this->nodeStorage->loadByProperties([
       'field_event' => $meetingId,
       'field_event_section_phase' => $phase,
@@ -103,7 +105,7 @@ class MeetingSectionImporter {
       'target_revision_id' => $viewReference->getRevisionId(),
     ]);
     $validation = $section->validate();
-    if ($validation->count() > 0) {
+    if ($checkConstraints && $validation->count() > 0) {
       $this->logger->error(sprintf("Error creating meeting section: %s for meeting %s with fields: %s", $title, $meetingId, implode(', ', $validation->getFieldNames())));
       return NULL;
     }

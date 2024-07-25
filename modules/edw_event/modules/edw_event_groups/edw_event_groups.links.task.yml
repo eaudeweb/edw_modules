@@ -1,0 +1,5 @@
+edw_event_groups.meeting_access_groups.settings:
+  title: 'Access'
+  route_name: edw_event_groups.meeting_access_groups.settings
+  base_route: entity.node.canonical
+  weight: 50

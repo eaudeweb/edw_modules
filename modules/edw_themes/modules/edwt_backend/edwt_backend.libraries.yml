@@ -9,6 +9,25 @@ manage-documents:
     component:
       css/manage-documents.css: {}
       css/dialog.css: {}
+  js:
+    js/manage-documents.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+
+manage-groups:
+  css:
+    component:
+      css/manage-groups.css: {}
+
+scrollto-agendas:
+  js:
+    js/scrollto-agendas.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
 
 bootstrap:
   css:

@@ -164,7 +164,7 @@ class MeetingAgendaService extends MeetingService {
       'vid' => 'event_agendas',
       'field_event' => $meetingId,
       'name' => $agendaName,
-      'field_is_default_agenda', TRUE
+      'field_is_default_agenda' => TRUE,
     ];
     $defaultAgenda = $this->termStorage->create($properties);
     $defaultAgenda->save();

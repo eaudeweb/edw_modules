@@ -82,4 +82,33 @@ class MeetingDocumentsService {
     ];
   }
 
+  /**
+   * Append a modal dialog for a given url.
+   *
+   * @param \Drupal\Core\Url $url
+   *   The agenda selected for the document.
+   * @param string $title
+   *  The links title
+   *
+   * @return array
+   *   Modal dialog.
+   *
+   * @SuppressWarnings(PHPMD.StaticAccess)
+   */
+  public function addButtonModal(Url $url, string $title) {
+    return [
+      '#type' => 'link',
+      '#title' => $this->t($title),
+      '#url' => $url,
+      '#attributes' => [
+        'class' => ['button button--action', 'button--primary', 'use-ajax'],
+        'data-dialog-type' => 'dialog',
+        'data-dialog-options' => Json::encode([
+          'width' => '60%',
+          'dialogClass' => 'views-ui-dialog js-views-ui-dialog',
+        ]),
+      ],
+    ];
+  }
+
 }

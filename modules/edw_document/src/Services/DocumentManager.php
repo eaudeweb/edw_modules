@@ -16,7 +16,7 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Service for DocumentManager.
@@ -330,6 +330,8 @@ class DocumentManager {
    *
    * @param array $nids
    *   An array of node IDs.
+   * @param array $vids
+   *   An array of node revision ids.
    * @param string $fieldName
    *   The name of the field to get files.
    * @param array $formats
@@ -339,19 +341,34 @@ class DocumentManager {
    *
    * @return array
    *   An array with URLs.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Symfony\Component\Filesystem\Exception\FileNotFoundException
    */
-  public function getFilteredFiles(array $nids, string $fieldName, array $formats, array $languages) {
+  public function getFilteredFiles(array $nids, array $revision_ids, string $fieldName, array $formats, array $languages) {
     $result = $this->database->select("{$this->entityTypeId}__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
     $result->condition('f.entity_id', $nids, 'IN');
     $result->condition('f.langcode', $languages, 'IN');
     $fids = $result->execute()->fetchCol();
+    if (!empty($revision_ids)) {
+      $revisions = $this->database->select("{$this->entityTypeId}_revision__{$fieldName}", 'f')->fields('f', ["{$fieldName}_target_id"]);
+      $revisions->condition('f.revision_id', $revision_ids, 'IN');
+      $revisions->condition('f.langcode', $languages, 'IN');
+      $extra_fids = $revisions->execute()->fetchCol();
+      $fids = array_unique(array_merge($fids, $extra_fids));
+    }
     $files = $this->entityTypeManager->getStorage('file')->loadMultiple($fids);
     foreach ($files as $fid => $file) {
       if (!$file instanceof File) {
         continue;
       }
-      $url = $file->getFileUri();
-      if (!in_array(strtolower(pathinfo($url, PATHINFO_EXTENSION)), $formats)) {
+      $uri = $file->getFileUri();
+      $fileError = $this->fileSystem->getDestinationFilename($uri, FileSystemInterface::EXISTS_ERROR);
+      if ($fileError) {
+        throw new FileNotFoundException($uri);
+      }
+      if (!in_array(strtolower(pathinfo($uri, PATHINFO_EXTENSION)), $formats)) {
         unset($files[$fid]);
       }
     }

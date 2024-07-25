@@ -1,0 +1,7 @@
+name: EDW Media Image
+description: This module create media_image.
+package: Eau de Web
+type: module
+core_version_requirement: ^9.4 || ^10
+dependencies:
+  - edw_media:edw_media

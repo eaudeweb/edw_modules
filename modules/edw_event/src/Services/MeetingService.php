@@ -181,7 +181,10 @@ class MeetingService {
     $query->condition('meeting.field_meetings_target_id', [$meetingId], 'IN');
     $query->condition('phase.field_document_phase_value', $phase);
     $query->innerJoin('media_field_data', 'media', 'media.mid = types.entity_id');
+    $query->innerJoin('taxonomy_term_field_data', 'term', 'types.field_document_types_target_id = term.tid');
     $query->condition('media.status', 1);
+    $query->distinct();
+    $query->orderBy('term.weight');
     return $query->execute()->fetchCol();
   }
 

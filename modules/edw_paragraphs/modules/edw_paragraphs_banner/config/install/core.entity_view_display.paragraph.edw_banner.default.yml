@@ -2,7 +2,10 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.paragraph.edw_banner.field_variations
+    - field.field.paragraph.edw_banner.field_image
+    - field.field.paragraph.edw_banner.field_link
+    - field.field.paragraph.edw_banner.field_title
+    - field.field.paragraph.edw_banner.field_banner_variations
     - paragraphs.paragraphs_type.edw_banner
   module:
     - link
@@ -12,48 +15,48 @@ targetEntityType: paragraph
 bundle: edw_banner
 mode: default
 content:
+  field_description:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {}
+    weight: 1
+    region: content
+  field_image:
+    type: entity_reference_entity_view
+    label: hidden
+    settings:
+      view_mode: banner
+      link: false
+    third_party_settings: {}
+    weight: 1
+    region: content
   field_link:
-    weight: 2
+    type: link
     label: hidden
     settings:
       trim_length: 80
       url_only: false
       url_plain: false
-      rel: ''
-      target: ''
-    third_party_settings: {  }
-    type: link
-    region: content
-  field_media:
-    type: entity_reference_entity_view
-    weight: 3
-    label: hidden
-    settings:
-      view_mode: default
-      link: false
-    third_party_settings: {  }
-    region: content
-  field_description:
-    weight: 1
-    label: hidden
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
-    region: content
-  field_title:
-    weight: 0
-    label: hidden
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
-    region: content
-  field_variations:
-    type: list_default
-    label: above
-    settings: {  }
-    third_party_settings: {  }
+      rel: ""
+      target: ""
+    third_party_settings: {}
     weight: 2
     region: content
-hidden: {  }
+  field_title:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {}
+    weight: 0
+    region: content
+  field_banner_variations:
+    type: list_key
+    label: hidden
+    settings: {}
+    third_party_settings: {}
+    weight: 3
+    region: content
+hidden: {}

@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * EDW Paragraphs Base module.
+ */
+
+use Drupal\paragraphs\Entity\Paragraph;
+
+/**
+ * Implements hook_preprocess_page().
+ */
+function edw_paragraphs_banner_preprocess_page(&$variables) {
+  if (empty($variables['node']) || !$variables['node']->hasField('field_content')) {
+    return;
+  }
+
+  $node = $variables['node'];
+
+  foreach ($node->get('field_content')->getValue() as $value) {
+    $paragraph = Paragraph::load($value['target_id']);
+    if ($paragraph->getType() == 'edw_banner') {
+      unset($variables['page']['hero']);
+      return;
+    }
+  }
+}

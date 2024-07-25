@@ -28,7 +28,6 @@
 .accordion-item:last-of-type>.accordion-header .accordion-button{
     font-size: 18px;
     font-weight: 400;
-    text-transform: uppercase;
 }
 
 .view-display-id-in_session_order .gin-layer-wrapper,
@@ -48,4 +47,8 @@
 .view-display-id-in_session_order .dropbutton-widget .dropbutton--gin,
 .view-display-id-pre_session_order .dropbutton-widget .dropbutton--gin {
     padding-left: 0;
+}
+
+.tableresponsive-toggle {
+  margin-left: 20px!important;
 }

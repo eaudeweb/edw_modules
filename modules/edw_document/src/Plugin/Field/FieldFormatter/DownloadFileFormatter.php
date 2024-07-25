@@ -77,7 +77,7 @@ class DownloadFileFormatter extends GenericFileFormatter implements ContainerFac
     // the same language.
     [$formats, $languages] = $this->documentManager->getOptions([$entity->id()], $items->getName());
     if (count($formats) == 1 && count($languages) == 1) {
-      $filesUrls = $this->documentManager->getFilteredFiles([$entity->id()], $items->getName(), $formats, $languages);
+      $filesUrls = $this->documentManager->getFilteredFiles([$entity->id()], [], $items->getName(), $formats, $languages);
       $path = (count($filesUrls) < 2) ? $this->documentManager->downloadFile($filesUrls) : $this->documentManager->archiveFiles($filesUrls);
       return [
         '#type' => 'link',

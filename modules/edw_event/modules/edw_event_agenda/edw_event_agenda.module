@@ -54,3 +54,25 @@ function edw_event_agenda_form_entity_clone_form_alter(&$form, FormStateInterfac
     ];
   }
 }
+
+/**
+ * Implements hook_ENTITY_TYPE_delete().
+ */
+function edw_event_agenda_node_delete(NodeInterface $node) {
+  if ($node->bundle() != 'event') {
+    return;
+  }
+  
+  // Delete agenda items.
+  /** @var \Drupal\edw_event_agenda\Services\MeetingAgendaService $meetingService */
+  $meetingService = \Drupal::service('edw_event_agenda.meeting.agenda.service');
+  $entities = $meetingService->getAllMeetingAgendas($node, FALSE);
+  foreach ($entities as $entity) {
+    $entity->delete();
+    \Drupal::logger('term')
+      ->info(t('The @entity-type %label has been deleted.', [
+        '@entity-type' => $entity->getEntityType()->getSingularLabel(),
+        '%label' => $entity->label() ?? $entity->id(),
+      ]));
+  }
+}
