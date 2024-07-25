@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\group\Entity\GroupInterface;
 
@@ -50,4 +51,40 @@ function edw_event_groups_group_delete(GroupInterface $group) {
     $section->set('field_groups', $groups);
     $section->save();
   }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views-view-field.html.twig.
+ */
+function edw_event_groups_preprocess_views_view_field(&$variables) {
+  /** @var \Drupal\views\ViewExecutable $view */
+  $view = $variables['view'];
+  if ($view->id() != 'meeting_groups' || $view->current_display != 'access_groups') {
+    return;
+  }
+
+  /** @var \Drupal\views\ResultRow $row */
+  $row = $variables['row'];
+  /** @var \Drupal\views\Plugin\views\field\EntityOperations $field */
+  $field = $variables['field'];
+  $renderer = \Drupal::service('renderer');
+  /* @phpstan-ignore-next-line */
+  if ($field->field != 'operations' || empty($row->_entity)) {
+    return;
+  }
+
+  $build = $field->render($row);
+  $links = $build['#links'];
+  $newLinks = [$links['members'], $links['edit']];
+
+  // Add remove group from section link.
+  $removeGroup = $links['delete'];
+  $url = Url::fromRoute('edw_event_groups.remove_group_from_section');
+  $url->setRouteParameter('section', $row->_relationship_entities['reverse__node__field_groups']->id());
+  $url->setRouteParameter('group', $row->_entity->id());
+  $removeGroup['url'] = $url;
+  $removeGroup['title'] = t('Remove group from section');
+  $newLinks[] = $removeGroup;
+  $build['#links'] = $newLinks;
+  $variables['output'] = $renderer->render($build);
 }
