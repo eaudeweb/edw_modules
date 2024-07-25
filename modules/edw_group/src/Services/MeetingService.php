@@ -4,6 +4,7 @@ namespace Drupal\edw_group\Services;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\group\Entity\GroupInterface;
 use Drupal\group\Entity\GroupType;
@@ -50,6 +51,13 @@ class MeetingService {
   protected $logger;
 
   /**
+   * The module handler service.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
+
+  /**
    * Constructs a MeetingService object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -62,12 +70,13 @@ class MeetingService {
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, LoggerChannelFactoryInterface $loggerChannelFactory, EntityFieldManagerInterface $entityFieldManager) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, LoggerChannelFactoryInterface $loggerChannelFactory, EntityFieldManagerInterface $entityFieldManager,  ModuleHandlerInterface $moduleHandler) {
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $entityTypeManager->getStorage('node');
     $this->groupStorage = $entityTypeManager->getStorage('group');
     $this->logger = $loggerChannelFactory->get('edw_group');
     $this->entityFieldManager = $entityFieldManager;
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
@@ -180,11 +189,17 @@ class MeetingService {
     if ($section->bundle() != 'event_section') {
       return;
     }
+
     $viewGroups = $section->get('field_groups')->referencedEntities();
     $moderatorGroups = $section->get('field_moderator_groups')
       ->referencedEntities();
     $groups = array_merge($viewGroups, $moderatorGroups);
+    $globalAccess = [];
+    $this->moduleHandler->invokeAll('global_access_groups', [&$globalAccess]);
     foreach ($groups as $group) {
+      if (in_array($group->get('field_access')->value, $globalAccess)) {
+        continue;
+      }
       $group->delete();
     }
   }
