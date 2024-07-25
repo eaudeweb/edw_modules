@@ -16,3 +16,15 @@
 function hook_private_access_roles(&$privateRoles) {
 
 }
+
+/**
+ * Updates access groups types for global groups.
+ *
+ * @param array $globalAccess
+ *   Array with global access values for global groups.
+ *
+ * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+ */
+function hook_global_access_groups(&$globalAccess) {
+
+}

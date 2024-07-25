@@ -41,10 +41,5 @@ function edw_group_node_delete(NodeInterface $node) {
     foreach ($groups as $group) {
       $group->delete();
     }
-    return;
-  }
-  
-  if ($bundle == 'event_section') {
-    $meetingService->deleteMeetingSectionGroups($node);
   }
 }

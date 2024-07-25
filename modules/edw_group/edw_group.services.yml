@@ -1,7 +1,7 @@
 services:
   edw_group.meeting:
     class: Drupal\edw_group\Services\MeetingService
-    arguments: ['@entity_type.manager', '@logger.factory', '@entity_field.manager']
+    arguments: ['@entity_type.manager', '@logger.factory', '@entity_field.manager', '@module_handler']
 
   edw_group.node_grants:
     class: 'Drupal\edw_group\NodeGrants'
