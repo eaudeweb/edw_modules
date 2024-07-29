@@ -299,6 +299,12 @@ class FileMultiLanguageWidget extends FileWidget {
   public function validate(array $element, FormStateInterface $formState) {
     $fileStorage = $this->entityTypeManager->getStorage('file');
     $value = $formState->getValue($this->fieldDefinition->getName());
+    $userInput = $formState->getUserInput();
+    // Check if there is not an AJAX request.
+    if (!$formState->isSubmitted() || !empty($userInput['_drupal_ajax'])) {
+      return;
+    }
+
     if (empty($value) || !isset($value['languages'])) {
       return;
     }
