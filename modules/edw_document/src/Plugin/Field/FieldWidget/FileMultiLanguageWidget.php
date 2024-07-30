@@ -98,8 +98,8 @@ class FileMultiLanguageWidget extends FileWidget {
   protected function formMultipleElements(FieldItemListInterface $items, array &$form, FormStateInterface $form_state) {
     $fieldName = $this->fieldDefinition->getName();
     $languages = $this->languageManager->getLanguages();
+    $selectedValues = $form_state->getValue($fieldName);
     $currentLangcode = $this->languageManager->getCurrentLanguage()->getId();
-
     /** @var \Drupal\Core\Entity\ContentEntityBase $entity */
     $entity = $items->getEntity();
     $elements = [];
@@ -130,13 +130,44 @@ class FileMultiLanguageWidget extends FileWidget {
         $translatedField = $entity->getTranslation($language->getId())
           ->get($fieldName);
         $elements['languages'][$language->getId()]['data'] = parent::formMultipleElements($translatedField, $form, $form_state);
+        $this->fixWidgetFileItems($elements, $selectedValues, $language->getId());
         continue;
       }
 
       $elements['languages'][$language->getId()]['data'] = parent::formMultipleElements($this->getEmptyField($items), $form, $form_state);
+      $this->fixWidgetFileItems($elements, $selectedValues, $language->getId());
     }
 
+
     return $elements;
+  }
+
+  public function fixWidgetFileItems(array &$element, ?array $selectedValues, $langCode) {
+    if (empty($selectedValues) || array_key_exists($langCode, $selectedValues['languages'])) {
+      return;
+    }
+
+    foreach ($element['languages'][$langCode]['data'] as $key => $item) {
+      if (!is_array($item) || !isset($item['#default_value']['fids'])) {
+        continue;
+      }
+
+      $foundFile = FALSE;
+      foreach ($selectedValues['languages'] as $languageFile) {
+        if ($foundFile) {
+          break;
+        }
+
+        foreach ($languageFile['data'] as $selectedItem) {
+          $commonFids = array_intersect($selectedItem['fids'], $item['#default_value']['fids']);
+          if (!empty($commonFids)) {
+            unset($element['languages'][$langCode]['data'][$key]);
+            $foundFile = TRUE;
+            break;
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -326,8 +357,12 @@ class FileMultiLanguageWidget extends FileWidget {
           }
 
           if (!in_array($langCode, $fileLangMap[$sha])) {
-            $languages = [$this->languageManager->getLanguage($fileLangMap[$sha][0])->getName()];
-            $languages[] = $this->languageManager->getLanguage($langCode)->getName();
+            $languages = [
+              $this->languageManager->getLanguage($fileLangMap[$sha][0])
+                ->getName(),
+            ];
+            $languages[] = $this->languageManager->getLanguage($langCode)
+              ->getName();
 
             $formState->setError($element, $this->t('Same file, %fileName, appears multiple times for different languages: %languages.', [
               '%fileName' => $file->getFilename(),
