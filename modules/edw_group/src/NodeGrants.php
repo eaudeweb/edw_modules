@@ -191,6 +191,10 @@ class NodeGrants implements NodeAccessGrantsInterface {
       foreach ($accountMeetings as $meeting) {
         $grants[static::EDW_REALM_MEETING_CONTRIBUTORS][] = $meeting->id();
       }
+      $ownSections = $this->getUserCreatedSections($account);
+      foreach ($ownSections as $section) {
+        $grants[static::EDW_REALM_MEETING_CONTRIBUTORS][] = $section->id();
+      }
     }
 
     /** @var \Drupal\group\Entity\GroupMembershipInterface[] $memberships */
@@ -266,6 +270,32 @@ class NodeGrants implements NodeAccessGrantsInterface {
   }
 
   /**
+   * Gets meeting sections that a user had been created.
+   *
+   * Contributors can only delete own meeting sections.
+   *
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The account.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface[]
+   *   The corresponding meeting sections.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function getUserCreatedSections(AccountInterface $account) {
+    $user = $this->entityTypeManager
+      ->getStorage('user')
+      ->load($account->id());
+
+    return $this->entityTypeManager
+      ->getStorage('node')
+      ->loadByProperties(['type' => 'event_section',
+        'uuid' => $user
+          ->uuid()]);
+  }
+
+  /**
    * Gets grants for meeting contributors.
    *
    * @param \Drupal\node\NodeInterface $node
@@ -287,6 +317,13 @@ class NodeGrants implements NodeAccessGrantsInterface {
         'gid' => $event->id(),
         'grant_view' => 1,
         'grant_update' => 1,
+        'grant_delete' => 0,
+      ],
+      [
+        'realm' => static::EDW_REALM_MEETING_CONTRIBUTORS,
+        'gid' => $node->id(),
+        'grant_view' => 0,
+        'grant_update' => 0,
         'grant_delete' => 1,
       ],
     ];
