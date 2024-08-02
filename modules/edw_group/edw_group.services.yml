@@ -5,6 +5,6 @@ services:
 
   edw_group.node_grants:
     class: 'Drupal\edw_group\NodeGrants'
-    arguments: ['@edw_group.meeting', '@module_handler']
+    arguments: ['@edw_group.meeting', '@module_handler', '@entity_type.manager']
     tags:
       - { name: node_access_grants }
