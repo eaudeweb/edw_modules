@@ -6,8 +6,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
+use http\Client\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Document form.
@@ -52,15 +52,25 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
   }
 
   /**
+   * Keep only the query parameters of the current request in order to avoid
+   * serializing the entire request object.
+   */
+  public function __sleep() {
+    foreach (get_object_vars($this) as $key => $value) {
+      if ($value instanceof Request) {
+        $this->{$key} = $value->query;
+      }
+    }
+    return ['currentRequest', 'nodeStorage'];
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function alter(&$form, FormStateInterface $form_state) {
     $meetingId = $this->currentRequest->get('nid');
     if (empty($meetingId)) {
       return;
-    }
-    if ($this->currentRequest->query->has(FormBuilderInterface::AJAX_FORM_REQUEST)) {
-      $form_state->disableCache();
     }
     $form['field_meetings']['widget']['target_id']['#default_value'] = 'node:' . $meetingId;
     $form['field_meetings']['widget']['#disabled'] = TRUE;
