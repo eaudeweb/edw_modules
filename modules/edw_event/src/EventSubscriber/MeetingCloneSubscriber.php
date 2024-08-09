@@ -41,16 +41,26 @@ class MeetingCloneSubscriber implements EventSubscriberInterface {
     if (!isset($properties['meeting_sections']) || !$properties['meeting_sections']) {
       return;
     }
+    /** @var \Drupal\node\NodeInterface $original */
     $original = $event->getEntity();
-    // Get all sections from the original meeting.
     $originalSections = $this->meetingService->getAllMeetingSections($original, FALSE);
-    // Get the cloned meeting.
     $newEntity = $event->getClonedEntity();
     /** @var \Drupal\node\Entity\Node $section */
     foreach ($originalSections as $section) {
       // Clone the section and set the new meeting.
       $newSection = $section->createDuplicate();
       $newSection->set('field_event', $newEntity->id());
+
+      // Clone paragraphs in field_content.
+      $field_content = $section->get('field_content')->referencedEntities();
+      $new_paragraphs = [];
+      foreach ($field_content as $paragraph) {
+        $new_paragraph = $paragraph->createDuplicate();
+        $new_paragraph->save();
+        $new_paragraphs[] = $new_paragraph;
+      }
+      $newSection->set('field_content', $new_paragraphs);
+
       // Unpublished the section by user selection.
       if (isset($properties[$section->id()]) && !$properties[$section->id()]) {
         $newSection->setUnpublished();
