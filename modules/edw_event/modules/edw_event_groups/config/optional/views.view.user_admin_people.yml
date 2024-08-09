@@ -1485,7 +1485,7 @@ display:
       display_extenders:
         jsonapi_views:
           enabled: false
-      path: node/%/meeting_contributors
+      path: node/%/meeting-contributors
       use_admin_theme: true
     cache_metadata:
       max-age: -1

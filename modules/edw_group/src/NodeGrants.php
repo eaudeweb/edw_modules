@@ -261,12 +261,17 @@ class NodeGrants implements NodeAccessGrantsInterface {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function getUserMeetings(AccountInterface $account) {
+    /** @var \Drupal\user\Entity\User $user */
     $user = $this->entityTypeManager
       ->getStorage('user')
       ->load($account->id());
 
-    return $user->get('field_assigned_meetings')
-      ->referencedEntities();
+    if ($user->hasField('field_assigned_meetings')) {
+      return $user->get('field_assigned_meetings')
+        ->referencedEntities();
+    }
+
+    return [];
   }
 
   /**
