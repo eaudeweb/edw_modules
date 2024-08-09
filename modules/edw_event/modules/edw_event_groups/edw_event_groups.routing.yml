@@ -14,8 +14,25 @@ edw_event_groups.meeting_access_groups.settings:
           - event
     _admin_route: TRUE
 
+edw_event_groups.meeting_contributors.listing:
+  path: '/node/{node}/meeting-contributors'
+  defaults:
+    _title: 'Meeting contributors'
+    _entity_view: 'user_admin_people.meeting_contributors'
+  requirements:
+    _entity_access: 'node.update'
+    _permission: 'administer users'
+    node: \d+
+  options:
+    parameters:
+      node:
+        type: entity:node
+        bundle:
+          - event
+    _admin_route: TRUE
+
 edw_event_groups.remove_group_from_section:
-  path: '/admin/group/content/manage/section_group/{section}/{group}'
+  path: '/admin/group/content/manage/section-group/{section}/{group}'
   defaults:
     _controller: 'Drupal\edw_event_groups\Controller\GroupsController::removeGroupFromSection'
     _title: 'Unassign group from section'

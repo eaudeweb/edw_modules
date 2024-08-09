@@ -114,8 +114,13 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
         'original_path' => $currentPath,
         'nid' => $sectionId,
       ]);
-      $variables['add_group'] = $meetingDocumentsService->addButtonModal($addUrl, 'Add new group');
-      $variables['assign_group'] = $meetingDocumentsService->addButtonModal($assignUrl, 'Assign group');
+      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+      $variables['add_group'] = \Drupal::currentUser()
+        ->hasPermission('create event group') ? $meetingDocumentsService->addButtonModal($addUrl, 'Add new group') : [];
+      $section = $nodeStorage->load($sectionId);
+      if (!empty($section) && $section->access('update', \Drupal::currentUser())) {
+        $variables['assign_group'] = $meetingDocumentsService->addButtonModal($assignUrl, 'Assign group');
+      }
     }
   }
 }
