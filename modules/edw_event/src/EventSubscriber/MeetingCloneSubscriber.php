@@ -51,6 +51,17 @@ class MeetingCloneSubscriber implements EventSubscriberInterface {
       // Clone the section and set the new meeting.
       $newSection = $section->createDuplicate();
       $newSection->set('field_event', $newEntity->id());
+
+      // Clone paragraphs in field_content.
+      $paragraphs = $section->get('field_content')->referencedEntities();
+      $newParagraphs = [];
+      foreach ($paragraphs as $paragraph) {
+        $newParagraph = $paragraph->createDuplicate();
+        $newParagraph->save();
+        $newParagraphs[] = $newParagraph;
+      }
+      $newSection->set('field_content', $newParagraphs);
+
       // Unpublished the section by user selection.
       if (isset($properties[$section->id()]) && !$properties[$section->id()]) {
         $newSection->setUnpublished();
