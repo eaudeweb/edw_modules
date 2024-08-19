@@ -117,15 +117,12 @@ class MeetingCloneGroupsSubscriber implements EventSubscriberInterface {
 
       // Manually re-save the paragraphs to set the parent_id field.
       // See https://www.drupal.org/project/entity_clone/issues/3056580#comment-13118506.
-      $originalEvent = $event->getEntity();
-      $eventSections = $this->nodeStorage->loadByProperties([
-        'type' => 'event_section',
-        'field_event' => $originalEvent->id(),
-      ]);
-      foreach ($eventSections as $eventSection) {
-        $paragraphs = $eventSection->get('field_content')->referencedEntities();
+      $originalMeeting = $event->getEntity();
+      $meetingSections = $this->getAllMeetingSections($originalMeeting);
+      foreach ($meetingSections as $meetingSection) {
+        $paragraphs = $meetingSection->get('field_content')->referencedEntities();
         foreach ($paragraphs as $paragraph) {
-          $paragraph->set('parent_id', $eventSection->id());
+          $paragraph->set('parent_id', $meetingSection->id());
           $paragraph->save();
         }
       }
