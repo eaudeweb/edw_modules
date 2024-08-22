@@ -7,7 +7,13 @@
       const accordionId = document.location.hash.substring(1);
       let regex = new RegExp("\\/node\\/\\d*\\/documents\\/((?:.*))");
       let phase = document.location.pathname.replace(regex, '$1') ?? 'pre-session';
-      const accordion = document.getElementById('panel-'+ phase +'-by-' + accordionId);
+      if (phase.includes('/document-type')) {
+        phase = phase.replace('/document-type', '');
+      }
+      let accordion = document.getElementById('panel-' + phase + '-by-' + accordionId);
+      if (!accordion) {
+        accordion = document.getElementById('panel-' + phase + '-by-document-' + accordionId);
+      }
       if (accordion) {
         accordion.classList.add('show');
         accordion.scrollIntoView({behavior: "smooth"});
