@@ -3,6 +3,7 @@ light_gallery:
   css:
     theme:
       css/lightgallery.css: {}
+      /libraries/lightgallery/site/v1/lightgallery/css/lightgallery.css: {}
       /libraries/lightgallery/dist/css/lightgallery-bundle.min.css: {}
       //cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css: { type: external, minified: true }
   js:
