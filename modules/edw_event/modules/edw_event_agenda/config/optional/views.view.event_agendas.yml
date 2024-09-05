@@ -922,7 +922,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: "<a class=\"button button--action button--primary use-ajax\" \r\n    data-dialog-options=\"{&quot;width&quot;:600}\" \r\n    data-dialog-type=\"modal\" \r\n    href=\"{{ url('entity.taxonomy_term.add_form', { 'taxonomy_vocabulary': 'event_agendas', 'nid': arguments.field_event_target_id}) }}\">\r\n    {{ 'Add new agenda item'|t }}\r\n</a>"
+          content: "<a class=\"button button--action button--primary use-ajax\" \r\n    data-dialog-options=\"{&quot;width&quot;:600}\" \r\n    data-dialog-type=\"modal\" \r\n    href=\"{{ url('entity.taxonomy_term.add_form', { 'taxonomy_vocabulary': 'event_agendas', 'nid': raw_arguments.field_event_target_id}) }}\">\r\n    {{ 'Add new agenda item'|t }}\r\n</a>"
           tokenize: true
       display_extenders:
         jsonapi_views:
