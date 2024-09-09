@@ -3,16 +3,19 @@
 namespace Drupal\edw_event_agenda\Form;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBuilderInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Document form.
  */
 class MeetingDocumentForm implements ContainerInjectionInterface {
+
+  use DependencySerializationTrait;
 
   /**
    * The node storage.
@@ -22,22 +25,22 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
   protected $nodeStorage;
 
   /**
-   * The current request.
+   * The request stack.
    *
-   * @var \Symfony\Component\HttpFoundation\Request
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $currentRequest;
+  protected $requestStack;
 
   /**
    * Constructs a MeetingAgendaForm form object.
    *
-   * @param \Symfony\Component\HttpFoundation\Request $current_request
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
    *   The current request.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    */
-  public function __construct(Request $current_request, EntityTypeManagerInterface $entity_type_manager) {
-    $this->currentRequest = $current_request;
+  public function __construct(RequestStack $request_stack, EntityTypeManagerInterface $entity_type_manager) {
+    $this->requestStack = $request_stack;
     $this->nodeStorage = $entity_type_manager->getStorage('node');
   }
 
@@ -46,44 +49,35 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('request_stack')->getCurrentRequest(),
+      $container->get('request_stack'),
       $container->get('entity_type.manager')
     );
-  }
-
-  /**
-   * Keep only the query parameters of the current request in order to avoid
-   * serializing the entire request object.
-   */
-  public function __sleep() {
-    foreach (get_object_vars($this) as $key => $value) {
-      if ($value instanceof Request) {
-        $this->{$key} = $value->query;
-      }
-    }
-    return ['currentRequest', 'nodeStorage'];
   }
 
   /**
    * {@inheritdoc}
    */
   public function alter(&$form, FormStateInterface $form_state) {
-    $meetingId = $this->currentRequest->get('nid');
+    $request = $this->requestStack->getCurrentRequest();
+    $meetingId = $request->get('nid');
     if (empty($meetingId)) {
       return;
     }
+    if ($this->requestStack->getCurrentRequest()->query->has(FormBuilderInterface::AJAX_FORM_REQUEST)) {
+      $form_state->setRebuild();
+    }
     $form['field_meetings']['widget']['target_id']['#default_value'] = 'node:' . $meetingId;
     $form['field_meetings']['widget']['#disabled'] = TRUE;
-    $agendaId = $this->currentRequest->get('field_agenda');
+    $agendaId = $request->get('field_agenda');
     if (isset($agendaId)) {
       $form['field_agenda']['widget']['#default_value'] = [$agendaId];
       $form['field_agenda']['widget']['#disabled'] = TRUE;
     }
-    $documentType = $this->currentRequest->get('field_document_types');
+    $documentType = $request->get('field_document_types');
     if (isset($documentType)) {
       $form['field_document_types']['widget']['#default_value'] = [$documentType];
     }
-    $phase = $this->currentRequest->get('field_document_phase');
+    $phase = $request->get('field_document_phase');
     if (isset($phase)) {
       $form['field_document_phase']['widget']['#default_value'] = [$phase];
       $form['actions']['submit']['#submit'][] = [$this, 'formRedirect'];
@@ -94,8 +88,9 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
    * {@inheritdoc}
    */
   public function formRedirect(array &$form, FormStateInterface $form_state) {
-    $meetingId = $this->currentRequest->get('nid');
-    $phase = $this->currentRequest->get('field_document_phase');
+    $request = $this->requestStack->getCurrentRequest();
+    $meetingId = $request->get('nid');
+    $phase = $request->get('field_document_phase');
     $phase = $this->getDocumentPhase($phase, $form_state);
     $agendaId = $this->currentRequest->get('field_agenda');
     $formDocType = $form_state->getValue('field_document_types') ?? [];
