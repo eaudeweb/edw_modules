@@ -92,10 +92,19 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
     $meetingId = $request->get('nid');
     $phase = $request->get('field_document_phase');
     $phase = $this->getDocumentPhase($phase, $form_state);
-    $agendaId = $request->get('field_agenda');
-    $options = [
-      'fragment' => "$agendaId",
-    ];
+    $agendaId = $this->currentRequest->get('field_agenda');
+    $formDocType = $form_state->getValue('field_document_types') ?? [];
+    $docTypeId = $this->currentRequest->get('field_document_types') ?? (!empty($formDocType)
+      ? reset($formDocType)['target_id'] : NULL);
+    $options = [];
+    if (!empty($docTypeId)) {
+      $options['fragment'] = "$docTypeId";
+      $form_state->setRedirect("edw_event.documents.$phase.document_type", ['node' => $meetingId], $options);
+      return;
+    }
+    if (!empty($agendaId)) {
+      $options['fragment'] = "$agendaId";
+    }
     $form_state->setRedirect("edw_event.documents.$phase", ['node' => $meetingId], $options);
   }
 
