@@ -92,9 +92,9 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
     $meetingId = $request->get('nid');
     $phase = $request->get('field_document_phase');
     $phase = $this->getDocumentPhase($phase, $form_state);
-    $agendaId = $this->requestStack->get('field_agenda');
+    $agendaId = $request->get('field_agenda');
     $formDocType = $form_state->getValue('field_document_types') ?? [];
-    $docTypeId = $this->requestStack->get('field_document_types') ?? (!empty($formDocType)
+    $docTypeId = $request->get('field_document_types') ?? (!empty($formDocType)
       ? reset($formDocType)['target_id'] : NULL);
     $options = [];
     if (!empty($docTypeId)) {
