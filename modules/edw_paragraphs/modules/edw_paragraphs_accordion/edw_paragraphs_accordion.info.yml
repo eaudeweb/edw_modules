@@ -2,7 +2,8 @@ name: EDW Paragraphs Accordion
 description: Provides a paragraph type that displays a collection of collapsible items with title and body.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - drupal:media_library
   - edw_paragraphs:edw_paragraphs
+  - edw_paragraphs_base:edw_paragraphs_base
