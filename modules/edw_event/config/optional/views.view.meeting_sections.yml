@@ -361,7 +361,7 @@ display:
           admin_label: ''
           plugin_id: text_custom
           empty: true
-          content: "<a class=\"button button--action button--primary\" \r\n    href=\"{{ url('node.add', { 'node_type': 'event_section', 'nid': arguments.field_event_target_id}) }}\">\r\n    {{ 'Add new meeting section'|t }}\r\n</a>"
+          content: "<a class=\"button button--action button--primary\" \r\n    href=\"{{ url('node.add', { 'node_type': 'event_section', 'nid': raw_arguments.field_event_target_id}) }}\">\r\n    {{ 'Add new meeting section'|t }}\r\n</a>"
           tokenize: true
       footer: {  }
       display_extenders:
