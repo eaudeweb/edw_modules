@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * @file
+ * Module implementation file.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function edw_paragraphs_accordion_theme() {
+  return [
+    'paragraph__edw_accordion' => [
+      'render element' => 'element',
+      'template' => 'paragraph--edw-accordion',
+      'base hook' => 'paragraph',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function edw_paragraphs_accordion_theme_registry_alter(&$theme_registry) {
+  $path = \Drupal::service('extension.list.module')->getPath('edw_paragraphs_accordion') . '/templates';
+  $theme_registry['edw_accordion']['path'] = $path;
+}
+
+/**
+ * Implements hook_preprocess_paragraph() for edw_accordion paragraphs.
+ */
+function edw_paragraphs_accordion_preprocess_paragraph__edw_accordion(&$variables) {
+  // Load the current accordion paragraph.
+  $paragraph = $variables['paragraph'];
+
+  // Check if the accordion paragraph has child items (edw_accordion_item).
+  if ($paragraph->hasField('field_paragraphs') && !$paragraph->get('field_paragraphs')->isEmpty()) {
+    // Load all child paragraphs (edw_accordion_item).
+    $child_paragraphs = $paragraph->get('field_paragraphs')->referencedEntities();
+
+    // Render each child paragraph.
+    $view_builder = \Drupal::entityTypeManager()->getViewBuilder('paragraph');
+    $rendered_children = [];
+
+    foreach ($child_paragraphs as $child_paragraph) {
+      $rendered_children[] = [
+        'title' => $child_paragraph->get('field_title')->getString(),
+        'body' => $view_builder->view($child_paragraph->field_paragraphs->entity),
+      ];
+    }
+
+    // Pass the rendered child paragraphs to the template.
+    $variables['accordion_rows']['rendered_children'] = $rendered_children;
+  }
+}
