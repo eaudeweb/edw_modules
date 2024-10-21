@@ -6,7 +6,7 @@ core_version_requirement: ^9.4 || ^10
 dependencies:
   - drupal:datetime
   - drupal:datetime_range
-  - drupal:edw_document
+  - edw_document:edw_document
   - drupal:entity_reference_revisions
   - file_replace:file_replace
   - file_delete:file_delete
