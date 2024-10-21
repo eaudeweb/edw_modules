@@ -2,7 +2,6 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.event_section.field_event
     - node.type.event_section
   module:
     - entity_reference_revisions
