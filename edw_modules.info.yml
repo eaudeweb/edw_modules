@@ -2,4 +2,4 @@ name: 'EDW Modules'
 description: A collection of custom modules
 package: edw_modules
 type: module
-core_version_requirement: ^8.8.0 || ^9 || ^10
+core_version_requirement: ^8.8.0 || ^9 || ^10  || ^11

@@ -2,7 +2,7 @@ name: EDW Paragraphs View
 description: Provides a paragraph type that displays an embedded view.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - drupal:viewsreference
   - edw_paragraphs:edw_paragraphs
