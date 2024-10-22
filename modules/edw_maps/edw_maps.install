@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * @file
+ * EDW Maps module install and update hooks.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function edw_maps_install() {
+  /** @var \Drupal\edw_maps\Services\EdwMapsDataService $edwMapsUtils */
+  $edwMapsUtils = \Drupal::service('edw_maps.utils');
+  $edwMapsUtils->unzipGeoJson();
+}

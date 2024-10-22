@@ -17,7 +17,7 @@ class MeetingCloneSubscriber implements EventSubscriberInterface {
    *
    * @var \Drupal\edw_event\Services\MeetingService
    */
-  private $meetingService;
+  protected $meetingService;
 
   /**
    * Class constructor, injects the services.

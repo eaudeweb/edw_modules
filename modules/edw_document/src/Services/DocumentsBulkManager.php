@@ -83,7 +83,7 @@ class DocumentsBulkManager {
    *
    * @SuppressWarnings(PHPMD.ShortVariable)
    */
-  private function bulkForm(array $keyParts) {
+  protected function bulkForm(array $keyParts) {
     // If there are 3 items, vid will be last.
     $revisionId = (count($keyParts) === 3) ? array_pop($keyParts) : NULL;
     // The first two items will always be langcode and ID.
@@ -108,7 +108,7 @@ class DocumentsBulkManager {
    *
    * @see ViewsBulkOperationsBulkForm::calculateEntityBulkFormKey()
    */
-  private function searchApiBulkForm(array $keyParts) {
+  protected function searchApiBulkForm(array $keyParts) {
     // Drop first element (the value of the base field for this view result).
     array_shift($keyParts);
     // The first three items will always be the entity type, langcode and ID.

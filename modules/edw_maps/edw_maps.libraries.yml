@@ -1,0 +1,22 @@
+mapbox:
+  css:
+    theme:
+      https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css: { minified: true }
+  js:
+    https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js: { attributes: { defer: true }, minified: true }
+
+supercluster:
+  js:
+    https://unpkg.com/supercluster@8.0.0/dist/supercluster.min.js: { minified: true }
+
+edw_map:
+  css:
+    theme:
+      css/edw_mapbox.css: { }
+  js:
+    js/edw_mapbox.js: { preprocess: false }
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - edw_maps/mapbox
+    - edw_maps/supercluster

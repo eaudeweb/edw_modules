@@ -1,0 +1,8 @@
+name: EDW Maps
+description: This module provides Mapbox integration with views for custom and UN tiles.
+package: Eau de Web
+type: module
+core_version_requirement: ^9 || ^10
+dependencies:
+  - drupal:views
+  - drupal:geofield
