@@ -13,4 +13,4 @@ Add
 ```
 
 Run
-```composer require eaudeweb/edw_modules:dev-main```
+```composer require eaudeweb/edw_modules:^2.x```
