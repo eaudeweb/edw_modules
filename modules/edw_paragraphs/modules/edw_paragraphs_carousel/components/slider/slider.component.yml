@@ -57,5 +57,5 @@ slots:
 libraryOverrides:
   dependencies:
     - edw_paragraphs_carousel/carousel
-    - drupal/once
+    - core/once
 
