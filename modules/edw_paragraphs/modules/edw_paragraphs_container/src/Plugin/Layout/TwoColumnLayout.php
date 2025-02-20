@@ -86,6 +86,7 @@ class TwoColumnLayout extends LayoutDefault implements PluginFormInterface {
       $this->configuration[$column]['wrapper'] = $form_state->getValue($column)['wrapper'];
       $this->configuration[$column]['grid_column_start'] = $form_state->getValue($column)['grid_columns']['grid_column_start'];
       $this->configuration[$column]['grid_column_end'] = $form_state->getValue($column)['grid_columns']['grid_column_end'];
+      $this->configuration[$column]['background_color'] = $form_state->getValue($column)['background_color'];
     }
   }
 
@@ -173,6 +174,16 @@ class TwoColumnLayout extends LayoutDefault implements PluginFormInterface {
       '#description' => $this->t('The column end position in the grid.'),
       '#access' => $configureColumnLayoutAccess,
     ];
+
+    $form[$column]['background_color'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Background color'),
+      '#options' => [
+        '' => $this->t('None'),
+      ],
+      '#default_value' => $configuration[$column]['background_color'],
+    ];
+    \Drupal::moduleHandler()->invokeAll('edw_paragraphs_container_configuration_alter', [&$form]);
 
     return $form;
   }

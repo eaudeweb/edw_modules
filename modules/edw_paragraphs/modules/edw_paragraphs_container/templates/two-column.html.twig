@@ -53,11 +53,13 @@
 {% set col_1_classes = [
   'region--column-1',
   settings.column_1.fills_page_width ? 'container-out',
+  content['#settings']['column_1']['background_color'] ? 'bg-' ~ content['#settings']['column_1']['background_color']
 ] %}
 
 {% set col_2_classes = [
   'region--column-2',
   settings.column_2.fills_page_width ? 'container-out',
+  content['#settings']['column_2']['background_color'] ? 'bg-' ~ content['#settings']['column_2']['background_color']
 ] %}
 
 {# Render content #}
