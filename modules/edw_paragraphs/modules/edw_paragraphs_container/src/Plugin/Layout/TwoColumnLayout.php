@@ -5,14 +5,34 @@ namespace Drupal\edw_paragraphs_container\Plugin\Layout;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Layout\LayoutDefault;
 use Drupal\Core\Plugin\PluginFormInterface;
-
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 /**
  * Configurable two column layout plugin class.
  *
  * @internal
  *   Plugin classes are internal.
  */
-class TwoColumnLayout extends LayoutDefault implements PluginFormInterface {
+
+
+class TwoColumnLayout extends LayoutDefault implements PluginFormInterface, ContainerFactoryPluginInterface {
+
+  protected ModuleHandlerInterface $moduleHandler;
+
+  public function __construct(array $configuration, $pluginId, $pluginDefinition, ModuleHandlerInterface $moduleHandler) {
+    parent::__construct($configuration, $pluginId, $pluginDefinition);
+    $this->moduleHandler = $moduleHandler;
+  }
+
+  public static function create(ContainerInterface $container, array $configuration, $pluginId, $pluginDefinition) {
+    return new static(
+      $configuration,
+      $pluginId,
+      $pluginDefinition,
+      $container->get('module_handler')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -183,7 +203,12 @@ class TwoColumnLayout extends LayoutDefault implements PluginFormInterface {
       ],
       '#default_value' => $configuration[$column]['background_color'],
     ];
-    \Drupal::moduleHandler()->invokeAll('edw_paragraphs_container_configuration_alter', [&$form]);
+    foreach (array_keys($this->getColumns()) as $column) {
+      if (!isset($form[$column])) {
+        continue;
+      }
+      $this->moduleHandler->invokeAll('edw_paragraphs_container_column_alter', [&$form[$column]]);
+    }
 
     return $form;
   }
