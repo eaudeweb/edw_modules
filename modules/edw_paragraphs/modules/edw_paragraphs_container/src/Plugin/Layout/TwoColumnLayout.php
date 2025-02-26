@@ -203,12 +203,8 @@ class TwoColumnLayout extends LayoutDefault implements PluginFormInterface, Cont
       ],
       '#default_value' => $configuration[$column]['background_color'],
     ];
-    foreach (array_keys($this->getColumns()) as $column) {
-      if (!isset($form[$column])) {
-        continue;
-      }
-      $this->moduleHandler->invokeAll('edw_paragraphs_container_column_alter', [&$form[$column]]);
-    }
+
+    $this->moduleHandler->invokeAll('edw_paragraphs_container_column_alter', [&$form[$column]]);
 
     return $form;
   }
