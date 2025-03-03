@@ -26,6 +26,16 @@ props:
       title: Slider fade effect
       description: Slider fade effect, default -> false.
       default: false
+    autoplay:
+      type: boolean
+      title: Autoplay
+      description: Enables Autoplay
+      default: false
+    autoplaySpeed:
+      type: integer
+      title: Autoplay speed
+      description: Autoplay speed in ms.
+      default: true
 
     slider_classes:
       type: array
@@ -47,5 +57,5 @@ slots:
 libraryOverrides:
   dependencies:
     - edw_paragraphs_carousel/carousel
-    - drupal/once
+    - core/once
 

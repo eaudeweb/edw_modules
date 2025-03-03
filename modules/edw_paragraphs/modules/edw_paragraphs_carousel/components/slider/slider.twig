@@ -20,6 +20,16 @@
   {% set dots = dots ? 'true' : 'false' %}
 {% endif %}
 
+{% if autoplay is not defined %}
+  {% set autoplay = 'false' %}
+{% else %}
+  {% set autoplay = autoplay ? 'true' : 'false' %}
+{% endif %}
+
+{% if autoplaySpeed is not defined %}
+  {% set autoplaySpeed = 2000 %}
+{% endif %}
+
 {% if arrows is not defined %}
   {% set arrows = 'true' %}
 {% else %}
@@ -43,6 +53,8 @@
 {% set slider_attributes = slider_attributes.setAttribute('data-infinite', infinite) %}
 {% set slider_attributes = slider_attributes.setAttribute('data-arrows', arrows) %}
 {% set slider_attributes = slider_attributes.setAttribute('data-fade', fade) %}
+{% set slider_attributes = slider_attributes.setAttribute('data-autoplay', autoplay) %}
+{% set slider_attributes = slider_attributes.setAttribute('data-autoplay-speed', autoplaySpeed) %}
 
 <div class="grid-container">
   <div{{ slider_attributes.addClass(slider_classes) }}>
