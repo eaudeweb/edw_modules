@@ -5,6 +5,7 @@ namespace Drupal\edw_utilities\Controller;
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Entity\Element\EntityAutocomplete;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Url;
@@ -32,16 +33,26 @@ class TermsAutocompleteController extends ControllerBase {
   protected $termStorage;
 
   /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
    * TermsAutocompleteController constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler service.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, ModuleHandlerInterface $module_handler, EntityRepositoryInterface $entity_repository) {
     $this->termStorage = $entity_type_manager->getStorage('taxonomy_term');
     $this->moduleHandler = $module_handler;
+    $this->entityRepository = $entity_repository;
   }
 
   /**
@@ -50,7 +61,8 @@ class TermsAutocompleteController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager'),
-      $container->get('module_handler')
+      $container->get('module_handler'),
+      $container->get('entity.repository')
     );
   }
 
@@ -88,7 +100,7 @@ class TermsAutocompleteController extends ControllerBase {
       );
       $this->moduleHandler->invokeAll('terms_autocomplete_label_alter', [$vid, $term, &$label, $properties]);
       $results[] = [
-        'value' => EntityAutocomplete::getEntityLabels([$term]),
+        'value' => $this->entityRepository->getTranslationFromContext($term)->label(),
         'label' => $label,
       ];
     }
