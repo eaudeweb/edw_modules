@@ -339,10 +339,10 @@ class FileMultiLanguageWidget extends FileWidget {
    */
   protected function getCurrentTabLanguage() {
     $requestValues = $this->request->request->all();
-    if (!$requestValues) {
+    $fileFieldName = $this->fieldDefinition->getName();
+    if (!$requestValues || !isset($requestValues[$fileFieldName])) {
       return $this->languageManager->getCurrentLanguage()->getId();
     }
-    $fileFieldName = $this->fieldDefinition->getName();
     $activeTabId = $requestValues[$fileFieldName]['languages']["{$fileFieldName}__languages__active_tab"];
     $langcode = explode('-', $activeTabId);
     return end($langcode);
