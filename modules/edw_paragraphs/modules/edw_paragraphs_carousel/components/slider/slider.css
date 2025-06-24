@@ -1,0 +1,141 @@
+@charset "UTF-8";
+
+.slick-slider {
+  --slick_o: 0.75;
+  --slick-dot-color: var(--body_c, black);
+  --slick-dot_c_a: var(--slick-dot-color);
+  --slick-dot_s: 40px;
+  --slick-dot_c: var(--body_c);
+  --_slick-dot_bg: var(--slick-dot_bg, var(--body_bg, #e5e5e5));
+  --slick-dot_w: var(--slick-dot_s);
+  --slick-dot_h: var(--slick-dot_s);
+  --_slick-dot_br: var(--slick-dot_br, var(--br));
+
+  --_slick-control_bg: var(--slick-control_bg, var(--body_bg, #e5e5e5));
+  --_slick-control_o: 0.5;
+  --_slick-control_bs: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+
+  isolation: isolate;
+
+  button {
+    cursor: pointer;
+    display: block;
+    border: none;
+    outline: none;
+  }
+
+  .slick-slide {
+    position: relative;
+  }
+}
+
+.slick-list {
+  position: relative;
+  z-index: -1;
+}
+
+/* Slider */
+/* Arrows */
+.slick-arrow {
+  position: absolute;
+  height: var(--slick-dot_w);
+  width: var(--slick-dot_h);
+  line-height: 0px;
+  background: var(--_slick-dot_bg);
+  font-size: 0px;
+  color: var(--slick-dot_c);
+  top: 50%;
+  transform: translate(0, -50%);
+  padding: 0;
+  opacity: var(--slick_o);
+  border-radius: var(--_slick-dot_br);
+
+  &:hover,
+  &:focus {
+    --slick_o: 1;
+
+    outline: none;
+  }
+
+  &.slick-disabled {
+    --slick_o: 0.25;
+  }
+
+  &:before,
+  &:before {
+    font-size: 20px;
+    line-height: 1;
+  }
+}
+
+.slick-prev {
+  inset-inline-start: 25px;
+
+  &:before {
+    content: "←";
+
+    [dir="rtl"] & {
+      content: "→";
+    }
+  }
+}
+
+.slick-next {
+  inset-inline-end: 25px;
+
+  &:before {
+    content: "→";
+
+    [dir="rtl"] & {
+      content: "←";
+    }
+  }
+}
+
+/* Dots */
+.slick-dotted .slick-slider {
+  margin-bottom: 30px;
+}
+
+.slick-dots {
+  display: flex;
+  position: absolute;
+  inset-block-end: 25px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  list-style: none;
+
+  li {
+    display: inline-block;
+
+    &.slick-active {
+      --_slick-control_o: 1;
+    }
+  }
+
+  button {
+    background: var(--_slick-control_bg);
+    height: 8px;
+    width: 8px;
+    line-height: 0px;
+    font-size: 0px;
+    color: transparent;
+    padding: 5px;
+    opacity: var(--_slick-control_o);
+    box-shadow: var(--_slick-control_bs);
+    -webkit-box-shadow: var(--_slick-control_bs);
+    -moz-box-shadow: var(--_slick-control_bs);
+
+    &:hover,
+    &:focus {
+      --_slick-control_o: 1;
+
+      outline: none;
+    }
+  }
+}

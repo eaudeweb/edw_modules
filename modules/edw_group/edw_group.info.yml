@@ -2,7 +2,7 @@ name: EDW Group
 description: Enable the group module to provide functionality like private tabs for a meeting.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - drupal:group
   - drupal:node_access_grants

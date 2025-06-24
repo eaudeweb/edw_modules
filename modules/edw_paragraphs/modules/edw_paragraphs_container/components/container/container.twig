@@ -1,0 +1,28 @@
+{#
+/**
+ * @file
+ * Container Component.
+ * Proprietes
+ *  container_classes: array(string)
+ *
+ * Slots
+ *  container_slot_main
+ */
+#}
+
+{# Set default value #}
+
+{# Create attributres #}
+{% set container_attributes = container_attributes ?: create_attribute() %}
+
+{# Component classes #}
+{% set container_classes = [
+  'c--container'
+]|merge(container_classes ?: []) %}
+
+{# Add extra attributes, classes #}
+{# {% set container_attributes = container_attributes.setAttribute('data-dots', dots) %} #}
+
+<div{{container_attributes.addClass(container_classes) }}>
+  {% block container_slot_main %}{% endblock %}
+</div>

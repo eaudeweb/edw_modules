@@ -10,7 +10,7 @@ In `composer.json`:
 
 ```php
 "require": {
-  "drupal/core": "^9.4 || ^10",
+  "drupal/core": "^9.4 || ^10 || ^11",
   "drupal/better_exposed_filters": "^6.0",
   "drupal/entity_browser": "^2.9",
   "drupal/search_api_solr":"^4.3",
@@ -27,7 +27,7 @@ The `entity_reference_revisions` module requires the following patch to be appli
 }
 ```
 
-and for core:^10:
+and for core:^10 || ^11:
 
 ```php
 "patches": {

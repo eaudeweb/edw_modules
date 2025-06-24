@@ -2,7 +2,7 @@ name: EDW Paragraphs Banner
 description: Provides a Banner paragraph that uses media images.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - edw_media:edw_media
   - edw_media:edw_media_image

@@ -1,0 +1,22 @@
+<?php
+
+/**
+ * @file
+ * EDW Paragraphs container module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function edw_paragraphs_container_theme($existing, $type, $theme, $path) : array {
+  return [
+    'paragraph__edw_container' => [
+      'template' => 'paragraph--edw-container',
+      'base hook' => 'paragraph',
+    ],
+    // 'field__paragraph__field_paragraphs' => [
+    //   'template' => '_fields/field--paragraph--field-paragraphs',
+    //   'base hook' => 'field',
+    // ]
+  ];
+}

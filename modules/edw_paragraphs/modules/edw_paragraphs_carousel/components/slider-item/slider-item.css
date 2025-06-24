@@ -1,0 +1,53 @@
+.carousel-item--default {
+  isolation: isolate;
+  position: relative;
+  color: #fff;
+  padding-top: var(--_top_height);
+  aspect-ratio: 2/1;
+}
+.carousel-item--default.grid-container {
+  display: grid !important;
+}
+.carousel-item--default .slide-item__media,
+.carousel-item--default .slide-item__media:before,
+.carousel-item--default .slide-item__media img {
+  position: absolute;
+  inset: 0;
+}
+.carousel-item--default .slide-item__media .field-media {
+  height: 100%;
+}
+.carousel-item--default .slide-item__media img {
+  z-index: -2;
+  -o-object-fit: cover;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.carousel-item--default .slide-item__media:before {
+  content: "";
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+.carousel-item--default .w-content {
+  max-width: var(--container-mw);
+  margin-inline: auto;
+  width: calc(100% - 180px);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
+}
+.carousel-item--default .field-title {
+  font-size: var(--fs-h1);
+  font-weight: var(--h-fw);
+  margin-bottom: 0.5em;
+}
+.carousel-item--default .field-description {
+  font-size: 1.25rem;
+}
+.carousel-item--default .field-link {
+  margin-top: 1.25rem;
+}

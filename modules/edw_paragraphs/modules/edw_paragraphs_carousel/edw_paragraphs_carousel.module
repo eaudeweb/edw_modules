@@ -8,6 +8,26 @@
 use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
+ * Implements hook_theme().
+ */
+function edw_paragraphs_carousel_theme($existing, $type, $theme, $path) : array {
+  return [
+    'paragraph__edw_carousel' => [
+      'template' => 'paragraph--edw-carousel',
+      'base hook' => 'paragraph',
+    ],
+    'paragraph__edw_carousel_item__default' => [
+      'template' => 'paragraph--edw-carousel-item--default',
+      'base hook' => 'paragraph',
+    ],
+    'field__paragraph__field_paragraphs' => [
+      'template' => '_fields/field--paragraph--field-paragraphs',
+      'base hook' => 'field',
+    ]
+  ];
+}
+
+/**
  * Implements hook_entity_bundle_field_info_alter().
  */
 function edw_paragraphs_carousel_entity_bundle_field_info_alter(&$fields, EntityTypeInterface $entity_type, $bundle) {

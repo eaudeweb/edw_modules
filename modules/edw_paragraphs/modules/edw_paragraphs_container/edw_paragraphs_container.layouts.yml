@@ -1,0 +1,21 @@
+one_column:
+  label: "EDW One column"
+  category: "EDW Layouts"
+  template: templates/one-column
+  default_region: main
+  class: '\Drupal\edw_paragraphs_container\Plugin\Layout\OneColumnLayout'
+  regions:
+    main:
+      label: Main content
+
+two_column:
+  label: "EDW Two column"
+  category: "EDW Layouts"
+  template: templates/two-column
+  default_region: column_1
+  class: '\Drupal\edw_paragraphs_container\Plugin\Layout\TwoColumnLayout'
+  regions:
+    column_1:
+      label: First Column
+    column_2:
+      label: Second Column

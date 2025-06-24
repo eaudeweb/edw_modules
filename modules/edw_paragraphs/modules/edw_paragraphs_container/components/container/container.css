@@ -1,0 +1,101 @@
+.c--container {
+  isolation: isolate;
+  /* display: grid; admin issues */
+  grid-template-areas: 'stack';
+
+  & > * {
+    grid-area: stack;
+  }
+}
+
+/* Temporary */
+.c--container {
+  --_c-container_pb: var(--c-container_pb, 60px);
+
+  &.p_pb > .edw-container {
+    padding-block: var(--_c-container_pb);
+  }
+
+  /* To Do field front/admin don't have some class */
+  .field-background-media,
+  .field--name-field-background-media {
+    position: relative;
+    z-index: -1;
+
+    img {
+      position: absolute;
+      inset: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+/* One columns */
+.edw-container--one-column {
+  & > .c--container_default {
+    --_cg-col_default: 2 / 6;
+  }
+
+  & > .c--container_full {
+    --_cg-col_default: full;
+  }
+
+  & > .c--container_small {
+    --_cg-col_default: var(--_cg-col_sm, container);
+
+    @media (min-width: 768px) {
+      --_cg-col_sm: 3 / 13;
+    }
+
+    @media (min-width: 1024px) {
+      --_cg-col_sm: 4 / 12;
+    }
+
+    @media (min-width: 1280px) {
+      --_cg-col_sm: 5 / 11;
+    }
+  }
+}
+
+/* Two columns */
+.edw-container--two-column {
+  --region--delimiter: 8;
+}
+
+@media (min-width: 768px) {
+  .region--column-1 {
+    --_cg-col_default: var(--region--col1_s, 2) /
+      var(--region--col1_e, var(--region--delimiter));
+
+    &:where(.container-out) {
+      --region--col1_s: 1;
+    }
+  }
+
+  .region--column-2 {
+    --_cg-col_default: var(--region--col2_s, var(--region--delimiter)) /
+      var(--region--col2_e, 14);
+
+    &:where(.container-out) {
+      --region--col2_e: -1;
+    }
+  }
+}
+
+.c--container_33-67 {
+  --region--delimiter: 6;
+}
+
+.c--container_67-33 {
+  --region--delimiter: 10;
+}
+
+.c--container_25-75 {
+  --region--delimiter: 5;
+}
+
+.c--container_75-25 {
+  --region--delimiter: 11;
+}

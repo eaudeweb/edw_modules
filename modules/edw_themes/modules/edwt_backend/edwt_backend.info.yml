@@ -1,7 +1,7 @@
 name: Backend Theme
 type: theme
 description: 'Admin theme with a strong focus on improving the Editorial Experience'
-core_version_requirement: ^9 || ^10
+core_version_requirement: ^9 || ^10 || ^11
 base theme: gin
 
 libraries:

@@ -1,0 +1,129 @@
+/* @layer accordion { */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+.accordion {
+  --_accordion_bg: var(--accordion_bg, transparent);
+  --_accordion_br: var(--accordion_br, var(--br, 8px));
+  --_accordion_tt: var(--accordion_tt, 0.3s);
+  --_accordion_bw: var(--accordion_bw, var(--bw, 1px));
+  --_accordion_bc: var(--accordion_bc, var(--bc, #dee2e6));
+  --_accordion_icon_s: var(--accordion_icon_s, 16px);
+  --_accordion_summary_c: var(--accordion_summary_c, var(--link_c-default));
+  --_accordion_summary_c_h: var(
+    --accordion_summary_c_h,
+    var(--link_c_h-default)
+  );
+  --_accordion_summary_c_a: var(
+    --accordion_summary_c_a,
+    var(--link_c_a-default)
+  );
+  --_accordion-summary_pb: var(--accordion-summary_pb, 12px);
+  --_accordion-summary_pi: var(--accordion-summary_pi, 20px);
+  --_accordion-summary_bg: var(
+    --accordion-summary_bg,
+    hsl(from var(--c-primary) h s calc(l + 30))
+  );
+  --_accordion_marker_deg: var(--accordion_marker_deg, 0deg);
+  --_accordion_marker_mis: var(--accordion_marker_mis, 8px);
+  --_accordion-body_pb: var(--accordion-body_pb, 12px);
+  --_accordion-body_pi: var(--accordion-body_pi, 20px);
+
+  overflow: clip;
+
+  ::details-content {
+    transition: all var(--_accordion_tt) ease,
+      content-visibility var(--_accordion_tt) allow-discrete;
+    height: 0;
+    overflow: clip;
+  }
+
+  details {
+    background: var(--_accordion_bg);
+
+    &:not(:last-child) {
+      border-block-end: var(--_accordion_bw) solid var(--_accordion_bc);
+    }
+
+    &[open] {
+      --_accordion_marker_deg: 180deg;
+    }
+  }
+
+  summary {
+    cursor: pointer;
+    color: var(--_accordion_summary_c);
+    transition: all var(--_accordion_tt) ease;
+    padding-block: var(--_accordion-summary_pb);
+    padding-inline: var(--_accordion-summary_pi);
+    display: flex;
+    align-items: center;
+
+    &::marker {
+      content: "";
+    }
+
+    &:hover {
+      color: var(--_accordion_summary_c_h);
+    }
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  .accordion-icon {
+    width: var(--_accordion_icon_s);
+    height: var(--_accordion_icon_s);
+    display: flex;
+
+    svg {
+      transition: all var(--_accordion_tt) ease;
+      transform: rotate(var(--_accordion_marker_deg));
+      transform-origin: center;
+      width: 100%;
+      max-width: var(--_accordion_icon_s);
+      height: auto;
+    }
+
+    &:first-child {
+      margin-inline-end: var(--_accordion_marker_mis);
+    }
+
+    &:last-child {
+      margin-inline-start: auto;
+    }
+  }
+
+  .accordion-body {
+    padding-block: var(--_accordion-summary_pb);
+    padding-inline: var(--_accordion-summary_pi);
+  }
+
+  &:not(.accordion-flush) {
+    border: var(--_accordion_bw) solid var(--_accordion_bc);
+    border-radius: var(--_accordion_br);
+  }
+
+  [open] {
+    summary {
+      color: var(--_accordion_summary_c_a);
+      background-color: var(--_accordion-summary_bg);
+    }
+
+    &::details-content {
+      @supports (interpolate-size: allow-keywords) {
+        height: auto;
+      }
+
+      @supports not (interpolate-size: allow-keywords) {
+        height: 150px;
+        overflow-y: scroll;
+      }
+    }
+  }
+}
+/* } */

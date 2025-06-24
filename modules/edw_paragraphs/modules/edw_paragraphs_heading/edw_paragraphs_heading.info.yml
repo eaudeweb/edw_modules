@@ -2,7 +2,7 @@ name: EDW Paragraphs Heading
 description: Add a heading title (h2-h6) with icon and subtitle.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - drupal:media_library
   - drupal:svg_image_field

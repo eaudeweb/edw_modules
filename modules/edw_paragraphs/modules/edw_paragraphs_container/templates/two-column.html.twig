@@ -1,0 +1,80 @@
+{#
+/**
+ * @file
+ * Two column layout.
+ *
+ * Use settings.variable to access a specific variable.
+ * Use settings.column_1.variable to access a variable for column_1.
+ * Use settings.column_2.variable to access a variable for column_2.
+ * Global settings:
+ * - extra_classes: An array of extra classes to add to the layout.
+ * - column_widths: The width of each column.
+ * Region settings:
+ * - fills_page_width: Whether the region should fill the page width.
+ * - wrapper: The HTML element to use to wrap this region.
+ * - grid_column_start: The start column for the region.
+ * - grid_column_end: The end column for the region.
+ *
+ * @ingroup themeable
+ */
+#}
+
+{# Chage attributes to use with .setAttributes attributes. #}
+{% set col1_att = region_attributes.column_1 ?: create_attribute() %}
+{% set col2_att = region_attributes.column_2 ?: create_attribute() %}
+
+{# Abbreviated variables. #}
+{% set col1_s = settings.column_1.grid_column_start %}
+{% set col1_e = settings.column_1.grid_column_end %}
+{% set col2_s = settings.column_2.grid_column_start %}
+{% set col2_e = settings.column_2.grid_column_end %}
+
+{# Change component "container" container type if exist value in both columns #}
+{% if col1_s and col1_e or col2_s and col2_e %}
+  {% set custom_settings = 'c--container_custom' %}
+{% endif %}
+
+{% if col1_s and col1_e %}
+  {% set col1_att = col1_att.setAttribute('style', '--region--col1_s: ' ~ col1_s  ~ '; --region--col1_e:' ~ col1_e ~ ';') %}
+{% endif %}
+
+{% if col2_s and col2_e %}
+  {% set col2_att = col2_att.setAttribute('style', '--region--col2_s: ' ~ col2_s  ~ '; --region--col2_e:' ~ col2_e ~ ';') %}
+{% endif %}
+
+{# Set classes #}
+{% set classes = [
+  'edw-container',
+  'edw-container--two-column',
+  'grid-container',
+  custom_settings ?: 'c--container_' ~ settings.column_widths,
+]|merge(settings.extra_classes ?: []) %}
+
+{% set col_1_classes = [
+  'region--column-1',
+  settings.column_1.fills_page_width ? 'container-out',
+  content['#settings']['column_1']['background_color'] ? 'bg-' ~ content['#settings']['column_1']['background_color']
+] %}
+
+{% set col_2_classes = [
+  'region--column-2',
+  settings.column_2.fills_page_width ? 'container-out',
+  content['#settings']['column_2']['background_color'] ? 'bg-' ~ content['#settings']['column_2']['background_color']
+] %}
+
+{# Render content #}
+{% if content %}
+  <div {{ attributes.addClass(classes) }}>
+    {% if content.column_1 %}
+      <{{settings.column_1.wrapper}} {{ col1_att.addClass(col_1_classes) }}>
+        {{ content.column_1 }}
+      </{{settings.column_1.wrapper}}>
+    {% endif %}
+
+    {% if content.column_2 %}
+      <{{settings.column_2.wrapper}} {{ col2_att.addClass(col_2_classes) }}>
+        {{ content.column_2 }}
+      </{{settings.column_2.wrapper}}>
+    {% endif %}
+  </div>
+{% endif %}

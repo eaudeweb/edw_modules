@@ -1,0 +1,84 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Accordion
+status: experimental
+description: 'Accordion component'
+props:
+  type: object
+  properties:
+    # fields value
+    accordion_id:
+      type: ['integer', 'string']
+      title: Accordion ID
+      description: Unique ID for the accordion component.
+      default: 0
+
+    flush:
+      type: boolean
+      title: Flush
+      description: True if the accordion has no background color or borders.
+      default: false
+
+    stay_open:
+      type: boolean
+      title: Stay open
+      description: A boolean to determine if an accordion item should stay open when another item is opened.
+      default: false
+
+    open_item_id:
+      type: integer
+      title: Open Item ID
+      description: The index of the item that should be opened by default.
+      default: 0
+
+    items:
+      type: array
+      title: Items
+      description: An array of items inside the accordion. Each item is an object that has title, content, and stay_open properties.
+      default: [{}]
+
+    icon_position:
+      type: string
+      title: 'Icon position'
+      description: 'Marker/Icon position (none|left|right:default).'
+      enum:
+        - 'none'
+        - 'left'
+        - 'right'
+      default: 'right'
+
+    # uc -> utility_classes
+    accordion_uc:
+      type: array
+      items:
+        type: string
+      title: Accordion Utility Classes
+      default: []
+      description: An array of utility classes. Use to add extra Bootstrap utility classes or custom CSS classes over to this component.
+
+    accordion_item_uc:
+      type: array
+      items:
+        type: string
+      title: Accordion Item Utility Classes
+      default: []
+      description: An array of utility classes. Use to add extra Bootstrap utility classes or custom CSS classes over to this component.
+
+    # att -> attributes
+    accordion_att:
+      type: Drupal\Core\Template\Attribute
+      title: Attributes
+      description: A list of HTML attributes for the accordion.
+
+    accordion_item_att:
+      type: Drupal\Core\Template\Attribute
+      title: Item Attributes
+      description: A list of HTML attributes for the accordion items.
+
+slots:
+  content:
+    title: Content
+    description: Default content text for the accordion.
+
+  icon:
+    title: Icon
+    description: Default icon for the accordion.

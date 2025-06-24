@@ -1,0 +1,110 @@
+{#
+/**
+  * @file
+  * Accordion component.
+  *
+  * Available properties:
+  * - accordion_id (int) (default: accordion-random(1000))
+  * - flush (boolean) (default: false)
+  * - stay_open (boolean) (default: false)
+  * - open_item_id (int) (default: 0)
+  * - icon_position (none|left|right) (default: rigth)
+  * - items (array) (default: []): format: [
+  *     {
+  *       title: (string),
+  *       title_tag: (string),
+  *       content: (block),
+  *     },
+  *   ]
+  *
+  * Availabel Utility classes -> uc
+  * - accordion_uc (array) (default: '')
+  * - accordion_item_uc (array) (default: '')
+  *
+  * Availabel attributes -> att
+  * - accordion_att (Drupal\Core\Template\Attribute)
+  * - accordion_item_att (Drupal\Core\Template\Attribute)
+  *
+  * usage example: @see README.md
+  *
+  */
+#}
+
+{# Set default value #}
+{% set items = items|default([]) %}
+{% set open_item_id = open_item_id|default(1) %}
+{% set icon_position = icon_position|default('right') %}
+{% set flush = flush ?? false %}
+
+{# Create attributres #}
+{% set accordion_item_att = accordion_item_att ?: create_attribute() %}
+{% set accordion_att = accordion_att ?: create_attribute() %}
+
+{# Component classes #}
+{%
+  set accordion_classes = [
+    'accordion',
+    flush ? 'accordion-flush',
+  ]|merge(accordion_uc ?: [])
+%}
+
+{%
+  set accordion_item_classes = [
+    'accordion-item'
+  ]|merge(accordion_item_uc ?: [])
+%}
+
+{# Create attributres #}
+{% if accordion_id %}
+  {% set accordion_att = accordion_att.setAttribute('id', accordion_id) %}
+  {% set accordion_name = accordion_id %}
+{% else %}
+  {% set accordion_name = 'accordion--' ~ random(1000) %}
+{% endif %}
+
+{# Render component #}
+{% apply spaceless %}
+  {% if items is not empty %}
+    <div{{ accordion_att.addClass(accordion_classes) }}>
+      {% for item in items %}
+        {% set content = item.content|default('') %}
+
+        {% if content %}
+          <details {{ accordion_item_att.addClass(accordion_item_classes) }} {{ loop.index == open_item_id ? 'open' }} {{ stay_open ? '' : 'name=' ~ accordion_name }}>
+            <summary>
+              {% if icon_position != 'left' %}
+                <span>
+                  {{ item.title }}
+                </span>
+              {% endif %}
+
+              {% if icon_position != 'none' %}
+                <div class="accordion-icon">
+                  {%- block icon -%}
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+                    <svg width="800px" height="800px" viewBox="0 0 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                      <path d="M16.354 5.075l-7.855 7.854-7.853-7.854 0.707-0.707 7.145 7.146 7.148-7.147 0.708 0.708z" fill="currentColor" />
+                    </svg>
+                  {%- endblock -%}
+                </div>
+              {% endif %}
+
+              {% if icon_position == 'left' %}
+                <span>
+                  {{ item.title }}
+                </span>
+              {% endif %}
+            </summary>
+
+            <div class="accordion-body">
+              {%- block content -%}
+                {{- content -}}
+              {%- endblock -%}
+            </div>
+          </details>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endapply %}

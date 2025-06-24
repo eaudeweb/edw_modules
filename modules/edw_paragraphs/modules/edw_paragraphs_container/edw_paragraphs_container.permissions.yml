@@ -1,0 +1,4 @@
+configure column layout options:
+  title: "Configure column layout options"
+  description: "Configure / override the columns options in layouts"
+  restrict access: true

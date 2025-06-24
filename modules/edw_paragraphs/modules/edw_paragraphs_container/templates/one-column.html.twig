@@ -1,0 +1,37 @@
+{#
+/**
+ * @file
+ * One column layout.
+ *
+ * Use settings.variable to access a specific variable.
+ *
+ * Global settings:
+ * - extra_classes: An array of extra classes to add to the layout.
+ * - width: The width of the column / container.
+ *
+ * {{ region_attributes.main.addClass('main-region') }}
+ *
+ * @ingroup themeable
+ */
+#}
+
+{% set classes = [
+  'edw-container',
+  'edw-container--one-column',
+  'grid-container',
+  settings.width ? 'c--container_' ~ settings.width,
+]|merge(settings.extra_classes ?: []) %}
+
+{% set region_classes = [
+  settings.width ? 'c--container_' ~ settings.width,
+] %}
+
+{% if content %}
+  <div {{ attributes.addClass(classes) }}>
+    {% if content.main %}
+      <div{{region_attributes.main.addClass(region_classes)}}>
+        {{ content.main }}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

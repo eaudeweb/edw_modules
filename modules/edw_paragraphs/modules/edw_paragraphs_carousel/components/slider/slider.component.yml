@@ -1,0 +1,61 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Slider
+status: experimental
+description: 'Slider description'
+
+props:
+  type: object
+  properties:
+    dots:
+      type: boolean
+      title: Slider show/hide dots
+      description: Slider show/hide dots, checked -> show, default -> true.
+      default: true
+    arrows:
+      type: boolean
+      title: Slider show/hide arrows
+      description: Slider show/hide arrows, default -> true.
+      default: false
+    infinite:
+      type: boolean
+      title: Slider infinite scroll
+      description: Slider show/hide dots, default -> false.
+      default: false
+    fade:
+      type: boolean
+      title: Slider fade effect
+      description: Slider fade effect, default -> false.
+      default: false
+    autoplay:
+      type: boolean
+      title: Autoplay
+      description: Enables Autoplay
+      default: false
+    autoplaySpeed:
+      type: integer
+      title: Autoplay speed
+      description: Autoplay speed in ms.
+      default: true
+
+    slider_classes:
+      type: array
+      items:
+        type: string
+      title: Navbar classes
+      description: An array of utility classes. Use to add extra classes or custom CSS classes over to this component.
+
+    slider_attributes:
+      type: Drupal\Core\Template\Attribute
+      title: Attributes
+      description: A list of HTML attributes for the slider
+
+slots:
+  slide_slot_main:
+    title: Main
+    description: Main slot description.
+
+libraryOverrides:
+  dependencies:
+    - edw_paragraphs_carousel/carousel
+    - core/once
+

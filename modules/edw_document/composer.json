@@ -29,7 +29,7 @@
         }
     ],
     "require": {
-        "drupal/core": "^9.4 || ^10",
+        "drupal/core": "^9.4 || ^10 || ^11",
         "drupal/better_exposed_filters": "^6.0",
         "drupal/entity_browser": "^2.9",
         "drupal/file_delete": "^2.0",

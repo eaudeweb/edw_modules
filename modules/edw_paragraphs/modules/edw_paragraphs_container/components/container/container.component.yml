@@ -1,0 +1,24 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Container
+status: experimental
+description: 'Container description'
+
+props:
+  type: object
+  properties:
+    container_classes:
+      type: array
+      items:
+        type: string
+      title: Container classes
+      description: An array of utility classes. Use to add extra classes or custom CSS classes over to this component.
+
+    container_attributes:
+      type: Drupal\Core\Template\Attribute
+      title: Attributes
+      description: A list of HTML attributes for the container
+
+slots:
+  container_slot_main:
+    title: 'Main slot'
+    description: 'Main slot description'

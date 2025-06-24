@@ -1,0 +1,14 @@
+carousel:
+  remote: https://kenwheeler.github.io/slick/
+  version: 1.x
+  license:
+    name: MIT
+    url: https://github.com/kenwheeler/slick/blob/master/LICENSE
+    gpl-compatible: true
+  css:
+    base:
+      /libraries/slick/slick/slick.css: {}
+  js:
+    /libraries/slick/slick/slick.min.js: { minified: true }
+  dependencies:
+    - core/jquery

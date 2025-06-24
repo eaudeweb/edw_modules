@@ -2,6 +2,6 @@ name: EDW Event
 description: Enable the event module to provide content managers with the ability to manage events within Drupal.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.2 || ^10
+core_version_requirement: ^9.2 || ^10 || ^11  || ^11
 dependencies:
   - edw_modules:edw_modules

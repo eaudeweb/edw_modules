@@ -1,0 +1,58 @@
+{#
+/**
+ * @file
+ *
+ * Slider item Component.
+ *
+ * Proprietes
+ *  media: string
+ *  title: string
+ *  description: string
+ *  slider_item__view_mode: string
+ *  slider_item__classes: classes array,
+ *
+ * Slots
+ *  slide_item__slot_media
+ *  slide_item__slot_main
+ *  slide_item__slot_title
+ *  slide_item__slot_description
+ *  slide_item__slot_link
+ */
+#}
+
+{# Set default value #}
+{% set _view_mode = slider_item__view_mode ?: "default" %}
+
+{# Create attributres #}
+{% set slider_item__attributes = slider_item__attributes ?: create_attribute() %}
+
+{# Component classes #}
+{% set classes = [
+  'carousel-item',
+  'carousel-item--' ~ _view_mode,
+]|merge(slider_item__classes ?: []) %}
+
+{#--- Component ---#}
+<div{{ slider_item__attributes.addClass(classes) }}>
+  {% block slide_item__slot_media %}
+    <div class="slide-item__media">
+      {{ media }}
+    </div>
+  {% endblock %}
+
+  {% block slide_item__slot_main %}
+    <div class="w-content">
+      {%- block slide_item__slot_title -%}
+        {{- title -}}
+      {%- endblock -%}
+
+      {% block slide_item__slot_description %}
+        {{ description }}
+      {% endblock %}
+
+      {% block slide_item__slot_link %}
+        {{ link }}
+      {% endblock %}
+    </div>
+  {% endblock %}
+</div>

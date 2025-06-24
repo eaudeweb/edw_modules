@@ -1,0 +1,64 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json
+name: Slider
+status: experimental
+description: 'Slider description'
+
+props:
+  type: object
+  properties:
+    media:
+      type: string
+      title: Slider item Media
+
+    title:
+      type: string
+      title: Slider item title
+      description: Title description.
+
+    description:
+      type: string
+      title: Slider item title
+      description: Title description.
+
+    link:
+      type: string
+      title: Slider item link
+      description: Link description.
+
+    slider_item__view_mode:
+      type: string
+      title: Slider item link
+      description: Link description.
+
+    slider_item__classes:
+      type: array
+      items:
+        type: string
+      title: Navbar classes
+      description: An array of utility classes. Use to add extra classes or custom CSS classes over to this component.
+
+    slider_item__attributes:
+      type: Drupal\Core\Template\Attribute
+      title: Attributes
+      description: A list of HTML attributes for the slider item
+
+slots:
+  slide_item__slot_media:
+    title: Image
+    description: Image slot description.
+
+  slide_item__slot_main:
+    title: Main
+    description: Main slot description.
+
+  slide_item__slot_title:
+    title: Title
+    description: Title slot description.
+
+  slide_item__slot_description:
+    title: Description
+    description: Description slot description.
+
+  slide_item__slot_link:
+    title: Link
+    description: Link slot description.

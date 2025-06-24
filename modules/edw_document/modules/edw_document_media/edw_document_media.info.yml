@@ -2,7 +2,7 @@ name: EDW Document Media
 description: The Document media type with multiple version of a file, several formats and translations.
 package: Eau de Web
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 dependencies:
   - drupal:datetime
   - drupal:datetime_range
