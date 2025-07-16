@@ -19,6 +19,8 @@
  */
 #}
 
+{{ attach_library('edw_paragraphs_container/container-styles') }}
+
 {# Chage attributes to use with .setAttributes attributes. #}
 {% set col1_att = region_attributes.column_1 ?: create_attribute() %}
 {% set col2_att = region_attributes.column_2 ?: create_attribute() %}

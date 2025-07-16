@@ -84,6 +84,10 @@
   }
 }
 
+.c--container_50-50 {
+  --region--delimiter: 7;
+}
+
 .c--container_33-67 {
   --region--delimiter: 6;
 }

@@ -1,0 +1,4 @@
+container-styles:
+  css:
+    component:
+      components/container/container.css: {}
