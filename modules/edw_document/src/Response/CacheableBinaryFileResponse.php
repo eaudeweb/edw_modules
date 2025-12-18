@@ -36,15 +36,7 @@ class CacheableBinaryFileResponse extends BinaryFileResponse implements Cacheabl
    * @param bool $autoLastModified
    *   TRUE to set a 'Last-Modified' header based on the file mtime.
    */
-  public function __construct(
-    protected string $uri,
-    int $status = 200,
-    array $headers = [],
-    bool $public = TRUE,
-    ?string $contentDisposition = NULL,
-    bool $autoEtag = FALSE,
-    bool $autoLastModified = TRUE,
-  ) {
+  public function __construct(protected string $uri, int $status = 200, array $headers = [], bool $public = TRUE, ?string $contentDisposition = NULL, bool $autoEtag = FALSE, bool $autoLastModified = TRUE) {
     parent::__construct($uri, $status, $headers, $public, $contentDisposition, $autoEtag, $autoLastModified);
   }
 
