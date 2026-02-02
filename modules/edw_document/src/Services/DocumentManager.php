@@ -93,6 +93,13 @@ class DocumentManager {
   protected $archive;
 
   /**
+   * Directory path for document archives.
+   *
+   * @var string
+   */
+  protected $directory;
+
+  /**
    * Constructs a new DocumentManager object.
    */
   public function __construct(CurrentRouteMatch $currentRouteMatch, EntityTypeManagerInterface $entityTypeManager, ModuleExtensionList $extensionListModule, FileUrlGeneratorInterface $fileUrlGenerator, FileSystemInterface $fileSystem, LanguageManagerInterface $languageManager, Connection $database) {
@@ -371,13 +378,13 @@ class DocumentManager {
         continue;
       }
 
-      if (!in_array(strtolower(pathinfo($uri, PATHINFO_EXTENSION)), $formats)) {
+      if (!in_array($this->getUriType($uri), $formats)) {
         unset($files[$fid]);
       }
     }
 
     if (empty($files)) {
-      throw new NotFoundHttpException();
+      return [];
     }
 
     return $files;
