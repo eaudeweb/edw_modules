@@ -5,13 +5,12 @@ namespace Drupal\edw_document\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\File\Exception\FileNotExistsException;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\Core\Url;
+use Drupal\edw_document\Response\CacheableBinaryFileResponse;
 use Drupal\edw_document\Services\DocumentManager;
 use Drupal\file\FileInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -105,8 +104,11 @@ class FileController extends ControllerBase implements ContainerInjectionInterfa
       'Content-Length' => $file->getSize(),
     ];
     $filename = $request->query->get('filename') ?? $file->getFilename();
-    $response = new BinaryFileResponse($uri, 200, $headers);
+    $response = new CacheableBinaryFileResponse($uri, 200, $headers);
     $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $filename);
+    $response->addCacheableDependency($file);
+    $response->getCacheableMetadata()->addCacheContexts(['url']);
+
     return $response;
   }
 
