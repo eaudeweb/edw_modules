@@ -11,7 +11,7 @@ use Drupal\Core\Url;
 use Drupal\edw_document\Services\DocumentManager;
 use Drupal\file\Plugin\Field\FieldFormatter\GenericFileFormatter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Plugin implementation of the 'file_download_formatter' formatter.
@@ -35,14 +35,14 @@ class DownloadFileFormatter extends GenericFileFormatter implements ContainerFac
   /**
    * Logger channel.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   * @var \Psr\Log\LoggerInterface
    */
   protected $logger;
 
   /**
    * {@inheritdoc}
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, DocumentManager $documentManager, LoggerChannelInterface $logger) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, DocumentManager $documentManager, LoggerInterface $logger) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
     $this->documentManager = $documentManager;
     $this->logger = $logger;
@@ -61,7 +61,7 @@ class DownloadFileFormatter extends GenericFileFormatter implements ContainerFac
       $configuration['view_mode'],
       $configuration['third_party_settings'],
       $container->get('edw_document.document.manager'),
-      $container->get('logger.channel.edw_document')
+      $container->get('logger.factory')->get('edw_document')
     );
   }
 
