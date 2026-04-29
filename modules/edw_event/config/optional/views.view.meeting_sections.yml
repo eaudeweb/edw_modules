@@ -191,7 +191,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'access content overview'
+          perm: 'edit any event content'
       cache:
         type: tag
         options: {  }
