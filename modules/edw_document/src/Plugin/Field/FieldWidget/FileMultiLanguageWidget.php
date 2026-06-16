@@ -3,6 +3,7 @@
 namespace Drupal\edw_document\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -213,7 +214,8 @@ class FileMultiLanguageWidget extends FileWidget {
     // it does not return all files when deleting a file from a language.
     $requestValues = $this->request->request->all();
 
-    $values = $requestValues[$fieldName] ?? [];
+    $valuesParents = array_merge($form['#parents'] ?? [], [$fieldName]);
+    $values = NestedArray::getValue($requestValues, $valuesParents) ?? [];
     if (!empty($values['languages'])) {
       foreach ($values['languages'] as &$files) {
         if (empty($files['data'])) {
