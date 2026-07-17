@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.edw_columns.field_columns_alignment
     - field.field.paragraph.edw_columns.field_columns_layout
     - paragraphs.paragraphs_type.edw_columns
   module:
@@ -12,6 +13,12 @@ targetEntityType: paragraph
 bundle: edw_columns
 mode: default
 content:
+  field_columns_alignment:
+    type: options_select
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
   field_columns_layout:
     type: options_select
     weight: 1
@@ -25,7 +32,7 @@ content:
     settings: {  }
     third_party_settings: {  }
   field_paragraphs:
-    weight: 2
+    weight: 3
     settings:
       title: Paragraph
       title_plural: Paragraphs

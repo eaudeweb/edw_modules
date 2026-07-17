@@ -2,6 +2,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.paragraph.edw_columns.field_columns_alignment
     - field.field.paragraph.edw_columns.field_columns_layout
     - paragraphs.paragraphs_type.edw_columns
   module:
@@ -23,5 +24,6 @@ content:
     type: entity_reference_revisions_entity_view
     region: content
 hidden:
+  field_columns_alignment: true
   field_columns_layout: true
   field_number_of_columns: true
