@@ -131,6 +131,11 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
       $options['fragment'] = "$docTypeId";
       $routeRedirect = "edw_event.documents.$phase.document_type";
     }
+
+    if (count($this->routeProvider->getRoutesByNames([$routeRedirect])) === 0) {
+      unset($options['fragment']);
+      $routeRedirect = "edw_event.documents.$phase";
+    }
     $this->moduleHandler->invokeAll('meeting_document_form_alter_route_redirect', [
       $form_state, $request, &$routeRedirect, &$options,
     ]);
@@ -141,11 +146,18 @@ class MeetingDocumentForm implements ContainerInjectionInterface {
    * {@inheritdoc}
    */
   public function getDocumentPhase($phase, FormStateInterface $form_state) {
-    $selectedPhase = $form_state->getUserInput()['field_document_phase'];
+    $selectedPhase = $form_state->getUserInput()['field_document_phase'] ?? NULL;
     if (empty($selectedPhase)) {
       return $phase;
     }
-    return (is_array($selectedPhase)) ? reset($selectedPhase) : $selectedPhase;
+    if (!is_array($selectedPhase)) {
+      return $selectedPhase;
+    }
+
+    if (!empty($phase) && in_array($phase, $selectedPhase, TRUE)) {
+      return $phase;
+    }
+    return reset($selectedPhase);
   }
 
 }
