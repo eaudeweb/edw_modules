@@ -32,6 +32,15 @@ class DocumentManager {
     'video' => "VIDEO",
     'text' => "TEXT",
     'image' => "IMG",
+    'doc' => 'DOC',
+    'docx' => 'DOCX',
+    'rtf' => 'RTF',
+    'txt' => 'TXT',
+    'xls' => 'XLS',
+    'xlsx' => 'XLSX',
+    'docm' => 'DOCM',
+    'ppt' => 'PPT',
+    'pptx' => 'PPTX'
   ];
 
   protected $entityTypeId = 'node';
@@ -127,17 +136,12 @@ class DocumentManager {
   public function getUriType(string $uri) {
     $extensionMapping = [
       'csv' => 'document',
-      'doc' => 'document',
-      'docx' => 'document',
       'fodg' => 'document',
       'fodt' => 'document',
       'odf' => 'document',
       'odg' => 'document',
       'odt' => 'document',
       'pages' => 'document',
-      'rtf' => 'document',
-      'pdf' => 'pdf',
-      'txt' => 'text',
 
       'gif' => 'image',
       'jpg' => 'image',
@@ -148,14 +152,10 @@ class DocumentManager {
       'key' => 'presentation',
       'fodp' => 'presentation',
       'odp' => 'presentation',
-      'ppt' => 'presentation',
-      'pptx' => 'presentation',
 
       'numbers' => 'spreadsheet',
       'fods' => 'spreadsheet',
       'ods' => 'spreadsheet',
-      'xls' => 'spreadsheet',
-      'xlsx' => 'spreadsheet',
 
       'shtml' => 'link',
       'htm' => 'link',
@@ -163,6 +163,17 @@ class DocumentManager {
       'mp4' => 'video',
       'mov' => 'video',
       'avi' => 'video',
+
+      'doc' => 'doc',
+      'docx' => 'docx',
+      'pdf' => 'pdf',
+      'rtf' => 'rtf',
+      'txt' => 'txt',
+      'xls' => 'xls',
+      'xlsx' => 'xlsx',
+      'docm' => 'docm',
+      'ppt' => 'ppt',
+      'pptx' => 'pptx'
     ];
 
     $extension = pathinfo($uri, PATHINFO_EXTENSION);
@@ -399,9 +410,10 @@ class DocumentManager {
       return in_array($fileType, $availableFormats);
     }, ARRAY_FILTER_USE_KEY);
 
-    return array_map(function ($icon) use ($icons) {
-      return !empty(array_search($icon, $icons)) ? DocumentManager::ICONS_LABEL_INFO[array_search($icon, $icons)] : '';
-    }, $icons);
+    $keys = array_keys($icons);
+    return array_map(function ($key) {
+      return DocumentManager::ICONS_LABEL_INFO[$key] ?? '';
+    }, array_combine($keys, $keys));
   }
 
   /**
@@ -461,6 +473,15 @@ class DocumentManager {
       'image' => "$iconsPath/image-x-generic.png",
       'html' => "$iconsPath/text-html.png",
       'link' => "$iconsPath/text-html.png",
+      'doc' => "$iconsPath/x-office-document.png",
+      'docx' => "$iconsPath/x-office-document.png",
+      'rtf'=> "$iconsPath/x-office-document.png",
+      'txt' => "$iconsPath/text-plain.png",
+      'xls' => "$iconsPath/x-office-spreadsheet.png",
+      'xlsx' => "$iconsPath/x-office-spreadsheet.png",
+      'docm' => "$iconsPath/x-office-document.png",
+      'ppt' => "$iconsPath/x-office-presentation.png",
+      'pptx' => "$iconsPath/x-office-presentation.png",
     ];
   }
 
