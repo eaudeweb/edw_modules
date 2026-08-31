@@ -3,6 +3,7 @@
 namespace Drupal\edw_document\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\SortArray;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
@@ -213,7 +214,16 @@ class FileMultiLanguageWidget extends FileWidget {
     // it does not return all files when deleting a file from a language.
     $requestValues = $this->request->request->all();
 
-    $values = $requestValues[$fieldName] ?? [];
+    // Resolve the submitted values from the field's actual position in the
+    // request, not the top level. The field name only sits at the root of the
+    // request on a plain entity form; in nested contexts (e.g. the Media
+    // Library "Add media" modal, where the source-field widget is rendered
+    // under media[<delta>][fields][<field>]) a bare $requestValues[$fieldName]
+    // lookup misses, the widget extracts nothing, and the file field is saved
+    // empty -> "This value should not be null." This mirrors how core's
+    // WidgetBase::extractFormValues() builds its path from $form['#parents'].
+    $valuesParents = array_merge($form['#parents'] ?? [], [$fieldName]);
+    $values = NestedArray::getValue($requestValues, $valuesParents) ?? [];
     if (!empty($values['languages'])) {
       foreach ($values['languages'] as &$files) {
         if (empty($files['data'])) {

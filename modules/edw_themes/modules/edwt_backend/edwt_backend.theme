@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
 use Drupal\views\ViewExecutable;
 
 /**
@@ -78,14 +79,16 @@ function edwt_backend_preprocess_views_view_table(&$variables) {
       && isset($variables['result'])) {
       $event = \Drupal::routeMatch()->getParameter('node');
       $firstResult = reset($variables['result']);
-      $url = Url::fromRoute('entity.media.add_form', [
-        'media_type' => 'document',
-        'nid' => $event->id(),
-        'field_document_types' => $firstResult->_relationship_entities['field_document_types']->id(),
-        'field_document_phase' => 'in_session',
-      ]);
-      $variables['add_document'] = $meetingDocumentsService->addButtonModal($url, 'Add new document');
-      $variables['group_id'] = $firstResult->_relationship_entities['field_document_types']->id();
+      if ($event instanceof NodeInterface && $firstResult) {
+        $url = Url::fromRoute('entity.media.add_form', [
+          'media_type' => 'document',
+          'nid' => $event->id(),
+          'field_document_types' => $firstResult->_relationship_entities['field_document_types']->id(),
+          'field_document_phase' => 'in_session',
+        ]);
+        $variables['add_document'] = $meetingDocumentsService->addButtonModal($url, 'Add new document');
+        $variables['group_id'] = $firstResult->_relationship_entities['field_document_types']->id();
+      }
     }
     if ($view->id() == 'documents'
       && $view->current_display == 'order_by_tag'
