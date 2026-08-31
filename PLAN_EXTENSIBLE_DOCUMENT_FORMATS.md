@@ -28,6 +28,31 @@ silently **drops any format missing from `documentIconsPathInfo()`** — add a f
 appears. Note also that the `images/icons` directory does not exist in this repo, so those icon paths are in practice only used as
 a registry of valid format ids. Collapsing the three arrays into one registry is what makes a single clean alter hook possible.
 
+## Who consumes format ids
+
+Three places, and only the first one shows the labels/icons that PR #76 edits:
+
+1. **`DownloadDocumentsForm`** (`src/Form/DownloadDocumentsForm.php:123-134`) — `getIcons()` feeds `$form['format']['#options']`
+   directly. This is the modal with the checkboxes; `ICONS_LABEL_INFO` and `documentIconsPathInfo()` are only ever reached from
+   here.
+2. **`DownloadFileFormatter`** (`src/Plugin/Field/FieldFormatter/DownloadFileFormatter.php:88-89`) — the field formatter that
+   renders the download *button* (it's the one the shipped `edw_document_node` view displays use, `type: file_download_formatter`).
+   It never touches labels or icons, but it branches on the *number* of formats:
+
+   ```php
+   [$formats, $languages] = $this->documentManager->getOptions([$entity->id()], $items->getName());
+   if (count($formats) == 1 && count($languages) == 1) {
+     // Skip the modal, link straight to the file/zip.
+   ```
+
+   **The grouping change silently alters this branch, and PR #76 doesn't account for it.** A document with `report.doc` +
+   `report.docx` in one language is one format today (`document`) → direct download link; per-extension it is two formats → the
+   button now opens the modal instead. Same for `.xls`/`.xlsx` and `.ppt`/`.pptx`. Decide deliberately whether that is wanted, and
+   test it (see verification step 7).
+3. **`DocumentController::archiveFiles()`** (`src/Controller/DocumentController.php:102`) — takes format ids off the query string
+   and passes them to `getFilteredFiles()`. So ids travel through URLs too, which is another reason to keep them derived at
+   runtime and never stored.
+
 ## Approach
 
 One registry, one hook.
@@ -219,7 +244,10 @@ There is no test infrastructure in this repo, so verify on a site:
    (that's the `array_filter()` in `getOptions()`).
 5. Single-format case: when only one format is available the form auto-selects it (`DownloadDocumentsForm.php:132`) — confirm that
    still works.
-6. `phpcs --standard=Drupal,DrupalPractice` on the changed files (PR #76 left missing trailing commas and a `'rtf'=>` spacing
+6. `DownloadFileFormatter` shortcut: on a document with **only** `report.doc` + `report.docx` in a single language, the button
+   links straight to the zip without the modal by default, and opens the modal once the project hook splits those into two
+   formats. Check both, and confirm with the project owner that the modal is acceptable there.
+7. `phpcs --standard=Drupal,DrupalPractice` on the changed files (PR #76 left missing trailing commas and a `'rtf'=>` spacing
    issue — don't carry those over).
 
 ## Ordering
