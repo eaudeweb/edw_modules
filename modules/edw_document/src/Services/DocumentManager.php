@@ -7,6 +7,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Language\LanguageInterface;
@@ -23,16 +24,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Service for DocumentManager.
  */
 class DocumentManager {
-
-  const ICONS_LABEL_INFO = [
-    'pdf' => "PDF",
-    'document' => "DOC",
-    'spreadsheet' => "XLS",
-    'presentation' => "PPT",
-    'video' => "VIDEO",
-    'text' => "TEXT",
-    'image' => "IMG",
-  ];
 
   protected $entityTypeId = 'node';
 
@@ -86,6 +77,13 @@ class DocumentManager {
   protected $moduleExtensionList;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * Cached archive object.
    *
    * @var \Archive_Tar|\ZipArchive
@@ -100,9 +98,23 @@ class DocumentManager {
   protected $directory;
 
   /**
+   * Cached format definitions.
+   *
+   * @var array
+   */
+  protected $formats;
+
+  /**
+   * Cached extension map.
+   *
+   * @var array
+   */
+  protected $extensionMap;
+
+  /**
    * Constructs a new DocumentManager object.
    */
-  public function __construct(CurrentRouteMatch $currentRouteMatch, EntityTypeManagerInterface $entityTypeManager, ModuleExtensionList $extensionListModule, FileUrlGeneratorInterface $fileUrlGenerator, FileSystemInterface $fileSystem, LanguageManagerInterface $languageManager, Connection $database) {
+  public function __construct(CurrentRouteMatch $currentRouteMatch, EntityTypeManagerInterface $entityTypeManager, ModuleExtensionList $extensionListModule, FileUrlGeneratorInterface $fileUrlGenerator, FileSystemInterface $fileSystem, LanguageManagerInterface $languageManager, Connection $database, ?ModuleHandlerInterface $moduleHandler = NULL) {
     $this->currentRouteMatch = $currentRouteMatch;
     $this->database = $database;
     $this->entityTypeManager = $entityTypeManager;
@@ -110,6 +122,7 @@ class DocumentManager {
     $this->fileSystem = $fileSystem;
     $this->languageManager = $languageManager;
     $this->moduleExtensionList = $extensionListModule;
+    $this->moduleHandler = $moduleHandler ?: \Drupal::service('module_handler');
   }
 
   /**
@@ -125,49 +138,86 @@ class DocumentManager {
    *   image).
    */
   public function getUriType(string $uri) {
-    $extensionMapping = [
-      'csv' => 'document',
-      'doc' => 'document',
-      'docx' => 'document',
-      'fodg' => 'document',
-      'fodt' => 'document',
-      'odf' => 'document',
-      'odg' => 'document',
-      'odt' => 'document',
-      'pages' => 'document',
-      'rtf' => 'document',
-      'pdf' => 'pdf',
-      'txt' => 'text',
-
-      'gif' => 'image',
-      'jpg' => 'image',
-      'jpeg' => 'image',
-      'png' => 'image',
-      'svg' => 'image',
-
-      'key' => 'presentation',
-      'fodp' => 'presentation',
-      'odp' => 'presentation',
-      'ppt' => 'presentation',
-      'pptx' => 'presentation',
-
-      'numbers' => 'spreadsheet',
-      'fods' => 'spreadsheet',
-      'ods' => 'spreadsheet',
-      'xls' => 'spreadsheet',
-      'xlsx' => 'spreadsheet',
-
-      'shtml' => 'link',
-      'htm' => 'link',
-
-      'mp4' => 'video',
-      'mov' => 'video',
-      'avi' => 'video',
-    ];
-
     $extension = pathinfo($uri, PATHINFO_EXTENSION);
     $extension = strtolower($extension);
-    return !empty($extensionMapping[$extension]) ? $extensionMapping[$extension] : NULL;
+    $extensionMap = $this->getExtensionMap();
+    return $extensionMap[$extension] ?? NULL;
+  }
+
+  protected function getDefaultFormats(): array {
+    $iconsPath = sprintf('/%s/images/icons', $this->moduleExtensionList->getPath('edw_document'));
+    return [
+      'pdf' => [
+        'label' => 'PDF',
+        'icon' => "$iconsPath/application-pdf.png",
+        'extensions' => ['pdf'],
+      ],
+      'document' => [
+        'label' => 'DOC',
+        'icon' => "$iconsPath/x-office-document.png",
+        'extensions' => ['csv', 'doc', 'docx', 'fodg', 'fodt', 'odf', 'odg', 'odt', 'pages', 'rtf'],
+      ],
+      'spreadsheet' => [
+        'label' => 'XLS',
+        'icon' => "$iconsPath/x-office-spreadsheet.png",
+        'extensions' => ['numbers', 'fods', 'ods', 'xls', 'xlsx'],
+      ],
+      'presentation' => [
+        'label' => 'PPT',
+        'icon' => "$iconsPath/x-office-presentation.png",
+        'extensions' => ['key', 'fodp', 'odp', 'ppt', 'pptx'],
+      ],
+      'video' => [
+        'label' => 'VIDEO',
+        'icon' => "$iconsPath/video-x-generic.png",
+        'extensions' => ['mp4', 'mov', 'avi'],
+      ],
+      'text' => [
+        'label' => 'TEXT',
+        'icon' => "$iconsPath/text-plain.png",
+        'extensions' => ['txt'],
+      ],
+      'image' => [
+        'label' => 'IMG',
+        'icon' => "$iconsPath/image-x-generic.png",
+        'extensions' => ['gif', 'jpg', 'jpeg', 'png', 'svg'],
+      ],
+      'link' => [
+        'label' => '',
+        'icon' => "$iconsPath/text-html.png",
+        'extensions' => ['shtml', 'htm'],
+      ],
+    ];
+  }
+
+  public function getFormats(): array {
+    if (isset($this->formats)) {
+      return $this->formats;
+    }
+    $formats = $this->getDefaultFormats();
+    $this->moduleHandler->alter('edw_document_formats', $formats);
+    foreach ($formats as &$format) {
+      $format['label'] = $format['label'] ?? '';
+      $format['icon'] = $format['icon'] ?? '';
+      $format['extensions'] = array_map('strtolower', $format['extensions'] ?? []);
+    }
+    unset($format);
+    $this->formats = $formats;
+    return $this->formats;
+  }
+
+  public function getExtensionMap(): array {
+    if (isset($this->extensionMap)) {
+      return $this->extensionMap;
+    }
+    $extensionMap = [];
+    foreach ($this->getFormats() as $id => $format) {
+      foreach ($format['extensions'] as $extension) {
+        $extensionMap[$extension] = $id;
+      }
+    }
+    $this->extensionMap = $extensionMap;
+    return $this->extensionMap;
   }
 
   /**
@@ -314,7 +364,7 @@ class DocumentManager {
       }
       $availableFormats[] = $this->getUriType($file->getFileUri());
     }
-    return [array_unique($availableFormats), array_unique($availableLanguages)];
+    return [array_filter(array_unique($availableFormats)), array_unique($availableLanguages)];
   }
 
   /**
@@ -394,14 +444,10 @@ class DocumentManager {
    * {@inheritdoc}
    */
   public function getIcons(array $availableFormats) {
-    $icons = $this->documentIconsPathInfo();
-    $icons = array_filter($icons, function ($fileType) use ($availableFormats) {
-      return in_array($fileType, $availableFormats);
-    }, ARRAY_FILTER_USE_KEY);
-
-    return array_map(function ($icon) use ($icons) {
-      return !empty(array_search($icon, $icons)) ? DocumentManager::ICONS_LABEL_INFO[array_search($icon, $icons)] : '';
-    }, $icons);
+    $formats = array_intersect_key($this->getFormats(), array_flip($availableFormats));
+    return array_map(function (array $format) {
+      return $format['label'];
+    }, $formats);
   }
 
   /**
@@ -448,20 +494,12 @@ class DocumentManager {
 
   /**
    * {@inheritdoc}
+   * @deprecated in 2.x, use getFormats() instead
    */
   public function documentIconsPathInfo() {
-    $iconsPath = sprintf('/%s/images/icons', $this->moduleExtensionList->getPath('edw_document'));
-    return [
-      'pdf' => "$iconsPath/application-pdf.png",
-      'document' => "$iconsPath/x-office-document.png",
-      'spreadsheet' => "$iconsPath/x-office-spreadsheet.png",
-      'presentation' => "$iconsPath/x-office-presentation.png",
-      'video' => "$iconsPath/video-x-generic.png",
-      'text' => "$iconsPath/text-plain.png",
-      'image' => "$iconsPath/image-x-generic.png",
-      'html' => "$iconsPath/text-html.png",
-      'link' => "$iconsPath/text-html.png",
-    ];
+    return array_map(function (array $format) {
+      return $format['icon'];
+    }, $this->getFormats());
   }
 
   /**
@@ -480,6 +518,30 @@ class DocumentManager {
       'uuid' => $uuid,
     ]);
     return reset($file);
+  }
+
+  public static function splitFormatsByExtension(array &$formats, array $extensions, array $labels = []) {
+    foreach ($extensions as $extension) {
+      $extension = strtolower($extension);
+      foreach ($formats as $id => $format) {
+        if (!in_array($extension, $format['extensions'] ?? [], TRUE)) {
+          continue;
+        }
+        if ($id === $extension) {
+          break;
+        }
+        $formats[$extension] = [
+          'label' => $labels[$extension] ?? strtoupper($extension),
+          'icon' => $format['icon'] ?? '',
+          'extensions' => [$extension],
+        ];
+        $formats[$id]['extensions'] = array_values(array_diff($format['extensions'], [$extension]));
+        if (empty($formats[$id]['extensions'])) {
+          unset($formats[$id]);
+        }
+        break;
+      }
+    }
   }
 
 }
