@@ -155,7 +155,7 @@ class DocumentManager {
       'document' => [
         'label' => 'DOC',
         'icon' => "$iconsPath/x-office-document.png",
-        'extensions' => ['csv', 'doc', 'docx', 'fodg', 'fodt', 'odf', 'odg', 'odt', 'pages', 'rtf'],
+        'extensions' => ['csv', 'doc', 'docm', 'docx', 'fodg', 'fodt', 'odf', 'odg', 'odt', 'pages', 'rtf'],
       ],
       'spreadsheet' => [
         'label' => 'XLS',
