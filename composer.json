@@ -9,5 +9,11 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {},
+    "require-dev": {
+        "drupal/core-dev": "^10.3 || ^11"
+    },
+    "scripts": {
+        "test": "echo 'Run from a site that has this module in its codebase: vendor/bin/phpunit -c web/core --group edw_document'"
+    }
 }

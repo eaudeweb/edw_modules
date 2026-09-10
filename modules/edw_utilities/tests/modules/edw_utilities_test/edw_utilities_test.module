@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Implements the hooks edw_utilities.api.php documents.
+ */
+
+/**
+ * Implements hook_terms_autocomplete_query_alter().
+ */
+function edw_utilities_test_terms_autocomplete_query_alter(string $vid, string $input, &$query, array $properties = []) {
+  $query->condition('name', $input, 'CONTAINS');
+  if (!empty($properties['limit'])) {
+    $query->range(0, $properties['limit']);
+  }
+}
+
+/**
+ * Implements hook_terms_autocomplete_label_alter().
+ */
+function edw_utilities_test_terms_autocomplete_label_alter(string $vid, $term, string &$label, array $properties = []) {
+  $label = 'Filter by ' . $term->label();
+}

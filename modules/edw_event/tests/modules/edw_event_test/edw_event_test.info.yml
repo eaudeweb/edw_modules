@@ -1,0 +1,5 @@
+name: EDW Event test
+type: module
+description: Implements the edw_event extension hooks so the tests can check they are honoured.
+package: Testing
+core_version_requirement: ^9.2 || ^10 || ^11
