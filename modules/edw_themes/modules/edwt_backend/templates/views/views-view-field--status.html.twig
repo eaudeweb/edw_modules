@@ -1,0 +1,19 @@
+{#
+/**
+ * @file
+ * Theme override for displaying a view as a table.
+ *
+ * @see template_preprocess_views_view_table()
+ * @see gin/templates/views/views-view-table.html.twig
+ */
+#}
+{% set relationship = field.options.relationship|default('none') %}
+{% set related = relationship != 'none' and row._relationship_entities[relationship] is defined
+  ? row._relationship_entities[relationship]
+  : null %}
+{% set entity = related ?: row._entity %}
+{% if entity and entity.isPublished() %}
+  <span class="marker marker--published">{{ output -}}</span>
+{% else %}
+  <span class="marker">{{ output -}}</span>
+{% endif %}
