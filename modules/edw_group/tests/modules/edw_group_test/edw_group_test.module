@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Implements the hooks edw_group.api.php documents, so tests can check them.
+ */
+
+/**
+ * Implements hook_private_access_roles().
+ */
+function edw_group_test_private_access_roles(array &$privateRoles) {
+  $privateRoles[] = 'observers';
+}
+
+/**
+ * Implements hook_global_access_groups().
+ */
+function edw_group_test_global_access_groups(array &$globalAccess) {
+  $globalAccess[] = 'public';
+}

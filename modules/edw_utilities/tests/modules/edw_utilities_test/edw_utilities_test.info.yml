@@ -1,0 +1,5 @@
+name: EDW Utilities test
+type: module
+description: Implements the edw_utilities extension hooks so the tests can check they are honoured.
+package: Testing
+core_version_requirement: ^9.2 || ^10 || ^11

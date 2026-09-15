@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Implements the hooks edw_event.api.php documents, so tests can check them.
+ */
+
+/**
+ * Implements hook_meeting_documents_phase_alter().
+ */
+function edw_event_test_meeting_documents_phase_alter(array &$tabs) {
+  $tabs['annotated_agenda'] = 'Annotated agenda';
+}
+
+/**
+ * Implements hook_meeting_documents_in_session_groups().
+ */
+function edw_event_test_meeting_documents_in_session_groups(array &$groups) {
+  $groups['contact_group'] = 'Contact group';
+}
+
+/**
+ * Implements hook_meeting_documents_local_tasks_alter().
+ */
+function edw_event_test_meeting_documents_local_tasks_alter(array &$local_tasks) {
+  unset($local_tasks['edw_event.documents.post_session']);
+}
+
+/**
+ * Implements hook_global_access_groups().
+ */
+function edw_event_test_global_access_groups(array &$globalAccess) {
+  $globalAccess[] = 'public';
+}

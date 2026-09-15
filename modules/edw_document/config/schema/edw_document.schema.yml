@@ -1,0 +1,66 @@
+action.configuration.node_download_documents_action:
+  type: action_configuration_default
+  label: 'Download documents configuration'
+
+action.configuration.media_download_documents_action:
+  type: action_configuration_default
+  label: 'Download documents configuration'
+
+# Extends the generic file formatter, so it inherits its settings too.
+field.formatter.settings.file_download_formatter:
+  type: field.formatter.settings.file_default
+  label: 'Download file display format settings'
+  mapping:
+    button_title:
+      type: label
+      label: 'Button title'
+
+field.formatter.settings.file_with_language_formatter:
+  type: field.formatter.settings.file_default
+  label: 'File with language display format settings'
+  mapping:
+    suppress_language:
+      type: boolean
+      label: 'Hide the language'
+
+field.formatter.settings.dropdown_file_language_formatter:
+  type: field.formatter.settings.file_with_language_formatter
+  label: 'Files dropdown display format settings'
+
+# These two render entity references rather than files, and add no settings.
+field.formatter.settings.files_group_by_language:
+  type: mapping
+  label: 'Files grouped by language display format settings'
+
+field.formatter.settings.entity_reference_files_group_by_language:
+  type: mapping
+  label: 'Referenced files grouped by language display format settings'
+
+field.widget.settings.file_generic_with_language:
+  type: field.widget.settings.file_generic
+  label: 'File with language widget settings'
+
+field.widget.settings.file_multi_language:
+  type: field.widget.settings.file_generic
+  label: 'Multi-language file widget settings'
+
+# The file_language field type is a file field carrying an extra langcode.
+field.storage_settings.file_language:
+  type: field.storage_settings.file
+  label: 'File with language storage settings'
+  mapping:
+    language:
+      type: string
+      label: 'Language'
+
+field.field_settings.file_language:
+  type: field.field_settings.file
+  label: 'File with language field settings'
+
+field.value.file_language:
+  type: field.value.file
+  label: 'Default value'
+  mapping:
+    language:
+      type: string
+      label: 'Language'
