@@ -81,8 +81,7 @@ of langcode.
 The download-documents modal groups file extensions into "formats" (DOC,
 XLS, PPT, etc.), one checkbox per format. The default groupings are defined
 in `DocumentManager::getFormats()`. To change them for a specific site,
-implement `hook_edw_document_formats_alter()` in a custom module rather than
-patching `edw_document`:
+implement `hook_edw_document_formats_alter()` in a custom module:
 
 ```php
 use Drupal\edw_document\Services\DocumentManager;

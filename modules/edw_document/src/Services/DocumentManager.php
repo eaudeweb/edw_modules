@@ -114,7 +114,7 @@ class DocumentManager {
   /**
    * Constructs a new DocumentManager object.
    */
-  public function __construct(CurrentRouteMatch $currentRouteMatch, EntityTypeManagerInterface $entityTypeManager, ModuleExtensionList $extensionListModule, FileUrlGeneratorInterface $fileUrlGenerator, FileSystemInterface $fileSystem, LanguageManagerInterface $languageManager, Connection $database, ?ModuleHandlerInterface $moduleHandler = NULL) {
+  public function __construct(CurrentRouteMatch $currentRouteMatch, EntityTypeManagerInterface $entityTypeManager, ModuleExtensionList $extensionListModule, FileUrlGeneratorInterface $fileUrlGenerator, FileSystemInterface $fileSystem, LanguageManagerInterface $languageManager, Connection $database, ModuleHandlerInterface $moduleHandler) {
     $this->currentRouteMatch = $currentRouteMatch;
     $this->database = $database;
     $this->entityTypeManager = $entityTypeManager;
@@ -122,7 +122,7 @@ class DocumentManager {
     $this->fileSystem = $fileSystem;
     $this->languageManager = $languageManager;
     $this->moduleExtensionList = $extensionListModule;
-    $this->moduleHandler = $moduleHandler ?: \Drupal::service('module_handler');
+    $this->moduleHandler = $moduleHandler;
   }
 
   /**
