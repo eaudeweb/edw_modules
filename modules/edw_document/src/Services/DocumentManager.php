@@ -285,6 +285,19 @@ class DocumentManager {
   }
 
   /**
+   * Removes the files the current user is not allowed to download.
+   *
+   * @param \Drupal\file\FileInterface[] $files
+   *   Array with files.
+   *
+   * @return \Drupal\file\FileInterface[]
+   *   The files the current user may download.
+   */
+  public function filterDownloadable(array $files) {
+    return array_filter($files, fn ($file) => $file->access('download'));
+  }
+
+  /**
    * Return formats and languages available for download.
    *
    * For a list with selected entities, return all formats and languages
